@@ -1,0 +1,20 @@
+{
+  "name": "ספר תהילים",
+  "short_name": "תהילים",
+  "description": "ספר תהילים — 150 מזמורים עם פרשנות ותפילות",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0d0800",
+  "theme_color": "#0d0800",
+  "dir": "rtl",
+  "lang": "he",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "./icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
