@@ -97,7 +97,7 @@ nav {
 }
 .menorah-wrap { display: flex; justify-content: center; margin-bottom: 8px; }
 .app-title {
-  font-family: 'Suez One', serif; font-size: 30px; color: var(--gold-l);
+  font-family: 'Frank Ruhl Libre', serif; font-size: 30px; color: var(--gold-l);
   letter-spacing: 3px; text-shadow: 0 0 30px rgba(201,151,44,.5);
 }
 .app-sub { font-family: 'Heebo', sans-serif; font-size: 13px; color: var(--txt-mut); margin-top: 3px; font-weight: 300; }
@@ -428,7 +428,21 @@ nav {
 .rem-note {
   font-family: 'Heebo', sans-serif; font-size: 11px; color: var(--txt-mut);
   text-align: center; padding: 4px 0 12px; line-height: 1.6;
-.reset-btn {
+}
+.rem-type-row {
+  display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap;
+}
+.rem-type-btn {
+  background: var(--surf2); border: 1px solid var(--brd); border-radius: 20px;
+  padding: 4px 10px; font-family:'Heebo',sans-serif; font-size:11px; color:var(--txt-mut);
+  cursor:pointer; touch-action:manipulation; white-space:nowrap;
+}
+.rem-type-btn.on { background:var(--gold-dim); border-color:var(--gold); color:var(--gold); }
+.rem-prayer-select {
+  width: 100%; margin-top: 6px; background:var(--surf2); border:1px solid var(--brd);
+  border-radius:8px; padding:5px 8px; font-family:'Heebo',sans-serif; font-size:12px;
+  color:var(--txt); outline:none; display:none;
+}
   display: block; width: calc(100% - 28px); margin: 0 14px 16px;
   padding: 11px; background: transparent; border: 1px solid rgba(122,24,24,.5);
   border-radius: 10px; font-family: 'Heebo', sans-serif; font-size: 12px;
@@ -682,6 +696,102 @@ nav {
 @keyframes pulse { 0%,100% { opacity:.7; } 50% { opacity:1; } }
 @keyframes starPop { 0%{transform:scale(1)} 50%{transform:scale(1.6)} 100%{transform:scale(1)} }
 .fadeup { animation: fadeUp .35s ease forwards; }
+
+/* ── THEME TOGGLE ── */
+.theme-toggle {
+  position: absolute; top: 14px; left: 14px;
+  background: var(--surf2); border: 1px solid var(--brd);
+  border-radius: 20px; padding: 5px 10px;
+  font-size: 16px; cursor: pointer; touch-action: manipulation;
+  z-index: 10; line-height: 1;
+}
+
+/* ── LIGHT THEME ── */
+body.light {
+  --bg: #f5f0e8; --bg2: #ede5d5; --surf: #fff8f0; --surf2: #f0e8d8;
+  --surf3: #e8dcc8; --txt: #2a1a00; --txt-dim: #5a3a10; --txt-mut: #a08060;
+  --cream: #2a1a00; --brd: rgba(120,80,20,.2); --brd-b: rgba(120,80,20,.5);
+  --gold: #8b5e10; --gold-l: #6b3e00; --gold-d: #c9972c; --gold-dim: rgba(139,94,16,.12);
+  --shadow: 0 4px 20px rgba(0,0,0,.12);
+}
+body.light .home-hero, body.light .pr-hdr { background: linear-gradient(180deg,#ede5d5,var(--bg)); }
+body.light .reader-illus::after { background: linear-gradient(transparent,var(--surf2)); }
+
+/* ── PARASHA CARD ── */
+.parasha-card {
+  margin: 10px 14px 0;
+  background: var(--surf2); border: 1px solid var(--brd);
+  border-radius: var(--r); padding: 12px 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.parasha-icon { font-size: 22px; flex-shrink: 0; }
+.parasha-label { font-family:'Heebo',sans-serif; font-size:10px; color:var(--gold-d); font-weight:700; letter-spacing:1px; margin-bottom:2px; }
+.parasha-name  { font-family:'Suez One',serif; font-size:15px; color:var(--gold-l); }
+.parasha-book  { font-family:'Heebo',sans-serif; font-size:11px; color:var(--txt-mut); margin-top:1px; }
+
+/* ── MOOD SELECTOR ── */
+.mood-bar {
+  margin: 10px 14px 0;
+  background: var(--surf); border: 1px solid var(--brd); border-radius: var(--r);
+  padding: 12px 14px;
+}
+.mood-label { font-family:'Heebo',sans-serif; font-size:11px; color:var(--gold-d); font-weight:700; letter-spacing:1px; margin-bottom:8px; }
+.mood-pills { display:flex; gap:6px; flex-wrap:wrap; }
+.mood-pill {
+  background: var(--surf2); border: 1px solid var(--brd); border-radius: 20px;
+  padding: 5px 11px; font-family:'Heebo',sans-serif; font-size:12px; color:var(--txt-dim);
+  cursor:pointer; touch-action:manipulation; white-space:nowrap;
+}
+.mood-pill:active { background:var(--gold-dim); color:var(--gold); }
+
+/* ── READ TIMER ── */
+.read-timer {
+  position: fixed; bottom: calc(var(--nav) + 10px); right: 14px;
+  background: var(--surf2); border: 1px solid var(--brd-b); border-radius: 20px;
+  padding: 5px 12px; font-family:'Heebo',sans-serif; font-size:12px; color:var(--gold);
+  z-index: 50; display:none;
+}
+.read-timer.on { display:block; }
+
+/* ── SEARCH IN PRAYERS (inside pr-cats area) ── */
+.pr-search {
+  margin: 0 14px 4px;
+  background: var(--surf); border: 1px solid var(--brd); border-radius: 10px;
+  padding: 9px 14px; font-family:'Heebo',sans-serif; font-size:14px; color:var(--txt);
+  outline:none; width: calc(100% - 28px); direction:rtl; box-sizing:border-box;
+}
+.pr-search::placeholder { color:var(--txt-mut); }
+
+/* ── NOTES ── */
+.note-btn {
+  display:block; width:calc(100% - 32px); margin:0 16px 6px;
+  padding:9px; background:transparent; border:1px solid var(--brd);
+  border-radius:10px; font-family:'Heebo',sans-serif; font-size:12px;
+  color:var(--txt-mut); cursor:pointer; touch-action:manipulation; text-align:right;
+}
+.note-panel {
+  display:none; margin:0 16px 10px;
+}
+.note-panel.open { display:block; }
+.note-area {
+  width:100%; min-height:80px; background:var(--surf2); border:1px solid var(--brd);
+  border-radius:10px; padding:10px 12px; font-family:'Heebo',sans-serif;
+  font-size:14px; color:var(--txt); direction:rtl; resize:none; outline:none;
+  box-sizing:border-box; line-height:1.7;
+}
+.note-save {
+  width:100%; margin-top:6px; padding:8px; background:var(--gold-dim);
+  border:1px solid var(--brd-b); border-radius:8px; font-family:'Heebo',sans-serif;
+  font-size:12px; color:var(--gold); cursor:pointer; touch-action:manipulation;
+}
+
+/* ── CYCLE COUNTER ── */
+.cycle-badge {
+  display:inline-flex; align-items:center; gap:5px;
+  background:rgba(201,151,44,.15); border:1px solid var(--gold-d);
+  border-radius:20px; padding:3px 12px;
+  font-family:'Heebo',sans-serif; font-size:11px; color:var(--gold); font-weight:700;
+}
 </style>
 </head>
 <body>
@@ -689,6 +799,7 @@ nav {
   <!-- SCREEN: HOME -->
   <div id="s-home" class="screen active">
     <div class="home-hero">
+      <button class="theme-toggle" id="theme-toggle" title="בהיר/כהה">☀️</button>
       <div class="menorah-wrap">
         <svg width="60" height="52" viewBox="0 0 60 52" fill="none">
           <line x1="30" y1="8" x2="30" y2="48" stroke="#c9972c" stroke-width="2.5" stroke-linecap="round"/>
@@ -709,22 +820,55 @@ nav {
           <path d="M28 5 Q30 2 32 5 Q31 3.5 30 3 Q29 3.5 28 5Z" fill="#e8c96a" opacity=".8"/>
         </svg>
       </div>
-      <div class="app-title">תְּהִלִּים</div>
+      <div class="app-title">תְּהִלִים</div>
       <div class="app-sub">ספר המזמורים · דוד המלך</div>
     </div>
 
-    <div id="today-card" class="today-card">
-      <div class="tc-illus" id="tc-illus"></div>
-      <div class="tc-body">
-        <div class="tc-badge badge" id="tc-badge">פרק היום</div>
-        <div class="tc-num" id="tc-num">א</div>
-        <div class="tc-title" id="tc-title"></div>
-        <div class="tc-preview" id="tc-preview"></div>
-        <button class="read-btn" id="tc-read">קרא את הפרק →</button>
+    <!-- HIGHLIGHT CARD — open by default, above today card -->
+    <div style="margin:12px 14px 0;background:linear-gradient(135deg,#1a1000,#0d0800);border:1px solid rgba(201,151,44,.45);border-right:3px solid var(--gold);border-radius:var(--r);padding:16px 18px" id="highlight-card">
+      <div style="font-family:'Suez One',serif;font-size:15px;color:var(--gold-l);letter-spacing:.5px;margin-bottom:10px;text-shadow:0 0 12px rgba(201,151,44,.3);text-align:center">פשט וסוד</div>
+      <div id="highlight-body">
+        <p style="font-family:'Heebo',sans-serif;font-size:13px;color:var(--txt-dim);line-height:1.9;margin-bottom:10px">
+          <strong style="color:var(--cream)">בפשט</strong> — ספר תפילה אנושית עמוקה. דוד המלך שפך את נשמתו בכל מזמור — שמחה, פחד, אהבה, שבר — ויצר יצירה שאנשים מוצאים בה את עצמם לאורך 3,000 שנה.
+        </p>
+        <p style="font-family:'Heebo',sans-serif;font-size:13px;color:var(--txt-dim);line-height:1.9">
+          <strong style="color:var(--cream)">בקבלה</strong> — תהילים הוא מפת-הנשמה. כל מזמור מאיר ספירה שונה בעץ החיים, מהמעמקים שבמלכות עד לאור שבכתר. הנשמה שקוראת בתהילים אינה רק קוראת — היא מסיירת, ניצוץ אחר ניצוץ, בכל עולמות האלוהות.
+        </p>
       </div>
     </div>
 
-    <!-- INTRO CARD -->
+    <div id="today-card" class="today-card" style="margin-top:10px">
+      <div class="tc-illus" id="tc-illus" style="height:140px"></div>
+      <div class="tc-body" style="padding:10px 14px 14px">
+        <div class="tc-badge badge" id="tc-badge">פרק היום</div>
+        <div class="tc-num" id="tc-num" style="font-size:22px"></div>
+        <div class="tc-title" id="tc-title" style="font-size:13px"></div>
+        <div class="tc-preview" id="tc-preview" style="font-size:11px"></div>
+        <button class="read-btn" id="tc-read" style="padding:9px 18px;font-size:13px">קרא את הפרק →</button>
+      </div>
+    </div>
+
+    <div id="parasha-card" class="parasha-card" style="cursor:pointer;touch-action:manipulation;">
+      <div class="parasha-icon">📜</div>
+      <div style="flex:1">
+        <div class="parasha-label">פרשת השבוע</div>
+        <div class="parasha-name" id="parasha-name">טוען...</div>
+        <div class="parasha-book" id="parasha-book"></div>
+      </div>
+      <div style="color:var(--gold-d);font-size:12px;align-self:center">▼</div>
+    </div>
+
+    <div class="mood-bar">
+      <div class="mood-label">📖 קרא לי פרק ל...</div>
+      <div class="mood-pills">
+        <div class="mood-pill" data-mood="שמחה">🎉 שמחה</div>
+        <div class="mood-pill" data-mood="צרה">⚡ צרה</div>
+        <div class="mood-pill" data-mood="הודיה">🙏 הודיה</div>
+        <div class="mood-pill" data-mood="בדידות">🌙 בדידות</div>
+        <div class="mood-pill" data-mood="חיזוק">💪 חיזוק</div>
+        <div class="mood-pill" data-mood="בוקר">🌅 בוקר</div>
+      </div>
+    </div>
     <div class="intro-card" id="intro-card">
       <div class="intro-top" id="intro-toggle">
         <div class="intro-quote-icon">📖</div>
@@ -814,7 +958,7 @@ nav {
       <div class="btab" data-book="4">ספר ד׳ (צ-קו)</div>
       <div class="btab" data-book="5">ספר ה׳ (קז-קנ)</div>
     </div>
-    <div class="psalms-grid" id="home-grid"></div>
+    <div class="psalms-grid" id="home-grid" style="display:none"></div>
     <div style="height:8px"></div>
   </div>
 
@@ -862,7 +1006,14 @@ nav {
 
       <button class="mark-done-btn" id="r-mark">✓ סמן כנקרא</button>
       <button class="mark-done-btn" id="r-fav" style="margin-top:-8px">★ הוסף למועדפים</button>
+      <button class="mark-done-btn" id="r-share" style="margin-top:-8px">↗ שתף פרק</button>
       <button class="mark-done-btn" id="r-kab-btn" style="margin-top:-8px;color:#c8a8f0;border-color:rgba(138,43,226,0.45)">✡ פרשנות רוחנית — קבלה</button>
+
+      <button class="note-btn" id="r-note-btn">✏️ הוסף הערה אישית</button>
+      <div class="note-panel" id="r-note-panel">
+        <textarea class="note-area" id="r-note-area" placeholder="כתוב הערה אישית לפרק זה..."></textarea>
+        <button class="note-save" id="r-note-save">💾 שמור הערה</button>
+      </div>
 
       <!-- KABBALAH PANEL -->
       <div id="r-kab-panel" hidden style="margin:0 16px 10px;background:linear-gradient(160deg,#12082a,#0d0820);border:1px solid rgba(138,43,226,0.4);border-radius:var(--r);overflow:hidden;position:relative">
@@ -885,6 +1036,7 @@ nav {
     <div class="prog-header">
       <div class="prog-title">התקדמות</div>
       <div class="prog-sub">מסע קריאת תהילים</div>
+      <div style="margin-top:8px"><span class="cycle-badge" id="cycle-badge">🔄 מחזור 1</span></div>
     </div>
     <div class="ring-wrap">
       <div class="prog-ring">
@@ -924,22 +1076,33 @@ nav {
 
   <!-- SCREEN: ABOUT -->
   <div id="s-about" class="screen">
-    <div class="about-body">
-      <div class="about-logo">
-        <div class="menorah-wrap" style="justify-content:center; margin-bottom:8px">
-          <svg width="50" height="44" viewBox="0 0 60 52" fill="none">
-            <line x1="30" y1="8" x2="30" y2="48" stroke="#c9972c" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="6" y1="48" x2="54" y2="48" stroke="#c9972c" stroke-width="2.5" stroke-linecap="round"/>
-            <path d="M6 48 C6 30 14 20 30 20" stroke="#c9972c" stroke-width="2" fill="none" stroke-linecap="round"/>
-            <path d="M54 48 C54 30 46 20 30 20" stroke="#c9972c" stroke-width="2" fill="none" stroke-linecap="round"/>
-            <circle cx="6" cy="8" r="3" fill="#e8c96a" opacity=".9"/>
-            <circle cx="30" cy="7" r="3.5" fill="#e8c96a"/>
-            <circle cx="54" cy="8" r="3" fill="#e8c96a" opacity=".9"/>
-          </svg>
-        </div>
-        <div class="app-title" style="font-size:24px">תְּהִלִּים</div>
-        <div class="app-sub" style="margin-top:4px">ספר המזמורים של האנושות</div>
+    <!-- Header — same as home -->
+    <div style="background:linear-gradient(180deg,#1a1000 0%,#0d0800 100%);padding:20px 16px 0;text-align:center;position:relative">
+      <div style="display:flex;justify-content:center;margin-bottom:8px">
+        <svg width="60" height="52" viewBox="0 0 60 52" fill="none">
+          <line x1="30" y1="8" x2="30" y2="48" stroke="#c9972c" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="6" y1="48" x2="54" y2="48" stroke="#c9972c" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M6 48 C6 30 14 20 30 20" stroke="#c9972c" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M54 48 C54 30 46 20 30 20" stroke="#c9972c" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M14 48 C14 36 20 28 30 28" stroke="#c9972c" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M46 48 C46 36 40 28 30 28" stroke="#c9972c" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <circle cx="6"  cy="8"  r="3" fill="#e8c96a" opacity=".9"/>
+          <circle cx="14" cy="14" r="3" fill="#e8c96a" opacity=".9"/>
+          <circle cx="22" cy="18" r="3" fill="#e8c96a" opacity=".9"/>
+          <circle cx="30" cy="7"  r="3.5" fill="#e8c96a"/>
+          <circle cx="38" cy="18" r="3" fill="#e8c96a" opacity=".9"/>
+          <circle cx="46" cy="14" r="3" fill="#e8c96a" opacity=".9"/>
+          <circle cx="54" cy="8"  r="3" fill="#e8c96a" opacity=".9"/>
+          <path d="M4 6 Q6 3 8 6 Q7 4.5 6 4 Q5 4.5 4 6Z" fill="#e8c96a" opacity=".7"/>
+          <path d="M12 12 Q14 9 16 12 Q15 10.5 14 10 Q13 10.5 12 12Z" fill="#e8c96a" opacity=".7"/>
+          <path d="M28 5 Q30 2 32 5 Q31 3.5 30 3 Q29 3.5 28 5Z" fill="#e8c96a" opacity=".8"/>
+        </svg>
       </div>
+      <div style="font-family:'Frank Ruhl Libre',serif;font-size:28px;color:#e8c96a;letter-spacing:3px;text-shadow:0 0 30px rgba(201,151,44,.5)">תְּהִלִים</div>
+      <div style="font-family:'Heebo',sans-serif;font-size:13px;color:#6b5535;margin-top:3px;font-weight:300;padding-bottom:16px">ספר המזמורים של האנושות</div>
+    </div>
+
+    <div class="about-body">
       <div class="about-card">
         <h3>על ספר תהילים</h3>
         <p>ספר תהילים מונה 150 מזמורים ומיוחס בעיקרו לדוד המלך. הוא נחשב ל"ספר התפילות של האנושות" — יצירה שמלווה אנשים בשמחה ובצרה, בשלום ובמלחמה, לאורך אלפי שנים.</p>
@@ -954,7 +1117,7 @@ nav {
       </div>
       <div class="about-card">
         <h3>האתגר היומי</h3>
-        <p>קרא מזמור אחד בכל יום — וסיים את כל ספר תהילים תוך 150 יום. האפליקציה עוקבת אחר ההתקדמות שלך ומציגה פרשנות מקצועית לכל מזמור.</p>
+        <p>קרא מזמור אחד בכל יום — וסיים את כל ספר תהילים תוך 150 יום. האפליקציה עוקבת אחר ההתקדמות שלך ומציגה פרשנות קבלית לכל מזמור.</p>
       </div>
       <div class="about-card">
         <h3>שיר של יום</h3>
@@ -965,6 +1128,25 @@ nav {
         <div class="about-book-row"><span class="about-book-nm">חמישי</span><span class="about-book-rng">מזמור פא</span></div>
         <div class="about-book-row"><span class="about-book-nm">שישי</span><span class="about-book-rng">מזמור צג</span></div>
         <div class="about-book-row"><span class="about-book-nm">שבת</span><span class="about-book-rng">מזמור צב</span></div>
+      </div>
+
+      <div class="about-card" style="border-right:3px solid var(--gold);background:linear-gradient(135deg,var(--surf2),var(--surf))">
+        <h3 style="font-size:15px;letter-spacing:.5px">תהילים — פשט וסוד</h3>
+        <p style="margin-bottom:12px">
+          <strong style="color:var(--cream)">בפשט</strong> — ספר תפילה אנושית עמוקה. דוד המלך שפך את נשמתו בכל מזמור — שמחה, פחד, אהבה, שבר — ויצר יצירה שאנשים מוצאים בה את עצמם לאורך 3,000 שנה.
+        </p>
+        <p>
+          <strong style="color:var(--cream)">בקבלה</strong> — תהילים הוא מפת-הנשמה. כל מזמור מאיר ספירה שונה בעץ החיים, מהמעמקים שבמלכות עד לאור שבכתר. הנשמה שקוראת בתהילים אינה רק קוראת — היא מסיירת, ניצוץ אחר ניצוץ, בכל עולמות האלוהות.
+        </p>
+      </div>
+
+      <!-- Copyright -->
+      <div style="text-align:center;padding:20px 0 10px;border-top:1px solid var(--brd);margin-top:8px">
+        <div style="font-family:'Suez One',serif;font-size:14px;color:var(--gold-d);margin-bottom:6px">תְּהִלִים</div>
+        <div style="font-family:'Heebo',sans-serif;font-size:12px;color:var(--txt-mut);line-height:1.8">
+          © כל הזכויות שמורות לדודו טל<br>
+          <span style="font-size:11px;color:var(--txt-mut);opacity:.7">גרסה 3.0 · 2026</span>
+        </div>
       </div>
     </div>
   </div>
@@ -995,9 +1177,12 @@ nav {
       <div style="font-family:'Heebo',sans-serif;font-size:13px;color:#6b5535;margin-top:3px;font-weight:300;padding-bottom:14px">תפילות קצרות לאירועים ורגעים בחיים</div>
     </div>
     <div class="pr-cats" id="pr-cats"></div>
+    <input class="pr-search" id="pr-search" type="search" placeholder="חיפוש תפילה..." inputmode="search">
     <div class="pr-list" id="pr-list"></div>
     <div style="height:10px"></div>
   </div>
+
+  <div class="read-timer" id="read-timer">⏱ 0:00</div>
 
   <!-- BOTTOM NAV -->
   <div id="save-flash" style="position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
@@ -1899,32 +2084,38 @@ function psalmCard(ps, onClick){
   d.className='pt'+(done?' done':'')+(isToday?' today':'')+(fav?' fav':'');
   d.innerHTML=`<span class="pt-star" title="מועדף">★</span><div class="pt-n">${heb(ps.n)}</div><div class="pt-kw">${ps.kw}</div>`;
 
-  // Star — fav toggle (stopPropagation so card click doesn't fire)
+  // Star — fav toggle
   var star = d.querySelector('.pt-star');
-  function starTap(e){
+  star.addEventListener('click', function(e){
     e.stopPropagation();
-    if(e.cancelable) e.preventDefault();
     if(STATE.favPsalms.has(ps.n)) STATE.favPsalms.delete(ps.n);
     else STATE.favPsalms.add(ps.n);
     save();
     if(activeScreen==='home') renderHomeGrid(homeBook);
     else if(activeScreen==='all') renderAll(document.getElementById('search').value.trim());
-    else if(activeScreen==='reader') renderReader(STATE.currentPsalm);
-  }
-  star.addEventListener('touchend', starTap, {passive:false});
-  star.addEventListener('click', starTap);
+  });
 
-  // Card — open reader (touchend fires instantly on iOS, no 300ms wait)
-  var tapped = false;
+  // Card — detect scroll vs tap (prevents accidental navigation while scrolling)
+  var _startX=0, _startY=0, _didScroll=false;
+  d.addEventListener('touchstart', function(e){
+    _startX = e.touches[0].clientX;
+    _startY = e.touches[0].clientY;
+    _didScroll = false;
+  }, {passive:true});
+  d.addEventListener('touchmove', function(e){
+    if(Math.abs(e.touches[0].clientX-_startX)>6 || Math.abs(e.touches[0].clientY-_startY)>6)
+      _didScroll = true;
+  }, {passive:true});
   d.addEventListener('touchend', function(e){
-    if(e.target === star) return;
+    if(_didScroll) return;
+    if(e.target === star || e.target.classList.contains('pt-star')) return;
     e.preventDefault();
-    tapped = true;
     onClick(ps);
   }, {passive:false});
+  // Fallback for non-touch (desktop)
   d.addEventListener('click', function(e){
-    if(tapped){ tapped=false; return; } // already handled by touchend
-    if(e.target === star) return;
+    if(e.target === star || e.target.classList.contains('pt-star')) return;
+    if('ontouchstart' in window) return; // already handled by touchend
     onClick(ps);
   });
 
@@ -1937,22 +2128,28 @@ function psalmCard(ps, onClick){
 let activeScreen='home';
 
 function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById('s-'+id).classList.add('active');
+  if(activeScreen === 'reader' && id !== 'reader') stopTimer();
+  document.querySelectorAll('.screen').forEach(function(s){
+    s.classList.remove('active');
+    s.scrollTop = 0;  // scroll every screen to top on switch
+  });
+  var el = document.getElementById('s-'+id);
+  el.classList.add('active');
+  el.scrollTop = 0;
   document.querySelectorAll('.nb').forEach(b=>{
     b.classList.toggle('on',b.dataset.s===id);
   });
   activeScreen=id;
-  if(id==='home') renderHome();
+  if(id==='home'){ renderHome(); renderParasha(); }
   if(id==='all') renderAll();
-  if(id==='prog'){ renderProg(); if(window._renderReminders) window._renderReminders(); }
+  if(id==='prog'){ renderProg(); updateCycleDisplay(); if(window._renderReminders) window._renderReminders(); }
   if(id==='prayers') renderPrayers();
 }
 
 // ═══════════════════════════════════════════════════
 //  HOME SCREEN
 // ═══════════════════════════════════════════════════
-let homeBook=0;
+let homeBook='none';
 
 function renderHome(){
   // Stats
@@ -1973,8 +2170,10 @@ function renderHome(){
   illus.innerHTML=SVG[tp.ilk]||SVG.scroll;
   document.getElementById('tc-read').onclick=()=>openReader(tp,'home');
 
-  // Grid
-  renderHomeGrid(homeBook);
+  // Grid — only render if a tab is already selected (not on first load)
+  if(homeBook !== 'none'){
+    renderHomeGrid(homeBook);
+  }
 }
 
 function renderHomeGrid(book){
@@ -2003,14 +2202,24 @@ function renderHomeGrid(book){
   tog.addEventListener('click', function(){ card.classList.toggle('open'); });
 })();
 
-// Book tabs
+// Book tabs — show grid only when a tab is clicked
 document.querySelectorAll('.btab').forEach(function(t){
   t.addEventListener('click', function(){
+    var isAlreadyOn = t.classList.contains('on');
     document.querySelectorAll('.btab').forEach(function(x){ x.classList.remove('on'); });
-    t.classList.add('on');
-    var val = t.dataset.book;
-    homeBook = val==='fav' ? 'fav' : +val;
-    renderHomeGrid(homeBook);
+
+    if(isAlreadyOn){
+      // Second click — turn off, hide grid
+      homeBook = 'none';
+      document.getElementById('home-grid').style.display = 'none';
+    } else {
+      // First click — activate and show grid
+      t.classList.add('on');
+      var val = t.dataset.book;
+      homeBook = val==='fav' ? 'fav' : +val;
+      document.getElementById('home-grid').style.display = '';
+      renderHomeGrid(homeBook);
+    }
   });
 });
 
@@ -2051,9 +2260,10 @@ document.getElementById('all-fav-pill').addEventListener('click',()=>{
 //  READER
 // ═══════════════════════════════════════════════════
 function openReader(ps, from){
+  startTimer();
   STATE.currentPsalm=ps;
   STATE.fromScreen=from||'home';
-  renderReader(ps);
+  renderReader(ps, true); // true = scroll to top on fresh open
   showScreenRaw('reader');
 }
 
@@ -2063,7 +2273,8 @@ function showScreenRaw(id){
   activeScreen=id;
 }
 
-function renderReader(ps){
+function renderReader(ps, scrollTop){
+  // scrollTop=true only when opening fresh (not after mark/fav toggle)
   // Illustration
   document.getElementById('r-illus').innerHTML=SVG[ps.ilk]||SVG.scroll;
 
@@ -2122,22 +2333,58 @@ function renderReader(ps){
     kabBtn.setAttribute('hidden', '');
   }
 
-  // Scroll to top
-  document.getElementById('s-reader').scrollTop=0;
+  // Notes — load saved note, reset panel
+  var notePanel = document.getElementById('r-note-panel');
+  var noteBtn   = document.getElementById('r-note-btn');
+  if(notePanel) notePanel.classList.remove('open');
+  if(noteBtn)   noteBtn.textContent = '✏️ הוסף הערה אישית';
+  var noteArea = document.getElementById('r-note-area');
+  if(noteArea)  noteArea.value = loadNote(ps.n);
+  // Show indicator if note exists
+  var hasNote = loadNote(ps.n).trim().length > 0;
+  if(noteBtn)   noteBtn.textContent = hasNote ? '✏️ הערה קיימת — לחץ לעריכה' : '✏️ הוסף הערה אישית';
+
+  // Scroll to top only when opening a new psalm
+  if(scrollTop) document.getElementById('s-reader').scrollTop=0;
 }
 
 // Mark as read
 document.getElementById('r-mark').addEventListener('click',function(){
   const ps=STATE.currentPsalm;
   if(!ps) return;
+  // Save scroll position before re-render
+  var scr = document.getElementById('s-reader').scrollTop;
   if(STATE.read.has(ps.n)){
     STATE.read.delete(ps.n);
   } else {
     STATE.read.add(ps.n);
     checkStreak();
+    var total = LS.get('t_total_read', 0) + 1;
+    LS.set('t_total_read', total);
+    updateCycleDisplay();
+    if(STATE.read.size === 150){
+      STATE.read.clear();
+      save();
+      setTimeout(function(){
+        alert('🎉 סיימת מחזור שלם! מחזור ' + getCycle() + ' מתחיל!');
+        updateCycleDisplay();
+        renderHome();
+      }, 500);
+      return;
+    }
   }
   save();
-  renderReader(ps);
+  // Update just the button text/style without full re-render (no scroll jump)
+  var btn = document.getElementById('r-mark');
+  var done = STATE.read.has(ps.n);
+  btn.textContent = done ? '✓ נקרא' : '✓ סמן כנקרא';
+  btn.className = 'mark-done-btn' + (done ? ' done' : '');
+  // Also update progress pill
+  var pct = Math.round(STATE.read.size/150*100);
+  var pill = document.getElementById('r-prog-pill');
+  if(pill) pill.textContent = pct + '%  הושלם';
+  // Restore scroll position
+  document.getElementById('s-reader').scrollTop = scr;
 });
 
 // Fav toggle in reader
@@ -2721,6 +2968,14 @@ function renderPrayers(){
     : activePrayerCat === '⭐ מועדפים' ? PRAYERS.filter(function(p){ return STATE.favPrayers.has(p.id); })
     : PRAYERS.filter(function(p){ return p.cat === activePrayerCat; });
 
+  // Apply text search
+  if(prayerSearchQ){
+    var q = prayerSearchQ;
+    filtered = filtered.filter(function(p){
+      return p.name.includes(q) || p.occasion.includes(q) || (p.cat||'').includes(q);
+    });
+  }
+
   if(!filtered.length){
     listEl.innerHTML = '<div style="text-align:center;padding:50px 20px;color:#6b5535;font-family:Heebo,sans-serif;font-size:14px;line-height:2">🙏<br>אין תפילות כאן עדיין.</div>';
     return;
@@ -3049,15 +3304,259 @@ const KAB = {
 };
 
 // ═══════════════════════════════════════════════════
+//  FEATURE 1: SHARE PSALM
+// ═══════════════════════════════════════════════════
+document.getElementById('r-share').addEventListener('click', function(){
+  var ps = STATE.currentPsalm;
+  if(!ps) return;
+  var text = 'מזמור ' + heb(ps.n) + ' — ' + ps.t + '\n\n' +
+    (ps.vv||[]).slice(0,3).join('\n') + '\n...\n\nספר תהילים 📖';
+  if(navigator.share){
+    navigator.share({ title: 'מזמור ' + heb(ps.n), text: text });
+  } else if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(function(){
+      var btn = document.getElementById('r-share');
+      btn.textContent = '✓ הועתק!';
+      setTimeout(function(){ btn.textContent = '↗ שתף פרק'; }, 2000);
+    });
+  }
+});
+
+// ═══════════════════════════════════════════════════
+//  FEATURE 2: PRAYER SEARCH
+// ═══════════════════════════════════════════════════
+var prayerSearchQ = '';
+document.getElementById('pr-search').addEventListener('input', function(e){
+  prayerSearchQ = e.target.value.trim();
+  renderPrayers();
+});
+
+// Patch renderPrayers to support search (applied in renderPrayers via prayerSearchQ)
+
+// ═══════════════════════════════════════════════════
+//  FEATURE 3: READING CYCLE
+// ═══════════════════════════════════════════════════
+function getCycle(){
+  return Math.floor(LS.get('t_total_read', 0) / 150) + 1;
+}
+function updateCycleDisplay(){
+  var el = document.getElementById('cycle-badge');
+  if(el) el.textContent = '🔄 מחזור ' + getCycle();
+}
+
+// ═══════════════════════════════════════════════════
+//  FEATURE 4: PARASHA OF THE WEEK
+// ═══════════════════════════════════════════════════
+var PARASHIOT = [
+  {n:'בראשית',b:'בראשית',d:'הסיפור הגדול מתחיל — בריאת העולם בשישה ימים, גן עדן, חטא אדם וחוה, קין והבל. העולם נוצר מאהבה, אבל כבר בפרק הראשון של האנושות מגיעה הבחירה הראשונה.'},
+  {n:'נח',b:'בראשית',d:'העולם השתבש — ה\' רואה רק רשעות. נח, האיש הצדיק, מקבל משימה: לבנות תיבה ולהציל את החיים. המבול שוטף הכל, ואחריו — קשת בענן. הבטחה שלא יהיה מבול שוב.'},
+  {n:'לך לך',b:'בראשית',d:'אברהם שומע קול: "לך מארצך, ממולדתך, מבית אביך." הוא הולך — בלי לדעת לאן. זוהי הפרשה שבה מתחילה האמונה היהודית: הכל מתחיל בהליכה לפי אמון עיוור.'},
+  {n:'וירא',b:'בראשית',d:'מלאכים מבקרים אצל אברהם, שרה שומעת שתלד בגיל תשעים ומצחיקה. עיר סדום נהרסת. ואז — הרגע הקשה ביותר: העקידה. אברהם מוכן להקריב את יצחק. הוא נעצר ברגע האחרון.'},
+  {n:'חיי שרה',b:'בראשית',d:'שרה מתה — ואברהם קונה קבר. הוא שולח את עבדו למצוא אשה ליצחק. המסע המסתורי מוביל לרבקה, שרואה את יצחק ומכסה את פניה. אהבה ראשונה בתורה.'},
+  {n:'תולדות',b:'בראשית',d:'עשו ויעקב — שני תאומים שלוחמים עוד ברחם. עשו מוכר את הבכורה בעבור נזיד עדשים. יעקב, בהדרכת אמו, לוקח את ברכת האב. הסכסוך הגדול מתחיל.'},
+  {n:'ויצא',b:'בראשית',d:'יעקב בורח ומחלם על סולם המגיע לשמים. הוא מגיע ללבן, מתאהב ברחל ועובד שבע שנים — ומתברר שנישא ללאה. שבע שנים נוספות, ו-12 שבטי ישראל מתחילים להיוולד.'},
+  {n:'וישלח',b:'בראשית',d:'יעקב חוזר אחרי עשרים שנה ומפחד מעשו. בלילה לפני המפגש — הוא נאבק עם מישהו עד עלות השחר. לאחר הניצחון מקבל שם חדש: ישראל — "כי שרית עם אלוהים ואנשים ותוכל."'},
+  {n:'וישב',b:'בראשית',d:'יוסף האהוב על אביו — בעל הכתונת — מעורר קנאה. אחיו מוכרים אותו לעבדות. בבית פוטיפר הוא מצליח אבל נכלא שקר. הסיפור הקשה של אדם שכולו אמון — ושוב ושוב נסגרת עליו הדלת.'},
+  {n:'מקץ',b:'בראשית',d:'פרעה חולם שבע פרות שמנות ושבע כחושות. יוסף, שנשכח בבור, נקרא לפרש. הפירוש מדויק: שבע שנות שפע ושבע שנות רעב. יוסף הופך למשנה למלך מצרים.'},
+  {n:'ויגש',b:'בראשית',d:'יהודה ניגש ליוסף ומציע את עצמו כעבד במקום בנימין. הרגע הזה — אח שלוקח אחריות — שובר את יוסף. הוא מתוודה בדמעות: "אני יוסף, העוד אבי חי?" הפיוס הגדול.'},
+  {n:'ויחי',b:'בראשית',d:'יעקב גוסס ומברך את בניו — כל אחד מקבל ברכה שמשקפת את אופיו. ספר בראשית נסגר. עם שלם עוצר לנשום לפני שיתחיל הפרק הבא.'},
+  {n:'שמות',b:'שמות',d:'עם ישראל עבד. פרעה גוזר על ילדי הזכרים — ומשה מושה מן המים. הוא גדל בארמון, הורג מצרי, בורח, ורואה סנה בוער שאינו אוכל. "אהיה אשר אהיה." השליחות מתחילה.'},
+  {n:'וארא',b:'שמות',d:'משה ואהרן עומדים לפני פרעה. מכות מצרים מתחילות: דם, צפרדע, כינים, ערוב, דבר, שחין. פרעה מקשה את לבו שוב ושוב. המאבק בין קוסמי המלך לבין ה\' הולך ומחריף.'},
+  {n:'בא',b:'שמות',d:'ארבה, חושך — ואז המכה האחרונה: מות הבכורות. ליל הסדר הראשון נחגג בחיפזון. ואז — הפלא: "ויאמר גם אתם לכו!" יציאת מצרים. כי מיליון אנשים קמו ויצאו.'},
+  {n:'בשלח',b:'שמות',d:'ים סוף נבקע. בני ישראל עוברים ביבשה, המצרים טובעים. שירת הים — שיר ניצחון. ואז מיד: מרים מחוללת בתוף. ואז: רעב, צמא, מן. המדבר מתחיל.'},
+  {n:'יתרו',b:'שמות',d:'חותן משה מגיע עם עצה ניהולית — תייצר מנהיגות מדורגת. ואז: הר סיני, ענן כבד, קול שופר. עשרת הדברות נאמרות לכל העם. הרגע שמגדיר את כל יהדות.'},
+  {n:'משפטים',b:'שמות',d:'מיד אחרי עשרת הדברות — עשרות חוקים. עבד, רצח, שור נוגח, אש פרצה, שמיטה. התורה אומרת: קדושה היא לא רק מה שמרגיש רוחני — היא איך מתנהגים ביום יום.'},
+  {n:'תרומה',b:'שמות',d:'ה\' מבקש תרומה "מכל איש אשר ידבנו לבו." ומה לעשות עם התרומה? לבנות משכן — בית נייד לשכינה. ארון, שולחן, מנורה — כל כלי מתואר בפרטי פרטים.'},
+  {n:'תצוה',b:'שמות',d:'בגדי הכהונה — שמונה בגדים לכהן גדול, כל אחד עם משמעות. ציץ הזהב על מצחו כתוב עליו: "קודש לה\'." ואחר כך חנוכת המשכן — שבעה ימים של טקסים.'},
+  {n:'כי תשא',b:'שמות',d:'משה בהר ארבעים יום. למטה — חטא העגל. עם שראה ניסים גדולים יוצר אליל עשוי זהב. משה שובר את הלוחות בזעם. ואחר כך — הרגע האחד: "הראני נא את כבודך." ה\' עובר לפניו.'},
+  {n:'ויקהל',b:'שמות',d:'כל העם מתנדב לבניין המשכן — כל כך הרבה שמשה אומר "הפסיקו." בצלאל, האמן הגדול, מקים את המשכן בכל חכמתו. העם שחטא בעגל — עכשיו בונה בית.'},
+  {n:'פקודי',b:'שמות',d:'חשבון סופי של כל חומרי המשכן. כסף, זהב, נחושת — הכל נספר ומדווח. ואז המשכן מוקם. "ויכס הענן את אוהל מועד" — השכינה שורה. ספר שמות נסגר בשיא.'},
+  {n:'ויקרא',b:'ויקרא',d:'הספר שמתחיל בקרבנות. נשמע מרוחק, אבל הרעיון עמוק: יש דרך לגשר על חטאים, להתקרב לה\'. הקרבן מגיע "מן הבהמה מן הבקר ומן הצאן" — רק ממה שלך ממש.'},
+  {n:'צו',b:'ויקרא',d:'הכהנים לומדים את עבודתם: אש המזבח לא כבה לעולם. עולה, מנחה, חטאת — כל קרבן יש לו מקום. הכהן הגדול — תפקיד שדורש מחויבות מוחלטת.'},
+  {n:'שמיני',b:'ויקרא',d:'יום השמיני — חנוכת המשכן לאחר שבעה ימים. אש יוצאת מה\' ואוכלת את הקרבן. עם ישראל רואה ונופל על פניו. ואז — נדב ואביהו מקריבים "אש זרה" ומתים. יום של גדולה וגם של אבל.'},
+  {n:'תזריע',b:'ויקרא',d:'טהרה וטומאה — מושגים שנשמעים עתיקים אבל מלמדים על מודעות לגוף ולמצב. הפרשה עוסקת בצרעת — מחלה שאינה גופנית בלבד, אלא קשורה לדיבורים ולמצב רוח.'},
+  {n:'מצורע',b:'ויקרא',d:'הכהן יוצא מחוץ למחנה לבדוק את המצורע — הכהן הולך אל הטמא, לא להפך. ואחר כך — טקס טהרה מפורט. ספר ויקרא אומר: אפשר לחזור. לכל שפל יש טהרה.'},
+  {n:'אחרי מות',b:'ויקרא',d:'אחרי מות בני אהרן — הכהן הגדול נכנס לקודש הקודשים רק פעם אחת בשנה, ביום הכיפורים. "ועינתם את נפשותיכם" — יום צום וחשבון נפש שמגדיר כל שנה.'},
+  {n:'קדושים',b:'ויקרא',d:'"קדושים תהיו כי קדוש אני." ואז — לא רק טקסים: "לא תיקום, לא תיטור, ואהבת לרעך כמוך." רש"י אומר: זה הכלל הגדול בתורה. קדושה היא דרך חיים, לא מצב.'},
+  {n:'אמור',b:'ויקרא',d:'חגי ישראל בסדר: שבת, פסח, שבועות, ראש השנה, כיפור, סוכות. כל אחד עם ייחוד ומשמעות. "ואספתם את קצירה ולא תכלה פאת שדך" — אפילו בשמחה, תחשוב על העני.'},
+  {n:'בהר',b:'ויקרא',d:'שמיטה — שנה שביעית שהאדמה שובתת. ויובל — שנת החמישים שכל עבד משתחרר וכל אדמה חוזרת לבעליה. "הארץ לא תימכר לצמיתות" — לא הכל שלך לנצח.'},
+  {n:'בחוקותי',b:'ויקרא',d:'אם תשמרו את המצוות — גשם בעיתו, שלום, ברכה. אם לא — קללות. הפרשה מציגה בחירה בלתי נמנעת: חיים ומוות — בחר בחיים. ספר ויקרא נסגר.'},
+  {n:'במדבר',b:'במדבר',d:'מפקד של כל השבטים במדבר. כל שבט — דגל, מקום, מניין. ישראל אינו עוד המון עם — הם צבא מאורגן, עם מבנה. ספר במדבר פותח במנהל ומסיים בניסים.'},
+  {n:'נשא',b:'במדבר',d:'ספירת הלוויים, הקמת המחנה, סוטה, נזיר, ברכת כהנים. "יברכך ה\' וישמרך, יאר ה\' פניו אליך ויחנך, ישא ה\' פניו אליך וישם לך שלום" — שלושה פסוקים שסוכמים הכל.'},
+  {n:'בהעלותך',b:'במדבר',d:'המנורה, הפסח השני, הענן שמוביל את המסע. ואז — המרינות מתחילות. בשר ובשר ובשר — העם בוכה על מה שהיה במצרים ושוכח מה שהם עכשיו. משה קורס תחת הנטל.'},
+  {n:'שלח',b:'במדבר',d:'שנים עשר מרגלים יוצאים לכנען. עשרה חוזרים עם דיווח שלילי — "אנחנו כחגבים." כלב ויהושע — "נעלה נעלה." העם בוכה לילה שלם. ה\' גוזר: ארבעים שנה במדבר.'},
+  {n:'קורח',b:'במדבר',d:'קורח מוביל מרידה נגד משה: "כי כל העדה כולם קדושים." האדמה פותחת פיה ובולעת את קורח ועדתו. המחלוקת היא לשמה — לשם כוח? לשם קנאה? הסוף ידוע.'},
+  {n:'חוקת',b:'במדבר',d:'פרה אדומה — החוק הכי מסתורי בתורה. מטהר טמאים אבל מטמא טהורים. ואחר כך: מרים מתה, הסלע, משה מכה במקום לדבר. הגזירה: משה לא ייכנס לארץ.'},
+  {n:'בלק',b:'במדבר',d:'בלק מלך מואב שולח את בלעם לקלל את ישראל. האתון רואה מלאך ומסרבת לזוז. בלעם מגיע לקלל — ומברך שלוש פעמים. "מה טובו אהליך יעקב משכנותיך ישראל."'},
+  {n:'פינחס',b:'במדבר',d:'פינחס קיבל ברית שלום על מעשה קנאותו. מפקד שני של העם לפני הכניסה לארץ. בנות צלפחד — חמש אחיות שתובעות נחלה ומקבלות אותה. משה רואה את הארץ ולא ייכנס.'},
+  {n:'מטות',b:'במדבר',d:'דיני נדרים — המילה שיוצאת מהפה מחייבת. מלחמה במדיין. שבטי ראובן וגד מבקשים להישאר בעבר הירדן — ומקבלים אישור בתנאי שילחמו עם האחים.'},
+  {n:'מסעי',b:'במדבר',d:'42 תחנות במדבר מפורטות אחת אחת. כל מסע — כל עצירה — נספרת ורשומה. ואחר כך: גבולות הארץ, ערי הלוויים, ערי המקלט — הארץ מתחלקת לפני שנכנסים.'},
+  {n:'דברים',b:'דברים',d:'ספר כולו נאום. משה יודע שלא ייכנס לארץ ומספר את כל הדרך. "אלה הדברים אשר דיבר משה אל כל ישראל" — הוא לא מנהיג עוד, הוא מורה שסוכם את חייו.'},
+  {n:'ואתחנן',b:'דברים',d:'משה מתחנן לה\' שייתן לו להיכנס לארץ — ומסורב. ואז: "שמע ישראל ה\' אלוהינו ה\' אחד." ואחריו — "ואהבת את ה\' אלוהיך בכל לבבך ובכל נפשך ובכל מאודך." תפילה יומית לדורות.'},
+  {n:'עקב',b:'דברים',d:'"עקב תשמעון" — בגלל שתשמעו. משה מזכיר שוב: לא כי אתם גדולים קיבלתם את הארץ. הזהירות מגאווה. "ואכלת ושבעת וברכת את ה\' אלוהיך" — ברכת המזון.'},
+  {n:'ראה',b:'דברים',d:'"ראה אנכי נותן לפניך היום ברכה וקללה" — הבחירה תמיד לפניך. מקום המקדש, שמיטה, שלוש רגלים. "פתוח תפתח את ידך לאחיך לעניך ולאביונך בארצך."'},
+  {n:'שופטים',b:'דברים',d:'"שופטים ושוטרים תיתן לך בכל שעריך." מינוי שופטים, איסור שוחד, מלך שלא יהיה לו סוסים רבים ולא ירבה לו נשים, כהנים ולוויים, נביא אמת לעומת נביא שקר.'},
+  {n:'כי תצא',b:'דברים',d:'74 מצוות בפרשה אחת. שבוי מלחמה, בכורה, בן סורר ומורה, גג עם מעקה, כלאיים, גירושין, עגונה, עמוני ומואבי, שכחה בשדה לעני. הפרשה הכי ארוכה ברשימת מצוות.'},
+  {n:'כי תבוא',b:'דברים',d:'ביכורים — הראשית שנותנים למקדש עם סיפור: "ארמי אובד אבי." ואחר כך: הברכות והקללות — חצי שבטים על הר גריזים וחצי על הר עיבל. הפחד הגדול לפני הכניסה.'},
+  {n:'נצבים',b:'דברים',d:'"אתם נצבים היום כולכם לפני ה\' אלוהיכם" — כל ישראל, מהגדולים לקטנים, עומדים ונכנסים לברית. "כי קרוב אליך הדבר מאוד בפיך ובלבבך לעשותו" — זה לא רחוק ולא קשה.'},
+  {n:'וילך',b:'דברים',d:'משה הולך — בן 120, עיניו לא כהות, לחו לא נס בו. הוא מעביר את ההנהגה ליהושע. כותב את התורה ונותן ללוויים. שיר האזינו מתחיל. הסוף מתקרב.'},
+  {n:'האזינו',b:'דברים',d:'שיר האזינו — שיר של שמים וארץ, עדים נצחיים. ה\' כצור, עם ישראל כבן שנטש ושב. "זכור ימות עולם, בינו שנות דור ודור." ביום אחד לאחר מכן — משה עולה לפסגה ורואה את הארץ.'},
+  {n:'וזאת הברכה',b:'דברים',d:'משה מברך כל שבט — ברכה אחרונה מאב לבניו. ואז: "ויעל משה... וימת שם... ולא ידע איש את קבורתו עד היום הזה." שתים עשרה מילים. הנביא הגדול — נקבר בידי ה\' בלבד.'}
+];
+
+function getCurrentParasha(){
+  // Week 1 of 5784 = Oct 7, 2023
+  var epoch = new Date('2023-10-07');
+  var now   = new Date();
+  var week  = Math.floor((now - epoch) / (7*24*3600*1000));
+  return PARASHIOT[week % PARASHIOT.length];
+}
+
+var _parashaOpen = false;
+
+function renderParasha(){
+  var p = getCurrentParasha();
+  var nm = document.getElementById('parasha-name');
+  var bk = document.getElementById('parasha-book');
+  if(nm) nm.textContent = 'פרשת ' + p.n;
+  if(bk) bk.textContent = 'ספר ' + p.b + ' · לחץ לקרוא עוד';
+}
+
+// Parasha card click — toggle description panel
+document.getElementById('parasha-card').addEventListener('click', function(){
+  var existing = document.getElementById('parasha-desc');
+  if(existing){
+    existing.parentNode.removeChild(existing);
+    _parashaOpen = false;
+    document.getElementById('parasha-book').textContent = 'ספר ' + getCurrentParasha().b + ' · לחץ לקרוא עוד';
+    return;
+  }
+  var p = getCurrentParasha();
+  var panel = document.createElement('div');
+  panel.id = 'parasha-desc';
+  panel.setAttribute('style',
+    'background:var(--surf2);border-top:1px solid var(--brd);padding:13px 14px 14px;' +
+    'font-family:Heebo,sans-serif;font-size:14px;color:var(--txt-dim);line-height:1.85;' +
+    'border-radius:0 0 var(--r) var(--r);');
+  panel.textContent = p.d;
+  document.getElementById('parasha-card').appendChild(panel);
+  document.getElementById('parasha-book').textContent = 'ספר ' + p.b + ' · לחץ לסגור';
+  _parashaOpen = true;
+});
+
+// ═══════════════════════════════════════════════════
+//  FEATURE 5: MOOD → PSALM
+// ═══════════════════════════════════════════════════
+var MOOD_MAP = {
+  'שמחה':  [100,150,148,96,33,149,92,65,98],
+  'צרה':   [22,88,130,77,13,6,3,31,102],
+  'הודיה': [103,107,136,116,138,9,40,66,118],
+  'בדידות':[25,42,62,131,23,27,16,139,73],
+  'חיזוק': [27,46,91,121,18,20,144,108,60],
+  'בוקר':  [5,19,57,108,143,3,92,100,150]
+};
+document.querySelectorAll('.mood-pill').forEach(function(pill){
+  pill.addEventListener('click', function(){
+    var mood = pill.dataset.mood;
+    var list = MOOD_MAP[mood] || [];
+    if(!list.length) return;
+    var n = list[Math.floor(Math.random()*list.length)];
+    var ps = PSALMS.find(function(p){ return p.n === n; });
+    if(ps) openReader(ps, 'home');
+  });
+});
+
+// ═══════════════════════════════════════════════════
+//  FEATURE 6: READ TIMER
+// ═══════════════════════════════════════════════════
+var _timerStart = null;
+var _timerInterval = null;
+var _timerDelay = null;
+var _totalReadSec = LS.get('t_read_sec', 0);
+
+function startTimer(){
+  stopTimer();
+  // Only show timer after 5 seconds of actually reading
+  _timerDelay = setTimeout(function(){
+    _timerStart = Date.now();
+    var el = document.getElementById('read-timer');
+    if(el) el.classList.add('on');
+    _timerInterval = setInterval(function(){
+      var sec = Math.floor((Date.now() - _timerStart)/1000);
+      var m = Math.floor(sec/60), s = sec%60;
+      if(el) el.textContent = '⏱ ' + m + ':' + (s<10?'0'+s:s);
+    }, 1000);
+  }, 5000);
+}
+function stopTimer(){
+  clearTimeout(_timerDelay);
+  _timerDelay = null;
+  if(!_timerInterval) return;
+  clearInterval(_timerInterval);
+  _timerInterval = null;
+  if(_timerStart){
+    var sec = Math.floor((Date.now() - _timerStart)/1000);
+    _totalReadSec += sec;
+    LS.set('t_read_sec', _totalReadSec);
+    _timerStart = null;
+  }
+  var el = document.getElementById('read-timer');
+  if(el) el.classList.remove('on');
+}
+
+// ═══════════════════════════════════════════════════
+//  FEATURE 7: THEME TOGGLE
+// ═══════════════════════════════════════════════════
+var _lightMode = LS.get('t_light', false);
+function applyTheme(){
+  if(_lightMode){
+    document.body.classList.add('light');
+    document.getElementById('theme-toggle').textContent = '🌙';
+  } else {
+    document.body.classList.remove('light');
+    document.getElementById('theme-toggle').textContent = '☀️';
+  }
+}
+document.getElementById('theme-toggle').addEventListener('click', function(){
+  _lightMode = !_lightMode;
+  LS.set('t_light', _lightMode);
+  applyTheme();
+});
+
+// ═══════════════════════════════════════════════════
+//  FEATURE 8: NOTES PER PSALM
+// ═══════════════════════════════════════════════════
+function loadNote(n){ return LS.get('t_note_'+n, ''); }
+function saveNote(n, txt){ LS.set('t_note_'+n, txt); }
+
+document.getElementById('r-note-btn').addEventListener('click', function(){
+  var panel = document.getElementById('r-note-panel');
+  var isOpen = panel.classList.toggle('open');
+  this.textContent = isOpen ? '✏️ סגור הערה' : '✏️ הוסף הערה אישית';
+  if(isOpen && STATE.currentPsalm){
+    var area = document.getElementById('r-note-area');
+    area.value = loadNote(STATE.currentPsalm.n);
+    setTimeout(function(){ area.focus(); }, 50);
+  }
+});
+document.getElementById('r-note-save').addEventListener('click', function(){
+  if(!STATE.currentPsalm) return;
+  var txt = document.getElementById('r-note-area').value;
+  saveNote(STATE.currentPsalm.n, txt);
+  var btn = this;
+  btn.textContent = '✓ נשמר!';
+  setTimeout(function(){ btn.textContent = '💾 שמור הערה'; }, 1500);
+});
+
+// ═══════════════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════════════
 checkStreak();
 applyFontSize();
+applyTheme();
+renderParasha();
+updateCycleDisplay();
 save();
-
-// Fix 1: Save on every possible iOS lifecycle event (already registered above in LS block)
-// Fix 1: Remove duplicate registrations that were here previously
-// (moved to LS block — single source of truth)
 
 showScreen('home');
 
@@ -3067,32 +3566,49 @@ showScreen('home');
 (function(){
   var REM_KEY = 't_reminders';
   var DEFAULT_REMS = [
-    {id:'r1', label:'קריאת פרק יומית', time:'08:00', enabled:false, type:'psalm'},
-    {id:'r2', label:'תפילת בוקר',       time:'07:00', enabled:false, type:'prayer'},
-    {id:'r3', label:'תפילת ערב',        time:'21:00', enabled:false, type:'prayer'},
-    {id:'r4', label:'שיר לפני שינה',   time:'22:30', enabled:false, type:'psalm'},
+    {id:'r1', time:'08:00', enabled:false, type:'psalm',  prayer_id:null},
+    {id:'r2', time:'07:00', enabled:false, type:'prayer', prayer_id:1},
+    {id:'r3', time:'21:00', enabled:false, type:'prayer', prayer_id:3},
+    {id:'r4', time:'22:30', enabled:false, type:'sleep',  prayer_id:null},
+    {id:'r5', time:'12:00', enabled:false, type:'psalm',  prayer_id:null},
   ];
+
+  var TYPE_LABELS = {
+    psalm:  '📖 קריאת פרק יומית',
+    prayer: '🙏 תפילה',
+    sleep:  '🌙 שיר לפני שינה'
+  };
 
   function loadRems(){ return LS.get(REM_KEY, DEFAULT_REMS); }
   function saveRems(rems){ LS.set(REM_KEY, rems); }
 
-  // Toast notification (in-app)
+  function getReminderLabel(r){
+    if(r.type === 'prayer' && r.prayer_id){
+      var pr = (typeof PRAYERS !== 'undefined') ? PRAYERS.find(function(p){ return p.id === r.prayer_id; }) : null;
+      return pr ? '🙏 ' + pr.name : '🙏 תפילה';
+    }
+    return TYPE_LABELS[r.type] || r.type;
+  }
+
+  // Toast
   function showToast(msg){
     var t = document.getElementById('rem-toast');
-    if(!t){ t = document.createElement('div'); t.id='rem-toast';
-      t.style.cssText='position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:9999;'+
+    if(!t){
+      t = document.createElement('div'); t.id='rem-toast';
+      t.setAttribute('style',
+        'position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:9999;'+
         'background:#1a0a2e;border:1px solid rgba(201,151,44,.6);border-radius:12px;'+
         'padding:12px 20px;font-family:Heebo,sans-serif;font-size:14px;color:#f0ddb0;'+
         'box-shadow:0 4px 20px rgba(0,0,0,.7);max-width:320px;text-align:center;'+
-        'transition:opacity .4s;pointer-events:none;direction:rtl;';
+        'transition:opacity .4s;pointer-events:none;direction:rtl;');
       document.body.appendChild(t);
     }
-    t.textContent = msg; t.style.opacity='1';
+    t.textContent = msg; t.style.opacity = '1';
     clearTimeout(t._tmr);
     t._tmr = setTimeout(function(){ t.style.opacity='0'; }, 4000);
   }
 
-  // Check if a reminder should fire now (±5 min window)
+  // Check reminders every minute
   function checkReminders(){
     var rems = loadRems();
     var now = new Date();
@@ -3100,62 +3616,111 @@ showScreen('home');
     rems.forEach(function(r){
       if(!r.enabled) return;
       var parts = r.time.split(':');
-      var rh = +parts[0], rm = +parts[1];
-      var diff = Math.abs((hh*60+mm) - (rh*60+rm));
+      var diff = Math.abs((hh*60+mm) - (+parts[0]*60 + +parts[1]));
       if(diff <= 2){
         var key = 'rem_fired_'+r.id+'_'+now.toDateString();
         if(!LS.get(key, false)){
           LS.set(key, true);
-          showToast('🔔 ' + r.label);
+          showToast('🔔 ' + getReminderLabel(r));
           if(window.Notification && Notification.permission === 'granted'){
-            new Notification('ספר תהילים', {body: r.label, icon:'icon.png'});
+            new Notification('ספר תהילים', {body: getReminderLabel(r), icon:'icon.png'});
           }
         }
       }
     });
   }
-
-  // Check on load + every minute
   setTimeout(checkReminders, 2000);
   setInterval(checkReminders, 60000);
 
-  // Render reminders UI (inside progress screen)
+  // Render reminders
   function renderReminders(){
     var el = document.getElementById('rem-list');
     if(!el) return;
     var rems = loadRems();
     el.innerHTML = '';
-    rems.forEach(function(r){
-      var row = document.createElement('div');
-      row.className = 'rem-row';
-      row.innerHTML =
-        '<div class="rem-info">'+
-          '<div class="rem-label">'+r.label+'</div>'+
-          '<input class="rem-time" type="time" value="'+r.time+'" data-id="'+r.id+'">'+
-        '</div>'+
-        '<label class="rem-toggle">'+
-          '<input type="checkbox" data-id="'+r.id+'"'+(r.enabled?' checked':'')+'>'+
-          '<span class="rem-slider"></span>'+
-        '</label>';
 
-      row.querySelector('input[type=time]').addEventListener('change', function(e){
+    rems.forEach(function(r, idx){
+      var card = document.createElement('div');
+      card.className = 'rem-row';
+      card.style.display = 'block';
+
+      // ── Top row: toggle + time ──
+      var topRow = document.createElement('div');
+      topRow.setAttribute('style','display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;');
+
+      var timeInput = document.createElement('input');
+      timeInput.type = 'time'; timeInput.value = r.time;
+      timeInput.className = 'rem-time';
+
+      var toggle = document.createElement('label');
+      toggle.className = 'rem-toggle';
+      toggle.innerHTML = '<input type="checkbox"'+(r.enabled?' checked':'')+'>'+
+        '<span class="rem-slider"></span>';
+
+      topRow.appendChild(timeInput);
+      topRow.appendChild(toggle);
+      card.appendChild(topRow);
+
+      // ── Type selector ──
+      var typeRow = document.createElement('div');
+      typeRow.className = 'rem-type-row';
+
+      ['psalm','prayer','sleep'].forEach(function(type){
+        var btn = document.createElement('button');
+        btn.className = 'rem-type-btn' + (r.type === type ? ' on' : '');
+        btn.textContent = TYPE_LABELS[type];
+        btn.addEventListener('click', function(){
+          var rems2 = loadRems();
+          rems2[idx].type = type;
+          if(type !== 'prayer') rems2[idx].prayer_id = null;
+          saveRems(rems2);
+          renderReminders();
+        });
+        typeRow.appendChild(btn);
+      });
+      card.appendChild(typeRow);
+
+      // ── Prayer selector (shown only when type=prayer) ──
+      var prayerSel = document.createElement('select');
+      prayerSel.className = 'rem-prayer-select';
+      prayerSel.style.display = r.type === 'prayer' ? 'block' : 'none';
+
+      if(typeof PRAYERS !== 'undefined'){
+        PRAYERS.forEach(function(pr){
+          var opt = document.createElement('option');
+          opt.value = pr.id;
+          opt.textContent = pr.icon + ' ' + pr.name;
+          if(pr.id === r.prayer_id) opt.selected = true;
+          prayerSel.appendChild(opt);
+        });
+      }
+      prayerSel.addEventListener('change', function(){
         var rems2 = loadRems();
-        rems2.forEach(function(x){ if(x.id===e.target.dataset.id) x.time=e.target.value; });
+        rems2[idx].prayer_id = +prayerSel.value;
         saveRems(rems2);
       });
-      row.querySelector('input[type=checkbox]').addEventListener('change', function(e){
+      card.appendChild(prayerSel);
+
+      // ── Event listeners ──
+      timeInput.addEventListener('change', function(){
         var rems2 = loadRems();
-        rems2.forEach(function(x){ if(x.id===e.target.dataset.id) x.enabled=e.target.checked; });
+        rems2[idx].time = timeInput.value;
+        saveRems(rems2);
+      });
+      toggle.querySelector('input').addEventListener('change', function(e){
+        var rems2 = loadRems();
+        rems2[idx].enabled = e.target.checked;
         saveRems(rems2);
         if(e.target.checked && window.Notification && Notification.permission !== 'granted'){
           Notification.requestPermission();
         }
       });
-      el.appendChild(row);
+
+      el.appendChild(card);
     });
   }
 
-  window._renderReminders = renderReminders; // expose for showScreen
+  window._renderReminders = renderReminders;
   renderReminders();
 })();
 
