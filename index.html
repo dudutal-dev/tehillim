@@ -4617,179 +4617,329 @@ function renderCalc(){
   });
 }
 // ═══════════════════════════════════════════════════
-//  TTS — Hebrew Text-to-Speech Engine
-//  Uses Web Speech API (built-in, works offline)
 // ═══════════════════════════════════════════════════
+//  TTS — Hebrew Text-to-Speech Engine
+//  Primary: OpenAI TTS-1-HD (nova/onyx)
+//  Secondary: ElevenLabs Multilingual v2
+//  Fallback: Web Speech API
+//  Based on hebrew-tts-expert skill
+// ═══════════════════════════════════════════════════
+
+// ── Hebrew text preprocessor (skill step 5) ──
+function preprocessHebrew(text, mode){
+  // mode: 'bible' | 'commentary' | 'general'
+  var t = text
+    // Remove markdown
+    .replace(/#{1,6}\s/g,'').replace(/\*/g,'').replace(/_/g,' ')
+    // Currency/numbers
+    .replace(/₪\s?(\d+)/g,'$1 שקלים').replace(/\$\s?(\d+)/g,'$1 דולרים')
+    .replace(/(\d+)%/g,'$1 אחוזים')
+    // Common abbreviations
+    .replace(/בע"מ/g,'בערבון מוגבל').replace(/מע"מ/g,'מס ערך מוסף')
+    .replace(/ד"ר/g,'דוקטור').replace(/פרופ'/g,'פרופסור')
+    // Clean extra whitespace
+    .replace(/\s+/g,' ').trim();
+
+  if(mode==='bible'){
+    t = t
+      // Divine names → readable
+      .replace(/יְהוָה|יהוה|ה'/g,'השם')
+      .replace(/אֲדֹנָי/g,'אדוני')
+      // Verse numbers at line start
+      .replace(/^\d+\s+/gm,'')
+      // End-of-verse mark
+      .replace(/׃/g,'.');
+  }
+  return t;
+}
+
 var TTS = (function(){
-  var _voice    = null;  // selected SpeechSynthesisVoice
-  var _gender   = LS.get('tts_gender','female'); // 'female'|'male'
+  var _gender   = LS.get('tts_gender','female');
+  var _apiKey   = LS.get('tts_api_key','');         // OpenAI key
+  var _elKey    = LS.get('tts_el_key','');           // ElevenLabs key
   var _speaking = false;
   var _activeBtn= null;
+  var _audio    = null;
 
-  // Hebrew voice priority keywords
-  var FEMALE_KW = ['female','woman','miriam','yael','avital','alva','carmit','tami'];
-  var MALE_KW   = ['male','man','yoav','ariel','tamir','amir','yonatan'];
+  // ── Voice config (from skill api-guides.md) ──
+  var OPENAI_VOICES  = { female:'nova',  male:'onyx'    };
+  var EL_VOICES      = {
+    female: { id:'21m00Tcm4TlvDq8ikWAM', name:'Rachel' },
+    male:   { id:'VR6AewLTigWG4xSOukaG', name:'Arnold' }
+  };
 
-  function getVoices(){
-    return window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+  // TTS params by content type (from skill table)
+  var PARAMS = {
+    bible:      { stability:0.65, similarity:0.80, style:0.25, speed:0.82 },
+    commentary: { stability:0.50, similarity:0.75, style:0.35, speed:0.92 },
+    general:    { stability:0.55, similarity:0.75, style:0.30, speed:0.95 }
+  };
+
+  function stop(){
+    if(_audio){ _audio.pause(); _audio=null; }
+    if(window.speechSynthesis) window.speechSynthesis.cancel();
+    _speaking=false;
+    if(_activeBtn){ _activeBtn.textContent='🔊'; _activeBtn.classList.remove('speaking'); }
+    _activeBtn=null;
   }
 
-  function pickVoice(gender){
-    var voices = getVoices();
-    if(!voices.length) return null;
-    // 1. Hebrew voices matching gender
-    var hebVoices = voices.filter(function(v){ return v.lang && v.lang.indexOf('he')===0; });
-    if(hebVoices.length){
-      var kw = gender==='female' ? FEMALE_KW : MALE_KW;
-      var match = hebVoices.find(function(v){
-        var n = v.name.toLowerCase();
-        return kw.some(function(k){ return n.indexOf(k)>=0; });
+  function setActive(btn, on){
+    if(!btn) return;
+    btn.textContent = on ? '⏹' : '🔊';
+    if(on) btn.classList.add('speaking');
+    else   btn.classList.remove('speaking');
+  }
+
+  // ── OpenAI TTS (primary — best for Hebrew) ──
+  function speakOpenAI(rawText, mode, btn){
+    var text = preprocessHebrew(rawText, mode);
+    var p    = PARAMS[mode]||PARAMS.general;
+    setActive(btn, true); _speaking=true; _activeBtn=btn;
+
+    // Split long texts (OpenAI 4096 char limit)
+    var chunks = [];
+    while(text.length > 3800){
+      var cut = text.lastIndexOf('.', 3800);
+      if(cut < 0) cut = 3800;
+      chunks.push(text.substring(0, cut+1));
+      text = text.substring(cut+1).trim();
+    }
+    if(text) chunks.push(text);
+
+    function playChunk(idx){
+      if(idx >= chunks.length){ stop(); return; }
+      if(!_speaking) return;
+      fetch('https://api.openai.com/v1/audio/speech',{
+        method:'POST',
+        headers:{
+          'Authorization':'Bearer '+_apiKey,
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({
+          model:'tts-1-hd',
+          voice: OPENAI_VOICES[_gender],
+          input: chunks[idx],
+          speed: p.speed,
+          response_format:'mp3'
+        })
+      })
+      .then(function(r){
+        if(!r.ok) throw new Error('OpenAI TTS '+r.status);
+        return r.blob();
+      })
+      .then(function(blob){
+        if(!_speaking) return;
+        var url = URL.createObjectURL(blob);
+        _audio = new Audio(url);
+        _audio.onended = function(){ URL.revokeObjectURL(url); playChunk(idx+1); };
+        _audio.onerror = function(){ stop(); };
+        _audio.play();
+      })
+      .catch(function(e){
+        console.warn('OpenAI TTS failed:', e.message);
+        if(idx===0) speakElevenLabs(rawText, mode, btn); // try ElevenLabs
+        else stop();
       });
-      if(match) return match;
-      // fallback: gender index (iOS: index 0=female, 1=male typically)
-      return hebVoices[gender==='female' ? 0 : Math.min(1,hebVoices.length-1)];
     }
-    // 2. Any Hebrew
-    return voices.find(function(v){ return v.lang && v.lang.indexOf('he')===0; }) || null;
+    playChunk(0);
   }
 
-  function speak(text, btn){
-    if(!window.speechSynthesis) return;
-    // Toggle off if same button
-    if(_speaking && _activeBtn===btn){
-      stop(); return;
-    }
-    stop();
-    if(!text) return;
+  // ── ElevenLabs (secondary) ──
+  function speakElevenLabs(rawText, mode, btn){
+    var text = preprocessHebrew(rawText, mode);
+    var p    = PARAMS[mode]||PARAMS.general;
+    var vid  = EL_VOICES[_gender].id;
+    setActive(btn, true); _speaking=true; _activeBtn=btn;
 
-    _voice = pickVoice(_gender);
+    fetch('https://api.elevenlabs.io/v1/text-to-speech/'+vid,{
+      method:'POST',
+      headers:{
+        'xi-api-key': _elKey,
+        'Content-Type':'application/json',
+        'Accept':'audio/mpeg'
+      },
+      body:JSON.stringify({
+        text: text.substring(0,2500),
+        model_id:'eleven_multilingual_v2',
+        voice_settings:{
+          stability: p.stability,
+          similarity_boost: p.similarity,
+          style: p.style,
+          use_speaker_boost: true
+        }
+      })
+    })
+    .then(function(r){ if(!r.ok) throw new Error('EL '+r.status); return r.blob(); })
+    .then(function(blob){
+      if(!_speaking) return;
+      var url = URL.createObjectURL(blob);
+      _audio = new Audio(url);
+      _audio.onended = function(){ stop(); URL.revokeObjectURL(url); };
+      _audio.onerror = function(){ stop(); };
+      _audio.play();
+    })
+    .catch(function(e){
+      console.warn('ElevenLabs failed:', e.message);
+      speakWebSpeech(rawText, btn);
+    });
+  }
 
+  // ── Web Speech API (fallback — richer Hebrew voice selection) ──
+  function speakWebSpeech(rawText, btn){
+    if(!window.speechSynthesis){ stop(); return; }
+    var text = preprocessHebrew(rawText,'general');
+    var voices = window.speechSynthesis.getVoices();
+    var hebVoice = voices.find(function(v){ return v.lang&&v.lang.indexOf('he')===0; });
     var utt = new SpeechSynthesisUtterance(text);
-    utt.lang  = 'he-IL';
-    utt.rate  = 0.9;
-    utt.pitch = _gender==='female' ? 1.1 : 0.9;
-    if(_voice) utt.voice = _voice;
-
-    utt.onstart = function(){
-      _speaking = true;
-      _activeBtn = btn;
-      if(btn){ btn.textContent='⏹'; btn.classList.add('speaking'); }
-    };
-    utt.onend = utt.onerror = function(){
-      _speaking = false;
-      if(_activeBtn){ _activeBtn.textContent='🔊'; _activeBtn.classList.remove('speaking'); }
-      _activeBtn = null;
-    };
-
+    utt.lang='he-IL'; utt.rate=0.88;
+    utt.pitch=_gender==='female'?1.1:0.85;
+    if(hebVoice) utt.voice=hebVoice;
+    utt.onstart=function(){ setActive(btn,true); _speaking=true; _activeBtn=btn; };
+    utt.onend=utt.onerror=function(){ stop(); };
     window.speechSynthesis.speak(utt);
   }
 
-  function stop(){
-    if(window.speechSynthesis) window.speechSynthesis.cancel();
-    _speaking = false;
-    if(_activeBtn){ _activeBtn.textContent='🔊'; _activeBtn.classList.remove('speaking'); }
-    _activeBtn = null;
+  function speak(rawText, btn, mode){
+    if(!rawText||!rawText.trim()) return;
+    if(_speaking&&_activeBtn===btn){ stop(); return; }
+    stop();
+    mode = mode||'general';
+    if(_apiKey)       speakOpenAI(rawText, mode, btn);
+    else if(_elKey)   speakElevenLabs(rawText, mode, btn);
+    else              speakWebSpeech(rawText, btn);
   }
 
-  function setGender(g){
-    _gender = g;
-    LS.set('tts_gender', g);
-    stop();
-    updateToggleBtn();
+  function setGender(g){ _gender=g; LS.set('tts_gender',g); stop(); updateToggleBtn(); }
+  function setApiKey(k,type){
+    if(type==='el'){ _elKey=k.trim(); LS.set('tts_el_key',_elKey); }
+    else           { _apiKey=k.trim(); LS.set('tts_api_key',_apiKey); }
   }
 
   function updateToggleBtn(){
-    var btn = document.getElementById('voice-toggle');
-    if(btn) btn.textContent = _gender==='female' ? '🔊 ♀' : '🔊 ♂';
+    var btn=document.getElementById('voice-toggle');
+    if(!btn) return;
+    var hasKey = _apiKey||_elKey;
+    btn.textContent = (_gender==='female'?'🔊 ♀':'🔊 ♂') + (hasKey?'':' ·');
+    btn.title = hasKey ? 'קול: '+(_gender==='female'?'נשי':'גברי') : 'לחץ להוסיף API Key לקול טבעי';
   }
 
-  // Wire voice toggle button
+  function wireBtn(id, getText, mode){
+    var btn=document.getElementById(id);
+    if(!btn) return;
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      speak(getText(), btn, mode||'general');
+    });
+  }
+
   function init(){
     updateToggleBtn();
-    // Load voices (async on some browsers)
-    if(window.speechSynthesis){
-      window.speechSynthesis.onvoiceschanged = function(){ _voice = pickVoice(_gender); };
-    }
-    var toggleBtn = document.getElementById('voice-toggle');
+    if(window.speechSynthesis) window.speechSynthesis.onvoiceschanged=function(){};
+
+    var toggleBtn=document.getElementById('voice-toggle');
     if(toggleBtn){
-      toggleBtn.addEventListener('click', function(){
-        // Show mini picker
-        var menu = document.getElementById('voice-menu');
+      toggleBtn.addEventListener('click',function(){
+        var menu=document.getElementById('voice-menu');
         if(menu){ menu.remove(); return; }
-        var m = document.createElement('div');
-        m.id = 'voice-menu';
+        var m=document.createElement('div');
+        m.id='voice-menu';
         m.setAttribute('style',
-          'position:fixed;top:54px;left:44px;z-index:9999;'+
-          'background:var(--surf2);border:1px solid var(--brd);border-radius:12px;'+
-          'padding:8px 0;box-shadow:0 8px 24px rgba(0,0,0,.4);min-width:160px');
-        [{g:'female',lbl:'♀ קול נשי טבעי'},{g:'male',lbl:'♂ קול גברי טבעי'}].forEach(function(opt){
-          var item = document.createElement('div');
-          item.setAttribute('style',
-            'padding:10px 16px;font-family:Heebo,sans-serif;font-size:13px;cursor:pointer;'+
-            'color:var(--txt);font-weight:'+ (_gender===opt.g?'800':'400')+';'+
+          'position:fixed;top:54px;left:10px;z-index:9999;direction:rtl;'+
+          'background:var(--surf2);border:1px solid var(--brd);border-radius:14px;'+
+          'padding:8px 0;box-shadow:0 8px 28px rgba(0,0,0,.4);min-width:240px');
+
+        // Gender options
+        var gHdr=document.createElement('div');
+        gHdr.setAttribute('style','padding:8px 18px 4px;font-family:Heebo,sans-serif;font-size:10px;color:var(--txt-mut);font-weight:700;letter-spacing:1px');
+        gHdr.textContent='בחר קול';
+        m.appendChild(gHdr);
+
+        [{g:'female',lbl:'♀  קול נשי — Nova / Rachel'},{g:'male',lbl:'♂  קול גברי — Onyx / Arnold'}].forEach(function(opt){
+          var item=document.createElement('div');
+          item.setAttribute('style','padding:10px 18px;font-family:Heebo,sans-serif;font-size:13px;cursor:pointer;'+
+            'color:var(--txt);font-weight:'+(_gender===opt.g?'800':'400')+';'+
             (_gender===opt.g?'color:var(--gold-l)':''));
-          item.textContent = opt.lbl + (_gender===opt.g?' ✓':'');
-          item.addEventListener('click', function(){
-            setGender(opt.g);
-            m.remove();
-          });
+          item.textContent=opt.lbl+(_gender===opt.g?'  ✓':'');
+          item.addEventListener('click',function(){ setGender(opt.g); m.remove(); });
           m.appendChild(item);
         });
+
+        // Divider
+        m.appendChild(Object.assign(document.createElement('div'),{
+          setAttribute:function(a,b){this.style.cssText='border-top:1px solid var(--brd);margin:4px 0';}
+        }));
+        var div2=document.createElement('div');
+        div2.setAttribute('style','border-top:1px solid var(--brd);margin:4px 0');
+        m.appendChild(div2);
+
+        // API key inputs
+        function addKeyInput(label, placeholder, val, type){
+          var lbl=document.createElement('div');
+          lbl.setAttribute('style','padding:6px 18px 2px;font-family:Heebo,sans-serif;font-size:10px;color:var(--txt-mut);font-weight:700;letter-spacing:1px');
+          lbl.textContent=label;
+          m.appendChild(lbl);
+          var row=document.createElement('div');
+          row.setAttribute('style','display:flex;gap:6px;padding:0 12px 8px');
+          var inp=document.createElement('input');
+          inp.type='password'; inp.placeholder=placeholder; inp.value=val;
+          inp.setAttribute('style','flex:1;padding:7px 10px;border-radius:8px;font-size:11px;'+
+            'background:var(--surf3);border:1px solid var(--brd);color:var(--txt);direction:ltr;outline:none');
+          var save=document.createElement('button');
+          save.textContent='שמור';
+          save.setAttribute('style','padding:7px 10px;border-radius:8px;font-size:12px;cursor:pointer;'+
+            'background:var(--gold-dim);border:1px solid var(--gold-d);color:var(--gold-l);font-family:Heebo,sans-serif;white-space:nowrap');
+          save.addEventListener('click',function(){ setApiKey(inp.value,type); updateToggleBtn(); m.remove(); });
+          row.appendChild(inp); row.appendChild(save);
+          m.appendChild(row);
+        }
+
+        addKeyInput('OpenAI API Key (מומלץ — Nova / Onyx)','sk-...', _apiKey, 'openai');
+        addKeyInput('ElevenLabs API Key (איכות גבוהה)','xi-...', _elKey, 'el');
+
+        var note=document.createElement('div');
+        note.setAttribute('style','padding:0 18px 10px;font-family:Heebo,sans-serif;font-size:10px;color:var(--txt-mut);line-height:1.6');
+        note.textContent='ללא מפתח: קול דפדפן. עם מפתח: קול אנושי-טבעי.';
+        m.appendChild(note);
+
         document.body.appendChild(m);
-        // Close on outside click
         setTimeout(function(){
-          document.addEventListener('click', function close(e){
-            if(!m.contains(e.target) && e.target!==toggleBtn){ m.remove(); document.removeEventListener('click',close); }
+          document.addEventListener('click',function close(e){
+            if(!m.contains(e.target)&&e.target!==toggleBtn){ m.remove(); document.removeEventListener('click',close); }
           });
-        }, 50);
+        },50);
       });
     }
 
-    // Wire reader speaker buttons
-    wireBtn('spk-title', function(){
-      var title = document.getElementById('r-title') ? document.getElementById('r-title').textContent : '';
-      var badge = document.getElementById('r-badge') ? document.getElementById('r-badge').textContent : '';
-      var com   = document.getElementById('r-com')   ? document.getElementById('r-com').textContent   : '';
-      return [badge, title, com].filter(Boolean).join('\n');
-    });
-    wireBtn('spk-com', function(){ return document.getElementById('r-com') ? document.getElementById('r-com').textContent : ''; });
-    wireBtn('spk-verses', function(){
-      var vl = document.getElementById('r-verses');
-      return vl ? vl.textContent : '';
-    });
-    wireBtn('spk-kab', function(){
-      var p = document.getElementById('r-kab-panel');
-      return p ? p.textContent.replace('✡ עולם הקבלה — סוד המזמור','').trim() : '';
-    });
+    // Wire buttons with correct mode
+    wireBtn('spk-title',   function(){ return [
+      document.getElementById('r-badge')?document.getElementById('r-badge').textContent:'',
+      document.getElementById('r-title')?document.getElementById('r-title').textContent:'',
+      document.getElementById('r-com')  ?document.getElementById('r-com').textContent:''
+    ].filter(Boolean).join('\n'); }, 'commentary');
+
+    wireBtn('spk-com',     function(){ return document.getElementById('r-com')?document.getElementById('r-com').textContent:''; }, 'commentary');
+    wireBtn('spk-verses',  function(){ return document.getElementById('r-verses')?document.getElementById('r-verses').textContent:''; }, 'bible');
+    wireBtn('spk-kab',     function(){
+      var p=document.getElementById('r-kab-panel');
+      return p?p.textContent.replace('✡ עולם הקבלה — סוד המזמור','').trim():'';
+    }, 'commentary');
     wireBtn('spk-parasha', function(){
-      var pshot  = document.getElementById('par-pshot')  ? document.getElementById('par-pshot').textContent  : '';
-      var kab    = document.getElementById('par-kab')    ? document.getElementById('par-kab').textContent    : '';
-      var insight= document.getElementById('par-kab-insight') ? document.getElementById('par-kab-insight').textContent : '';
-      var full   = document.getElementById('par-full')   ? document.getElementById('par-full').textContent   : '';
-      var name   = document.getElementById('par-name')   ? document.getElementById('par-name').textContent   : '';
-      return [name, pshot, kab, insight, full].filter(Boolean).join('\n\n');
-    });
+      return [
+        document.getElementById('par-name')       ?document.getElementById('par-name').textContent:'',
+        document.getElementById('par-pshot')      ?document.getElementById('par-pshot').textContent:'',
+        document.getElementById('par-kab')        ?document.getElementById('par-kab').textContent:'',
+        document.getElementById('par-kab-insight')?document.getElementById('par-kab-insight').textContent:'',
+        document.getElementById('par-full')       ?document.getElementById('par-full').textContent:''
+      ].filter(Boolean).join('\n\n');
+    }, 'commentary');
   }
 
-  function wireBtn(id, getText){
-    var btn = document.getElementById(id);
+  function wireDynamic(btn,getText,mode){
     if(!btn) return;
-    btn.addEventListener('click', function(e){
-      e.stopPropagation();
-      speak(getText(), btn);
-    });
+    btn.addEventListener('click',function(e){ e.stopPropagation(); speak(getText(),btn,mode||'general'); });
   }
 
-  // Public: wire a button dynamically (for re-rendered elements)
-  function wireDynamic(btn, getText){
-    if(!btn) return;
-    btn.addEventListener('click', function(e){
-      e.stopPropagation();
-      speak(getText(), btn);
-    });
-  }
-
-  return { speak:speak, stop:stop, setGender:setGender, init:init, wireDynamic:wireDynamic, getGender:function(){return _gender;} };
+  return {speak:speak,stop:stop,setGender:setGender,init:init,wireDynamic:wireDynamic,getGender:function(){return _gender;}};
 })();
 
 // ═══════════════════════════════════════════════════
