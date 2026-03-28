@@ -4627,28 +4627,31 @@ function renderCalc(){
 
 // ── Hebrew text preprocessor (skill step 5) ──
 function preprocessHebrew(text, mode){
-  // mode: 'bible' | 'commentary' | 'general'
   var t = text
-    // Remove markdown
+    // Strip niqqud (vowel marks) — confuse TTS engines
+    .replace(/[\u05B0-\u05C7]/g,'')
+    // Strip cantillation marks
+    .replace(/[\u0591-\u05AF\uFB1D-\uFB4F]/g,'')
+    // Remove markdown/symbols
     .replace(/#{1,6}\s/g,'').replace(/\*/g,'').replace(/_/g,' ')
+    .replace(/[•✦✡★☆]/g,'')
     // Currency/numbers
-    .replace(/₪\s?(\d+)/g,'$1 שקלים').replace(/\$\s?(\d+)/g,'$1 דולרים')
+    .replace(/\u20AA\s?(\d+)/g,'$1 שקלים').replace(/\$\s?(\d+)/g,'$1 דולרים')
     .replace(/(\d+)%/g,'$1 אחוזים')
-    // Common abbreviations
+    // Abbreviations
     .replace(/בע"מ/g,'בערבון מוגבל').replace(/מע"מ/g,'מס ערך מוסף')
     .replace(/ד"ר/g,'דוקטור').replace(/פרופ'/g,'פרופסור')
-    // Clean extra whitespace
-    .replace(/\s+/g,' ').trim();
+    .replace(/ח"כ/g,'חבר כנסת').replace(/רה"מ/g,'ראש הממשלה')
+    // Natural pauses
+    .replace(/—/g,', ').replace(/–/g,', ').replace(/\.\.\./g,'. ')
+    // Clean whitespace
+    .replace(/[ \t]+/g,' ').replace(/\n{3,}/g,'\n\n').trim();
 
   if(mode==='bible'){
     t = t
-      // Divine names → readable
-      .replace(/יְהוָה|יהוה|ה'/g,'השם')
-      .replace(/אֲדֹנָי/g,'אדוני')
-      // Verse numbers at line start
+      .replace(/יהוה|ה'/g,'השם')
       .replace(/^\d+\s+/gm,'')
-      // End-of-verse mark
-      .replace(/׃/g,'.');
+      .replace(/\u05C3/g,'.');
   }
   return t;
 }
@@ -4662,17 +4665,18 @@ var TTS = (function(){
   var _audio    = null;
 
   // ── Voice config ──
-  // Per skill: for Hebrew accent, prefer voices with less American English bias
+  // Per skill: shimmer = warmest female for Hebrew; onyx = best male
+  var OPENAI_VOICES = { female:'shimmer', male:'onyx' };
   var EL_VOICES = {
-    female: { id:'oWsMb4a16KJjSfCx1set', name:'Grace'  },
-    male:   { id:'VR6AewLTigWG4xSOukaG', name:'Arnold' }
+    female: { id:'EXAVITQu4vr4xnSDxMaL', name:'Bella'  }, // Bella — warm, natural
+    male:   { id:'ErXwobaYiN019PkySvjV',  name:'Antoni' } // Antoni — professional
   };
 
-  // Hebrew needs slow rate — speed 0.7 = much slower, reduces American cadence
+  // Slower rate = better Hebrew naturalness (less American cadence)
   var PARAMS = {
-    bible:      { stability:0.70, similarity:0.85, style:0.10, speed:0.70 },
-    commentary: { stability:0.58, similarity:0.82, style:0.22, speed:0.78 },
-    general:    { stability:0.62, similarity:0.82, style:0.18, speed:0.80 }
+    bible:      { stability:0.70, similarity:0.85, style:0.10, speed:0.78 },
+    commentary: { stability:0.58, similarity:0.82, style:0.22, speed:0.85 },
+    general:    { stability:0.62, similarity:0.82, style:0.18, speed:0.88 }
   };
 
   function stop(){
