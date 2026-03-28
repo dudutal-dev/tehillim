@@ -2536,6 +2536,11 @@ function renderReader(ps, scrollTop){
 
   // Scroll to top only when opening a new psalm
   if(scrollTop) document.getElementById('s-reader').scrollTop=0;
+
+  // Re-wire TTS buttons with fresh text getters
+  if(window.TTS){
+    TTS.rewireReader(ps);
+  }
 }
 
 // Mark as read
@@ -4658,8 +4663,9 @@ function preprocessHebrew(text, mode){
 
 var TTS = (function(){
   var _gender   = LS.get('tts_gender','female');
-  var _apiKey   = LS.get('tts_api_key','');         // OpenAI key
-  var _elKey    = LS.get('tts_el_key','');           // ElevenLabs key
+  var _apiKey   = LS.get('tts_api_key','');
+  var _elKey    = LS.get('tts_el_key','');
+  var _provider = LS.get('tts_provider','auto'); // 'auto'|'openai'|'elevenlabs'|'browser'
   var _speaking = false;
   var _activeBtn= null;
   var _audio    = null;
@@ -4817,49 +4823,59 @@ var TTS = (function(){
     var elKey     = LS.get('tts_el_key','');
 
     if(!openaiKey && !elKey){
-      showInfoToast('⚠️ לא הוזן מפתח\nלחץ על 🔊 ♀ → שמור מפתח');
+      showInfoToast('⚠️ לא הוזן מפתח\nלחץ על 🔊 ♀ ← שמור מפתח');
       return;
     }
 
+    var results = [];
+    var pending = 0;
+    function done(){ if(--pending===0) showInfoToast(results.join('\n')); }
+
     if(openaiKey){
-      showInfoToast('🔍 בודק OpenAI...');
+      pending++;
+      results.push('🔍 בודק OpenAI...');
       fetch('https://api.openai.com/v1/audio/speech',{
         method:'POST',
         headers:{'Authorization':'Bearer '+openaiKey,'Content-Type':'application/json'},
-        body:JSON.stringify({model:'tts-1',voice:'nova',input:'שלום',response_format:'mp3'})
+        body:JSON.stringify({model:'tts-1',voice:'shimmer',input:'שלום',response_format:'mp3'})
       }).then(function(r){
-        if(r.status===401){ showInfoToast('❌ OpenAI: מפתח לא תקין (401)\nבדוק שהמפתח נכון ויש קרדיט'); return null; }
-        if(r.status===429){ showInfoToast('❌ OpenAI: מגבלת קריאות (429)\nנסה שוב בעוד רגע'); return null; }
-        if(!r.ok){ showInfoToast('❌ OpenAI שגיאה: '+r.status); return null; }
+        var idx=results.findIndex(function(s){return s.indexOf('OpenAI')>=0;});
+        if(r.status===401){results[idx]='❌ OpenAI: מפתח לא תקין (401)';done();return null;}
+        if(r.status===429){results[idx]='❌ OpenAI: מגבלת קריאות (429)';done();return null;}
+        if(!r.ok){results[idx]='❌ OpenAI שגיאה: '+r.status;done();return null;}
+        results[idx]='✅ OpenAI מחובר!'; done();
         return r.blob();
       }).then(function(blob){
         if(!blob) return;
-        showInfoToast('✅ OpenAI מחובר!\nמשמיע דוגמה...');
         var url=URL.createObjectURL(blob);
         var a=new Audio(url);
-        a.onended=function(){ URL.revokeObjectURL(url); };
-        a.play().catch(function(e){ showInfoToast('✅ מחובר אבל דפדפן חסם השמעה — נסה ללחוץ על 🔊 בפרק'); });
+        a.onended=function(){URL.revokeObjectURL(url);};
+        a.play();
       }).catch(function(e){
-        showInfoToast('❌ שגיאת רשת OpenAI:\n'+e.message+'\n\nאפשרי: חסימת CORS ב-GitHub Pages');
+        var idx=results.findIndex(function(s){return s.indexOf('OpenAI')>=0;});
+        results[idx]='❌ OpenAI שגיאת רשת:\n'+e.message; done();
       });
-    } else {
-      showInfoToast('🔍 בודק ElevenLabs...');
+    }
+
+    if(elKey){
+      pending++;
+      results.push('🔍 בודק ElevenLabs...');
       fetch('https://api.elevenlabs.io/v1/user',{headers:{'xi-api-key':elKey}})
       .then(function(r){
-        if(r.status===401){ showInfoToast('❌ ElevenLabs: מפתח לא תקין (401)'); return null; }
-        if(!r.ok){ showInfoToast('❌ ElevenLabs שגיאה: '+r.status); return null; }
+        var idx=results.findIndex(function(s){return s.indexOf('ElevenLabs')>=0;});
+        if(r.status===401){results[idx]='❌ ElevenLabs: מפתח לא תקין (401)';done();return null;}
+        if(!r.ok){results[idx]='❌ ElevenLabs שגיאה: '+r.status;done();return null;}
         return r.json();
       }).then(function(data){
         if(!data) return;
-        var used = data.subscription&&data.subscription.character_count||0;
-        var lim  = data.subscription&&data.subscription.character_limit||10000;
-        showInfoToast('✅ ElevenLabs מחובר!\n'+
-          'שם: '+(data.first_name||'')+'\n'+
-          'תווים שנותרו: '+(lim-used)+'/'+lim+'\n\nמשמיע דוגמה...');
-        _elKey = elKey;
-        speakElevenLabs('שלום', 'general', null);
+        var used=data.subscription&&data.subscription.character_count||0;
+        var lim =data.subscription&&data.subscription.character_limit||10000;
+        var idx =results.findIndex(function(s){return s.indexOf('ElevenLabs')>=0;});
+        results[idx]='✅ ElevenLabs מחובר!\nתווים שנותרו: '+(lim-used)+'/'+lim;
+        done();
       }).catch(function(e){
-        showInfoToast('❌ שגיאת רשת ElevenLabs:\n'+e.message);
+        var idx=results.findIndex(function(s){return s.indexOf('ElevenLabs')>=0;});
+        results[idx]='❌ ElevenLabs שגיאת רשת:\n'+e.message; done();
       });
     }
   }
@@ -4895,18 +4911,32 @@ var TTS = (function(){
   }
 
   function speak(rawText, btn, mode){
-    if(!rawText||!rawText.trim()) return;
+    if(!rawText||!rawText.trim()){
+      showInfoToast('⚠️ אין טקסט להקריא\nוודא שהפרק נטען');
+      return;
+    }
     if(_speaking&&_activeBtn===btn){ stop(); return; }
     stop();
     mode = mode||'general';
-    // Reload keys from storage every call (in case just saved)
-    _apiKey = LS.get('tts_api_key','');
-    _elKey  = LS.get('tts_el_key','');
-    if(_apiKey)       speakOpenAI(rawText, mode, btn);
-    else if(_elKey)   speakElevenLabs(rawText, mode, btn);
-    else{
-      showTTSError('לא הוזן מפתח API — משתמש בקול דפדפן (פחות טבעי)');
+    _apiKey   = LS.get('tts_api_key','');
+    _elKey    = LS.get('tts_el_key','');
+    _provider = LS.get('tts_provider','auto');
+
+    console.log('[TTS] speak mode='+mode+' provider='+_provider+' len='+rawText.length);
+
+    if(_provider==='openai'){
+      if(!_apiKey){ showInfoToast('⚠️ אין OpenAI Key — הוסף מפתח בתפריט 🔊'); return; }
+      speakOpenAI(rawText, mode, btn);
+    } else if(_provider==='elevenlabs'){
+      if(!_elKey){ showInfoToast('⚠️ אין ElevenLabs Key — הוסף מפתח בתפריט 🔊'); return; }
+      speakElevenLabs(rawText, mode, btn);
+    } else if(_provider==='browser'){
       speakWebSpeech(rawText, btn);
+    } else {
+      // auto: OpenAI → ElevenLabs → Browser
+      if(_apiKey)     speakOpenAI(rawText, mode, btn);
+      else if(_elKey) speakElevenLabs(rawText, mode, btn);
+      else{ showInfoToast('⚠️ לא הוזן מפתח — משתמש בקול דפדפן'); speakWebSpeech(rawText, btn); }
     }
   }
 
@@ -4927,9 +4957,14 @@ var TTS = (function(){
   function wireBtn(id, getText, mode){
     var btn=document.getElementById(id);
     if(!btn) return;
-    btn.addEventListener('click',function(e){
+    // Remove old listeners by cloning
+    var newBtn = btn.cloneNode(true);
+    btn.parentNode.replaceChild(newBtn, btn);
+    newBtn.addEventListener('click',function(e){
       e.stopPropagation();
-      speak(getText(), btn, mode||'general');
+      var text = getText();
+      console.log('[TTS] btn='+id, 'text len='+text.length, text.substring(0,50));
+      speak(text, newBtn, mode||'general');
     });
   }
 
@@ -4972,6 +5007,28 @@ var TTS = (function(){
         var div2=document.createElement('div');
         div2.setAttribute('style','border-top:1px solid var(--brd);margin:4px 0');
         m.appendChild(div2);
+
+        // Provider selector
+        var provHdr=document.createElement('div');
+        provHdr.setAttribute('style','padding:8px 18px 4px;font-family:Heebo,sans-serif;font-size:10px;color:var(--txt-mut);font-weight:700;letter-spacing:1px');
+        provHdr.textContent='שירות קול';
+        m.appendChild(provHdr);
+
+        var curProv=LS.get('tts_provider','auto');
+        [{v:'auto',lbl:'🔄 אוטומטי'},{v:'openai',lbl:'⚡ OpenAI'},{v:'elevenlabs',lbl:'🎙 ElevenLabs'},{v:'browser',lbl:'🖥 קול דפדפן'}]
+        .forEach(function(opt){
+          var item=document.createElement('div');
+          item.setAttribute('style','padding:9px 18px;font-family:Heebo,sans-serif;font-size:13px;cursor:pointer;'+
+            'color:var(--txt);background:'+(curProv===opt.v?'rgba(201,151,44,.08)':'transparent'));
+          item.textContent=opt.lbl+(curProv===opt.v?' ✓':'');
+          if(curProv===opt.v) item.style.color='var(--gold-l)';
+          item.addEventListener('click',function(){ LS.set('tts_provider',opt.v); updateToggleBtn(); m.remove(); });
+          m.appendChild(item);
+        });
+
+        var div3=document.createElement('div');
+        div3.setAttribute('style','border-top:1px solid var(--brd);margin:4px 0');
+        m.appendChild(div3);
 
         // API key inputs
         function addKeyInput(label, placeholder, val, type){
@@ -5059,7 +5116,30 @@ var TTS = (function(){
     btn.addEventListener('click',function(e){ e.stopPropagation(); speak(getText(),btn,mode||'general'); });
   }
 
-  return {speak:speak,stop:stop,setGender:setGender,init:init,wireDynamic:wireDynamic,getGender:function(){return _gender;}};
+  function rewireReader(ps){
+    // Called every time a psalm is opened — re-attaches fresh getters
+    wireBtn('spk-title', function(){
+      return [
+        document.getElementById('r-badge') ? document.getElementById('r-badge').textContent : '',
+        document.getElementById('r-title') ? document.getElementById('r-title').textContent : '',
+        document.getElementById('r-com')   ? document.getElementById('r-com').textContent   : ''
+      ].filter(Boolean).join('\n');
+    }, 'commentary');
+    wireBtn('spk-com', function(){
+      return document.getElementById('r-com') ? document.getElementById('r-com').textContent : '';
+    }, 'commentary');
+    wireBtn('spk-verses', function(){
+      return document.getElementById('r-verses') ? document.getElementById('r-verses').textContent : '';
+    }, 'bible');
+    wireBtn('spk-kab', function(){
+      var p = document.getElementById('r-kab-panel');
+      return p ? p.textContent.replace('✡ עולם הקבלה — סוד המזמור','').trim() : '';
+    }, 'commentary');
+  }
+
+  return {speak:speak, stop:stop, setGender:setGender, init:init,
+          wireDynamic:wireDynamic, rewireReader:rewireReader,
+          getGender:function(){return _gender;}};
 })();
 
 // ═══════════════════════════════════════════════════
