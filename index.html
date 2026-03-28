@@ -4700,55 +4700,58 @@ var TTS = (function(){
     else   btn.classList.remove('speaking');
   }
 
+  function setLoading(btn, on){
+    if(!btn) return;
+    btn.textContent = on ? '⏳' : '🔊';
+    btn.style.opacity = on ? '0.6' : '1';
+  }
+
   // ── OpenAI TTS (primary — best for Hebrew) ──
   function speakOpenAI(rawText, mode, btn){
     var text = preprocessHebrew(rawText, mode);
     var p    = PARAMS[mode]||PARAMS.general;
-    setActive(btn, true); _speaking=true; _activeBtn=btn;
+    setLoading(btn, true);
+    _speaking=true; _activeBtn=btn;
 
-    // Split long texts (OpenAI 4096 char limit)
-    var chunks = [];
-    while(text.length > 3800){
-      var cut = text.lastIndexOf('.', 3800);
-      if(cut < 0) cut = 3800;
-      chunks.push(text.substring(0, cut+1));
-      text = text.substring(cut+1).trim();
+    var chunks=[], tmp=text;
+    while(tmp.length>3800){
+      var cut=tmp.lastIndexOf('.',3800); if(cut<0) cut=3800;
+      chunks.push(tmp.substring(0,cut+1)); tmp=tmp.substring(cut+1).trim();
     }
-    if(text) chunks.push(text);
+    if(tmp) chunks.push(tmp);
 
     function playChunk(idx){
-      if(idx >= chunks.length){ stop(); return; }
-      if(!_speaking) return;
+      if(idx>=chunks.length){ stop(); return; }
+      if(!_speaking&&idx>0) return;
       fetch('https://api.openai.com/v1/audio/speech',{
         method:'POST',
-        headers:{
-          'Authorization':'Bearer '+_apiKey,
-          'Content-Type':'application/json'
-        },
+        headers:{'Authorization':'Bearer '+_apiKey,'Content-Type':'application/json'},
         body:JSON.stringify({
-          model:'tts-1-hd',
-          voice: OPENAI_VOICES[_gender],
-          input: chunks[idx],
-          speed: p.speed,
+          model:'tts-1', // faster than tts-1-hd, minimal difference for Hebrew
+          voice:OPENAI_VOICES[_gender],
+          input:chunks[idx],
+          speed:p.speed,
           response_format:'mp3'
         })
       })
       .then(function(r){
-        if(!r.ok) throw new Error('OpenAI TTS '+r.status);
+        if(r.status===401) throw new Error('מפתח לא תקין (401)');
+        if(r.status===429) throw new Error('מגבלת קריאות (429)');
+        if(!r.ok) throw new Error('שגיאה '+r.status);
         return r.blob();
       })
       .then(function(blob){
-        if(!_speaking) return;
-        var url = URL.createObjectURL(blob);
-        _audio = new Audio(url);
-        _audio.onended = function(){ URL.revokeObjectURL(url); playChunk(idx+1); };
-        _audio.onerror = function(){ stop(); };
-        _audio.play();
+        setLoading(btn,false); setActive(btn,true);
+        var url=URL.createObjectURL(blob);
+        _audio=new Audio(url);
+        _audio.onended=function(){ URL.revokeObjectURL(url); playChunk(idx+1); };
+        _audio.onerror=function(){ stop(); };
+        _audio.play().catch(function(){ stop(); });
       })
       .catch(function(e){
-        console.warn('OpenAI TTS failed:', e.message);
-        if(idx===0) speakElevenLabs(rawText, mode, btn); // try ElevenLabs
-        else stop();
+        setLoading(btn,false); stop();
+        showTTSError('OpenAI: '+e.message);
+        if(idx===0&&_elKey) speakElevenLabs(rawText,mode,btn);
       });
     }
     playChunk(0);
@@ -4759,7 +4762,7 @@ var TTS = (function(){
     var text = preprocessHebrew(rawText, mode);
     var p    = PARAMS[mode]||PARAMS.general;
     var vid  = EL_VOICES[_gender].id;
-    setActive(btn, true); _speaking=true; _activeBtn=btn;
+    setLoading(btn, true); _speaking=true; _activeBtn=btn;
 
     fetch('https://api.elevenlabs.io/v1/text-to-speech/'+vid+'/stream',{
       method:'POST',
@@ -4790,13 +4793,15 @@ var TTS = (function(){
     .then(function(blob){
       if(!_speaking) return;
       if(blob.size < 100) throw new Error('תגובה ריקה מהשרת');
+      setLoading(btn, false); setActive(btn, true);
       var url = URL.createObjectURL(blob);
       _audio = new Audio(url);
       _audio.onended = function(){ stop(); URL.revokeObjectURL(url); };
-      _audio.onerror = function(e){ showTTSError('שגיאת השמעה: '+e.message); stop(); };
-      _audio.play().catch(function(e){ showTTSError('הדפדפן חסם השמעה: '+e.message); stop(); });
+      _audio.onerror = function(e){ showTTSError('שגיאת השמעה'); stop(); };
+      _audio.play().catch(function(){ stop(); });
     })
     .catch(function(e){
+      setLoading(btn, false);
       showTTSError('ElevenLabs: '+e.message+' — עובר לקול דפדפן');
       speakWebSpeech(rawText, btn);
     });
