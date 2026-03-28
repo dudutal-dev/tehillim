@@ -705,6 +705,27 @@ nav {
 }
 .tree-psalm-pill:active { background: rgba(138,43,226,.4); }
 
+/* ── SPEAKER BUTTON ── */
+.spk-btn {
+  background: rgba(201,151,44,.12);
+  border: 1px solid rgba(201,151,44,.3);
+  border-radius: 50%;
+  width: 28px; height: 28px;
+  font-size: 14px; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  touch-action: manipulation; flex-shrink: 0;
+  transition: background .15s;
+  padding: 0;
+}
+.spk-btn:active, .spk-btn.speaking {
+  background: rgba(201,151,44,.35);
+  border-color: var(--gold);
+}
+body.light .spk-btn {
+  background: rgba(139,94,16,.1);
+  border-color: rgba(139,94,16,.3);
+}
+
 /* ── ANIMATIONS ── */
 @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
 @keyframes pulse { 0%,100% { opacity:.7; } 50% { opacity:1; } }
@@ -868,6 +889,12 @@ body.light .mood-pill { background: var(--surf3); border-color: var(--brd); colo
   <div id="s-home" class="screen active">
     <div class="home-hero">
       <button class="theme-toggle" id="theme-toggle" title="בהיר/כהה">☀️</button>
+      <button id="voice-toggle" title="בחר קול" style="
+        position:absolute;top:14px;left:50px;
+        background:rgba(201,151,44,.15);border:1px solid rgba(201,151,44,.3);
+        border-radius:20px;padding:6px 12px;font-size:12px;cursor:pointer;
+        font-family:Heebo,sans-serif;color:var(--gold-d);font-weight:600;
+        touch-action:manipulation;z-index:10">🔊 ♀</button>
       <div class="menorah-wrap">
         <svg width="60" height="52" viewBox="0 0 60 52" fill="none">
           <line x1="30" y1="8" x2="30" y2="48" stroke="#c9972c" stroke-width="2.5" stroke-linecap="round"/>
@@ -1051,11 +1078,17 @@ body.light .mood-pill { background: var(--surf3); border-color: var(--brd); colo
     </div>
     <div class="reader-body">
       <div class="psalm-num-badge" id="r-badge"></div>
-      <div class="psalm-main-t" id="r-title"></div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center">
+        <div class="psalm-main-t" id="r-title"></div>
+        <button class="spk-btn" id="spk-title" title="הקרא שם ופרשנות">🔊</button>
+      </div>
       <div class="psalm-sub" id="r-sub"></div>
 
       <div class="commentary">
-        <div class="com-label">פרשנות ועיון</div>
+        <div class="com-label" style="display:flex;align-items:center;justify-content:space-between">
+          <span>פרשנות ועיון</span>
+          <button class="spk-btn" id="spk-com" title="הקרא פרשנות">🔊</button>
+        </div>
         <div class="com-text" id="r-com"></div>
       </div>
 
@@ -1064,9 +1097,12 @@ body.light .mood-pill { background: var(--surf3); border-color: var(--brd); colo
       <div class="text-block">
         <div class="text-hdr">
           <span>טקסט המזמור</span>
-          <div class="font-controls">
-            <button class="fc-btn" id="fc-sm">א−</button>
-            <button class="fc-btn" id="fc-lg">א+</button>
+          <div style="display:flex;align-items:center;gap:6px">
+            <button class="spk-btn" id="spk-verses" title="הקרא מזמור">🔊</button>
+            <div class="font-controls">
+              <button class="fc-btn" id="fc-sm">א−</button>
+              <button class="fc-btn" id="fc-lg">א+</button>
+            </div>
           </div>
         </div>
         <div class="verse-list" id="r-verses"></div>
@@ -1086,7 +1122,10 @@ body.light .mood-pill { background: var(--surf3); border-color: var(--brd); colo
       <!-- KABBALAH PANEL -->
       <div id="r-kab-panel" hidden style="margin:0 16px 10px;background:linear-gradient(160deg,#12082a,#0d0820);border:1px solid rgba(138,43,226,0.4);border-radius:var(--r);overflow:hidden;position:relative">
         <div style="position:absolute;top:0;right:0;width:3px;height:100%;background:linear-gradient(180deg,#c8a8f0,#7b2fd4)"></div>
-        <div style="padding:12px 16px 6px;font-family:'Heebo',sans-serif;font-size:10px;font-weight:800;color:#b090e0;letter-spacing:2px">✡ עולם הקבלה — סוד המזמור</div>
+        <div style="padding:12px 16px 6px;font-family:'Heebo',sans-serif;font-size:10px;font-weight:800;color:#b090e0;letter-spacing:2px;display:flex;align-items:center;justify-content:space-between">
+          <span>✡ עולם הקבלה — סוד המזמור</span>
+          <button class="spk-btn" id="spk-kab" title="הקרא פרשנות קבלה">🔊</button>
+        </div>
         <div id="r-kab-sefirot" style="padding:0 16px 8px;font-family:'Heebo',sans-serif;font-size:11px;color:rgba(200,168,240,0.6);letter-spacing:.5px"></div>
         <div id="r-kab-text" style="padding:4px 18px 14px;font-family:'Heebo',sans-serif;font-size:14px;line-height:1.95;color:#e0d0f8;font-weight:300"></div>
         <div id="r-kab-insight" style="margin:0 16px 14px;padding:10px 12px;background:rgba(138,43,226,0.12);border-radius:8px;border-right:3px solid #7b2fd4;font-family:'Heebo',sans-serif;font-size:12px;color:#c0a0e8;line-height:1.7"></div>
@@ -1196,7 +1235,10 @@ body.light .mood-pill { background: var(--surf3); border-color: var(--brd); colo
       <button class="back-btn" id="par-back">← חזרה</button>
       <div style="height:8px"></div>
       <div class="badge" id="par-badge" style="margin-bottom:6px">פרשת השבוע</div>
-      <div style="font-family:'Frank Ruhl Libre',serif;font-size:26px;color:var(--cream);margin-bottom:4px;text-align:center" id="par-name"></div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:4px">
+        <div style="font-family:'Frank Ruhl Libre',serif;font-size:26px;color:var(--cream);text-align:center" id="par-name"></div>
+        <button class="spk-btn" id="spk-parasha" title="הקרא פרשה">🔊</button>
+      </div>
       <div style="font-family:Heebo,sans-serif;font-size:12px;color:var(--gold-d);font-weight:600;letter-spacing:.5px;text-align:center" id="par-book"></div>
     </div>
 
@@ -4575,6 +4617,182 @@ function renderCalc(){
   });
 }
 // ═══════════════════════════════════════════════════
+//  TTS — Hebrew Text-to-Speech Engine
+//  Uses Web Speech API (built-in, works offline)
+// ═══════════════════════════════════════════════════
+var TTS = (function(){
+  var _voice    = null;  // selected SpeechSynthesisVoice
+  var _gender   = LS.get('tts_gender','female'); // 'female'|'male'
+  var _speaking = false;
+  var _activeBtn= null;
+
+  // Hebrew voice priority keywords
+  var FEMALE_KW = ['female','woman','miriam','yael','avital','alva','carmit','tami'];
+  var MALE_KW   = ['male','man','yoav','ariel','tamir','amir','yonatan'];
+
+  function getVoices(){
+    return window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+  }
+
+  function pickVoice(gender){
+    var voices = getVoices();
+    if(!voices.length) return null;
+    // 1. Hebrew voices matching gender
+    var hebVoices = voices.filter(function(v){ return v.lang && v.lang.indexOf('he')===0; });
+    if(hebVoices.length){
+      var kw = gender==='female' ? FEMALE_KW : MALE_KW;
+      var match = hebVoices.find(function(v){
+        var n = v.name.toLowerCase();
+        return kw.some(function(k){ return n.indexOf(k)>=0; });
+      });
+      if(match) return match;
+      // fallback: gender index (iOS: index 0=female, 1=male typically)
+      return hebVoices[gender==='female' ? 0 : Math.min(1,hebVoices.length-1)];
+    }
+    // 2. Any Hebrew
+    return voices.find(function(v){ return v.lang && v.lang.indexOf('he')===0; }) || null;
+  }
+
+  function speak(text, btn){
+    if(!window.speechSynthesis) return;
+    // Toggle off if same button
+    if(_speaking && _activeBtn===btn){
+      stop(); return;
+    }
+    stop();
+    if(!text) return;
+
+    _voice = pickVoice(_gender);
+
+    var utt = new SpeechSynthesisUtterance(text);
+    utt.lang  = 'he-IL';
+    utt.rate  = 0.9;
+    utt.pitch = _gender==='female' ? 1.1 : 0.9;
+    if(_voice) utt.voice = _voice;
+
+    utt.onstart = function(){
+      _speaking = true;
+      _activeBtn = btn;
+      if(btn){ btn.textContent='⏹'; btn.classList.add('speaking'); }
+    };
+    utt.onend = utt.onerror = function(){
+      _speaking = false;
+      if(_activeBtn){ _activeBtn.textContent='🔊'; _activeBtn.classList.remove('speaking'); }
+      _activeBtn = null;
+    };
+
+    window.speechSynthesis.speak(utt);
+  }
+
+  function stop(){
+    if(window.speechSynthesis) window.speechSynthesis.cancel();
+    _speaking = false;
+    if(_activeBtn){ _activeBtn.textContent='🔊'; _activeBtn.classList.remove('speaking'); }
+    _activeBtn = null;
+  }
+
+  function setGender(g){
+    _gender = g;
+    LS.set('tts_gender', g);
+    stop();
+    updateToggleBtn();
+  }
+
+  function updateToggleBtn(){
+    var btn = document.getElementById('voice-toggle');
+    if(btn) btn.textContent = _gender==='female' ? '🔊 ♀' : '🔊 ♂';
+  }
+
+  // Wire voice toggle button
+  function init(){
+    updateToggleBtn();
+    // Load voices (async on some browsers)
+    if(window.speechSynthesis){
+      window.speechSynthesis.onvoiceschanged = function(){ _voice = pickVoice(_gender); };
+    }
+    var toggleBtn = document.getElementById('voice-toggle');
+    if(toggleBtn){
+      toggleBtn.addEventListener('click', function(){
+        // Show mini picker
+        var menu = document.getElementById('voice-menu');
+        if(menu){ menu.remove(); return; }
+        var m = document.createElement('div');
+        m.id = 'voice-menu';
+        m.setAttribute('style',
+          'position:fixed;top:54px;left:44px;z-index:9999;'+
+          'background:var(--surf2);border:1px solid var(--brd);border-radius:12px;'+
+          'padding:8px 0;box-shadow:0 8px 24px rgba(0,0,0,.4);min-width:160px');
+        [{g:'female',lbl:'♀ קול נשי טבעי'},{g:'male',lbl:'♂ קול גברי טבעי'}].forEach(function(opt){
+          var item = document.createElement('div');
+          item.setAttribute('style',
+            'padding:10px 16px;font-family:Heebo,sans-serif;font-size:13px;cursor:pointer;'+
+            'color:var(--txt);font-weight:'+ (_gender===opt.g?'800':'400')+';'+
+            (_gender===opt.g?'color:var(--gold-l)':''));
+          item.textContent = opt.lbl + (_gender===opt.g?' ✓':'');
+          item.addEventListener('click', function(){
+            setGender(opt.g);
+            m.remove();
+          });
+          m.appendChild(item);
+        });
+        document.body.appendChild(m);
+        // Close on outside click
+        setTimeout(function(){
+          document.addEventListener('click', function close(e){
+            if(!m.contains(e.target) && e.target!==toggleBtn){ m.remove(); document.removeEventListener('click',close); }
+          });
+        }, 50);
+      });
+    }
+
+    // Wire reader speaker buttons
+    wireBtn('spk-title', function(){
+      var title = document.getElementById('r-title') ? document.getElementById('r-title').textContent : '';
+      var badge = document.getElementById('r-badge') ? document.getElementById('r-badge').textContent : '';
+      var com   = document.getElementById('r-com')   ? document.getElementById('r-com').textContent   : '';
+      return [badge, title, com].filter(Boolean).join('\n');
+    });
+    wireBtn('spk-com', function(){ return document.getElementById('r-com') ? document.getElementById('r-com').textContent : ''; });
+    wireBtn('spk-verses', function(){
+      var vl = document.getElementById('r-verses');
+      return vl ? vl.textContent : '';
+    });
+    wireBtn('spk-kab', function(){
+      var p = document.getElementById('r-kab-panel');
+      return p ? p.textContent.replace('✡ עולם הקבלה — סוד המזמור','').trim() : '';
+    });
+    wireBtn('spk-parasha', function(){
+      var pshot  = document.getElementById('par-pshot')  ? document.getElementById('par-pshot').textContent  : '';
+      var kab    = document.getElementById('par-kab')    ? document.getElementById('par-kab').textContent    : '';
+      var insight= document.getElementById('par-kab-insight') ? document.getElementById('par-kab-insight').textContent : '';
+      var full   = document.getElementById('par-full')   ? document.getElementById('par-full').textContent   : '';
+      var name   = document.getElementById('par-name')   ? document.getElementById('par-name').textContent   : '';
+      return [name, pshot, kab, insight, full].filter(Boolean).join('\n\n');
+    });
+  }
+
+  function wireBtn(id, getText){
+    var btn = document.getElementById(id);
+    if(!btn) return;
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      speak(getText(), btn);
+    });
+  }
+
+  // Public: wire a button dynamically (for re-rendered elements)
+  function wireDynamic(btn, getText){
+    if(!btn) return;
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      speak(getText(), btn);
+    });
+  }
+
+  return { speak:speak, stop:stop, setGender:setGender, init:init, wireDynamic:wireDynamic, getGender:function(){return _gender;} };
+})();
+
+// ═══════════════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════════════
 applyTheme();
@@ -4583,6 +4801,16 @@ updateCycleDisplay();
 save();
 
 showScreen('home');
+setTimeout(function(){ TTS.init(); }, 100);
+
+// Stop TTS when navigating
+(function(){
+  var _origShow = showScreen;
+  showScreen = function(id){
+    TTS.stop();
+    _origShow(id);
+  };
+})();
 
 // ═══════════════════════════════════════════════════
 //  REMINDERS — Fix 4
