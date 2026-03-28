@@ -691,6 +691,20 @@ nav {
 .btab { touch-action: manipulation; }
 .fc-btn { touch-action: manipulation; }
 
+/* ── TREE OF LIFE ── */
+.tree-node {
+  cursor: pointer; transition: all .2s;
+}
+.tree-node circle { transition: all .2s; }
+.tree-node:hover circle, .tree-node.active circle { filter: brightness(1.3); }
+.tree-psalm-pill {
+  background: rgba(138,43,226,.2); border: 1px solid rgba(138,43,226,.4);
+  border-radius: 20px; padding: 4px 10px;
+  font-family: 'Heebo', sans-serif; font-size: 12px; color: #c0a0e8;
+  cursor: pointer; touch-action: manipulation;
+}
+.tree-psalm-pill:active { background: rgba(138,43,226,.4); }
+
 /* ── ANIMATIONS ── */
 @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
 @keyframes pulse { 0%,100% { opacity:.7; } 50% { opacity:1; } }
@@ -707,15 +721,65 @@ nav {
 }
 
 /* ── LIGHT THEME ── */
+/* ── LIGHT THEME — full coverage ── */
 body.light {
   --bg: #f5f0e8; --bg2: #ede5d5; --surf: #fff8f0; --surf2: #f0e8d8;
   --surf3: #e8dcc8; --txt: #2a1a00; --txt-dim: #5a3a10; --txt-mut: #a08060;
   --cream: #2a1a00; --brd: rgba(120,80,20,.2); --brd-b: rgba(120,80,20,.5);
   --gold: #8b5e10; --gold-l: #6b3e00; --gold-d: #c9972c; --gold-dim: rgba(139,94,16,.12);
   --shadow: 0 4px 20px rgba(0,0,0,.12);
+  --red-l: #c0392b;
 }
-body.light .home-hero, body.light .pr-hdr { background: linear-gradient(180deg,#ede5d5,var(--bg)); }
+
+/* Screen headers */
+body.light .home-hero { background: linear-gradient(180deg,#ede5d5,var(--bg)); }
+body.light .pr-hdr    { background: linear-gradient(180deg,#ede5d5,var(--bg)); }
+body.light #s-about > div:first-child,
+body.light #s-prayers > div:first-child,
+body.light #s-tree > div:first-child { background: linear-gradient(180deg,#ede5d5,var(--bg)) !important; }
+body.light #s-about > div:first-child div,
+body.light #s-tree > div:first-child div { color: var(--gold-l) !important; text-shadow:none !important; }
+
+/* Reader */
 body.light .reader-illus::after { background: linear-gradient(transparent,var(--surf2)); }
+body.light .commentary { background: var(--surf2); border-color: var(--brd); }
+body.light .com-label  { color: var(--gold-d); }
+body.light .com-text   { color: var(--txt-dim); }
+
+/* Kabbalah panel */
+body.light #r-kab-panel { background: linear-gradient(160deg,#f0e8ff,#f8f0ff) !important; border-color: rgba(100,50,180,.3) !important; }
+body.light #r-kab-sefirot { color: #7b2fd4 !important; }
+body.light #r-kab-text    { color: #3a2060 !important; }
+body.light #r-kab-insight { color: #5a3a80 !important; background: rgba(138,43,226,.08) !important; }
+body.light #r-kab-btn     { background: linear-gradient(135deg,#f0e8ff,#e8d8ff) !important; color: #5a20a0 !important; border-color: rgba(138,43,226,.4) !important; }
+
+/* Highlight card */
+body.light #highlight-card { background: linear-gradient(135deg,#fff3e0,#ffecc8) !important; border-color: rgba(139,94,16,.4) !important; }
+body.light #highlight-card p { color: #5a3a10 !important; }
+body.light #highlight-card strong { color: #2a1a00 !important; }
+body.light #highlight-card > div:first-child { color: #8b5e10 !important; text-shadow: none !important; }
+
+/* Tree of Life */
+body.light #tree-detail { background: linear-gradient(160deg,#f0e8ff,#f8f0ff) !important; border-color: rgba(100,50,180,.3) !important; }
+body.light #td-name  { color: #4a1a80 !important; }
+body.light #td-heb   { color: #7b2fd4 !important; }
+body.light #td-desc  { color: #3a2060 !important; }
+body.light #td-attr  { color: #5a3a80 !important; background: rgba(138,43,226,.08) !important; }
+body.light #td-verse { color: #4a2080 !important; }
+body.light .tree-psalm-pill { background: rgba(138,43,226,.12) !important; color: #5a20a0 !important; }
+
+/* Progress screen */
+body.light .prog-header { background: linear-gradient(180deg,#ede5d5,var(--bg)); }
+body.light .rem-row { background: var(--surf2); }
+body.light .rem-time { background: var(--surf3); color: var(--gold-d); border-color: var(--brd); }
+
+/* Parasha card */
+body.light #parasha-card { background: var(--surf2); border-color: var(--brd); }
+body.light #parasha-desc  { background: var(--surf3) !important; color: var(--txt-dim) !important; }
+
+/* Mood bar */
+body.light .mood-bar { background: var(--surf2); border-color: var(--brd); }
+body.light .mood-pill { background: var(--surf3); border-color: var(--brd); color: var(--txt-dim); }
 
 /* ── PARASHA CARD ── */
 .parasha-card {
@@ -821,7 +885,7 @@ body.light .reader-illus::after { background: linear-gradient(transparent,var(--
         </svg>
       </div>
       <div class="app-title">תְּהִלִים</div>
-      <div class="app-sub">ספר המזמורים · דוד המלך</div>
+      <div class="app-sub" style="color:var(--gold-d);font-weight:500;font-size:14px;letter-spacing:.5px">150 מזמורים · 10 ספירות · נשמה אחת</div>
     </div>
 
     <!-- HIGHLIGHT CARD — open by default, above today card -->
@@ -1075,6 +1139,31 @@ body.light .reader-illus::after { background: linear-gradient(transparent,var(--
   </div>
 
   <!-- SCREEN: ABOUT -->
+  <!-- SCREEN: TREE OF LIFE -->
+  <div id="s-tree" class="screen">
+    <div style="background:linear-gradient(180deg,#080010,#0d0800);padding:20px 16px 8px;text-align:center">
+      <div style="font-family:'Frank Ruhl Libre',serif;font-size:24px;color:#c8a8f0;letter-spacing:2px;text-shadow:0 0 20px rgba(138,43,226,.5);margin-bottom:4px">עץ החיים</div>
+      <div style="font-family:'Heebo',sans-serif;font-size:12px;color:#6b4090;font-weight:300">עשר ספירות · מפת הנשמה</div>
+    </div>
+    <!-- SVG Tree -->
+    <div id="tree-svg-wrap" style="padding:10px 16px 0;display:flex;justify-content:center"></div>
+    <!-- Sefirah detail panel -->
+    <div id="tree-detail" style="display:none;margin:12px 14px;background:linear-gradient(160deg,#12082a,#0d0820);border:1px solid rgba(138,43,226,.4);border-radius:14px;overflow:hidden;position:relative">
+      <div style="position:absolute;top:0;right:0;width:3px;height:100%;background:linear-gradient(180deg,#c8a8f0,#7b2fd4)"></div>
+      <div style="padding:14px 18px">
+        <div id="td-name" style="font-family:'Frank Ruhl Libre',serif;font-size:20px;color:#e0c8ff;margin-bottom:2px"></div>
+        <div id="td-heb"  style="font-family:'Heebo',sans-serif;font-size:11px;color:#7b2fd4;letter-spacing:1.5px;font-weight:700;margin-bottom:10px"></div>
+        <div id="td-desc" style="font-family:'Heebo',sans-serif;font-size:13px;color:#c0a0e0;line-height:1.85;margin-bottom:12px"></div>
+        <div id="td-attr" style="font-family:'Heebo',sans-serif;font-size:11px;color:#9060c0;margin-bottom:10px;padding:8px 10px;background:rgba(138,43,226,.1);border-radius:8px;line-height:1.7"></div>
+        <div style="font-family:'Heebo',sans-serif;font-size:10px;color:#7b2fd4;font-weight:800;letter-spacing:1.5px;margin-bottom:6px">✦ מזמורים קשורים</div>
+        <div id="td-psalms" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px"></div>
+        <div style="font-family:'Heebo',sans-serif;font-size:10px;color:#7b2fd4;font-weight:800;letter-spacing:1.5px;margin-bottom:6px">✦ פסוק לדוגמה</div>
+        <div id="td-verse" style="font-family:'Frank Ruhl Libre',serif;font-size:14px;color:#e0d0f8;line-height:1.9;font-style:italic"></div>
+      </div>
+    </div>
+    <div style="height:10px"></div>
+  </div>
+
   <div id="s-about" class="screen">
     <!-- Header — same as home -->
     <div style="background:linear-gradient(180deg,#1a1000 0%,#0d0800 100%);padding:20px 16px 0;text-align:center;position:relative">
@@ -1128,16 +1217,6 @@ body.light .reader-illus::after { background: linear-gradient(transparent,var(--
         <div class="about-book-row"><span class="about-book-nm">חמישי</span><span class="about-book-rng">מזמור פא</span></div>
         <div class="about-book-row"><span class="about-book-nm">שישי</span><span class="about-book-rng">מזמור צג</span></div>
         <div class="about-book-row"><span class="about-book-nm">שבת</span><span class="about-book-rng">מזמור צב</span></div>
-      </div>
-
-      <div class="about-card" style="border-right:3px solid var(--gold);background:linear-gradient(135deg,var(--surf2),var(--surf))">
-        <h3 style="font-size:15px;letter-spacing:.5px">תהילים — פשט וסוד</h3>
-        <p style="margin-bottom:12px">
-          <strong style="color:var(--cream)">בפשט</strong> — ספר תפילה אנושית עמוקה. דוד המלך שפך את נשמתו בכל מזמור — שמחה, פחד, אהבה, שבר — ויצר יצירה שאנשים מוצאים בה את עצמם לאורך 3,000 שנה.
-        </p>
-        <p>
-          <strong style="color:var(--cream)">בקבלה</strong> — תהילים הוא מפת-הנשמה. כל מזמור מאיר ספירה שונה בעץ החיים, מהמעמקים שבמלכות עד לאור שבכתר. הנשמה שקוראת בתהילים אינה רק קוראת — היא מסיירת, ניצוץ אחר ניצוץ, בכל עולמות האלוהות.
-        </p>
       </div>
 
       <!-- Copyright -->
@@ -1198,13 +1277,17 @@ body.light .reader-illus::after { background: linear-gradient(transparent,var(--
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
       <span>כל הפרקים</span>
     </button>
-    <button class="nb" data-s="prayers">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-      <span>תפילות</span>
+    <button class="nb" data-s="tree">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="10" r="2"/><circle cx="19" cy="10" r="2"/><circle cx="12" cy="15" r="2"/><circle cx="12" cy="21" r="1.5"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="7" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="17" y2="10"/></svg>
+      <span>עץ החיים</span>
     </button>
     <button class="nb" data-s="prog">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
       <span>התקדמות</span>
+    </button>
+    <button class="nb" data-s="prayers">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      <span>תפילות</span>
     </button>
     <button class="nb" data-s="about">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -2031,16 +2114,15 @@ function save(){
   return ok;
 }
 
-// Belt-and-suspenders lifecycle hooks (iOS fires these unreliably,
-// but we call save() after every mutation so this is just insurance)
-['pagehide','blur','beforeunload','freeze'].forEach(function(evt){
-  window.addEventListener(evt, function(){ save(); }, {capture:true, passive:true});
+// Save on every possible exit signal — this is the only automatic save
+// (save() is also called explicitly after every state mutation)
+['pagehide','beforeunload','freeze'].forEach(function(evt){
+  window.addEventListener(evt, save, {capture:true, passive:true});
 });
 document.addEventListener('visibilitychange', function(){
   if(document.visibilityState === 'hidden') save();
 }, {capture:true, passive:true});
-// Periodic save every 10s
-setInterval(save, 10000);
+// No interval polling — save() is called immediately after every change
 
 // Streak logic
 function checkStreak(){
@@ -2144,6 +2226,7 @@ function showScreen(id){
   if(id==='all') renderAll();
   if(id==='prog'){ renderProg(); updateCycleDisplay(); if(window._renderReminders) window._renderReminders(); }
   if(id==='prayers') renderPrayers();
+  if(id==='tree') renderTree();
 }
 
 // ═══════════════════════════════════════════════════
@@ -2945,11 +3028,11 @@ function renderPrayers(){
     el.textContent = cat;
     var on = cat === activePrayerCat;
     el.setAttribute('style',
-      'background:' + (on ? 'rgba(201,151,44,.18)' : '#1e1206') + ';' +
-      'border:1px solid ' + (on ? '#c9972c' : 'rgba(201,151,44,.22)') + ';' +
+      'background:' + (on ? col('rgba(201,151,44,.18)','rgba(139,94,16,.15)') : col('#1e1206','#fff8f0')) + ';' +
+      'border:1px solid ' + (on ? col('#c9972c','#8b5e10') : col('rgba(201,151,44,.22)','rgba(139,94,16,.25)')) + ';' +
       'border-radius:20px;padding:7px 14px;' +
       'font-family:Heebo,sans-serif;font-size:12px;' +
-      'color:' + (on ? '#e8c96a' : '#a89060') + ';' +
+      'color:' + (on ? col('#e8c96a','#6b3e00') : col('#a89060','#8b6820')) + ';' +
       'cursor:pointer;white-space:nowrap;touch-action:manipulation;' +
       '-webkit-tap-highlight-color:transparent;outline:none;');
     el.addEventListener('click', function(){
@@ -2987,9 +3070,9 @@ function renderPrayers(){
 
     var card = document.createElement('div');
     card.setAttribute('style',
-      'background:#1e1206;' +
-      'border:1px solid ' + (isOpen ? 'rgba(201,151,44,.55)' : 'rgba(201,151,44,.22)') + ';' +
-      'border-radius:14px;overflow:hidden;box-shadow:0 3px 16px rgba(0,0,0,.4);');
+      'background:' + col('#1e1206','#fff8f0') + ';' +
+      'border:1px solid ' + (isOpen ? col('rgba(201,151,44,.55)','rgba(139,94,16,.55)') : col('rgba(201,151,44,.22)','rgba(139,94,16,.25)')) + ';' +
+      'border-radius:14px;overflow:hidden;box-shadow:0 3px 16px rgba(0,0,0,.15);');
 
     // ── Banner row ──
     var banner = document.createElement('div');
@@ -2999,18 +3082,18 @@ function renderPrayers(){
     var iconBox = document.createElement('div');
     iconBox.setAttribute('style',
       'width:52px;height:52px;flex-shrink:0;display:flex;align-items:center;justify-content:center;' +
-      'background:linear-gradient(135deg,#271808,#31200d);' +
-      'border:1px solid rgba(201,151,44,.45);border-radius:13px;font-size:27px;' +
-      'box-shadow:0 2px 8px rgba(0,0,0,.4);');
+      'background:linear-gradient(135deg,' + col('#271808','#f0e8d8') + ',' + col('#31200d','#e8dcc8') + ');' +
+      'border:1px solid ' + col('rgba(201,151,44,.45)','rgba(139,94,16,.35)') + ';border-radius:13px;font-size:27px;' +
+      'box-shadow:0 2px 8px rgba(0,0,0,.2);');
     iconBox.textContent = pr.icon;
 
     // Text area
     var texts = document.createElement('div');
     texts.setAttribute('style','flex:1;min-width:0;');
     texts.innerHTML =
-      '<div style="font-family:\'Suez One\',serif;font-size:16px;color:#e8c96a;line-height:1.3;margin-bottom:4px;' +
-        'text-shadow:0 0 12px rgba(201,151,44,.3)">' + pr.name + '</div>' +
-      '<div style="font-family:Heebo,sans-serif;font-size:11px;color:#6b5535;line-height:1.4;font-weight:300">' + pr.occasion + '</div>';
+      '<div style="font-family:\'Suez One\',serif;font-size:16px;color:' + col('#e8c96a','#6b3e00') + ';line-height:1.3;margin-bottom:4px;' +
+        'text-shadow:' + col('0 0 12px rgba(201,151,44,.3)','none') + '">' + pr.name + '</div>' +
+      '<div style="font-family:Heebo,sans-serif;font-size:11px;color:' + col('#6b5535','#a08060') + ';line-height:1.4;font-weight:300">' + pr.occasion + '</div>';
 
     // Star
     var star = document.createElement('button');
@@ -3049,7 +3132,7 @@ function renderPrayers(){
     // ── Expanded body ──
     if(isOpen){
       var body = document.createElement('div');
-      body.setAttribute('style','border-top:1px solid rgba(201,151,44,.22);background:#271808;padding:0;position:relative;');
+      body.setAttribute('style','border-top:1px solid ' + col('rgba(201,151,44,.22)','rgba(139,94,16,.2)') + ';background:' + col('#271808','#f0e8d8') + ';padding:0;position:relative;');
 
       var bar = document.createElement('div');
       bar.setAttribute('style','position:absolute;top:0;right:0;width:3px;height:100%;background:linear-gradient(180deg,#e8c96a,#8b6820);');
@@ -3061,15 +3144,15 @@ function renderPrayers(){
       if(pr.essence){
         var ess = document.createElement('div');
         ess.setAttribute('style',
-          'font-family:Heebo,sans-serif;font-size:13px;color:#a89060;line-height:1.8;' +
-          'margin-bottom:14px;padding:12px 14px;background:rgba(201,151,44,.1);' +
-          'border-radius:10px;border-right:3px solid #c9972c;');
+          'font-family:Heebo,sans-serif;font-size:13px;color:' + col('#a89060','#5a3a10') + ';line-height:1.8;' +
+          'margin-bottom:14px;padding:12px 14px;background:' + col('rgba(201,151,44,.1)','rgba(139,94,16,.1)') + ';' +
+          'border-radius:10px;border-right:3px solid ' + col('#c9972c','#8b5e10') + ';');
         ess.textContent = pr.essence;
         inner.appendChild(ess);
       }
 
       var src = document.createElement('div');
-      src.setAttribute('style','font-family:Heebo,sans-serif;font-size:10px;color:#8b6820;font-weight:800;letter-spacing:1.5px;margin-bottom:12px;');
+      src.setAttribute('style','font-family:Heebo,sans-serif;font-size:10px;color:' + col('#8b6820','#8b5e10') + ';font-weight:800;letter-spacing:1.5px;margin-bottom:12px;');
       src.innerHTML = '✦ ' + pr.source;
       inner.appendChild(src);
 
@@ -3079,8 +3162,8 @@ function renderPrayers(){
         var fb = document.createElement('button');
         fb.textContent = lbl;
         fb.setAttribute('style',
-          'background:#31200d;border:1px solid rgba(201,151,44,.22);border-radius:7px;' +
-          'padding:5px 12px;font-size:12px;color:#a89060;cursor:pointer;touch-action:manipulation;outline:none;');
+          'background:' + col('#31200d','#e8dcc8') + ';border:1px solid ' + col('rgba(201,151,44,.22)','rgba(139,94,16,.3)') + ';border-radius:7px;' +
+          'padding:5px 12px;font-size:12px;color:' + col('#a89060','#5a3a10') + ';cursor:pointer;touch-action:manipulation;outline:none;');
         fb.addEventListener('click', function(e){
           e.stopPropagation();
           STATE.fontSize = i===0 ? Math.max(13,STATE.fontSize-2) : Math.min(30,STATE.fontSize+2);
@@ -3093,16 +3176,16 @@ function renderPrayers(){
       var ptxt = document.createElement('div');
       ptxt.setAttribute('style',
         'font-family:"Frank Ruhl Libre",serif;font-size:var(--reader-fs,17px);' +
-        'line-height:2.15;color:#f5e8c8;white-space:pre-wrap;text-align:right;margin-bottom:14px;');
+        'line-height:2.15;color:' + col('#f5e8c8','#2a1a00') + ';white-space:pre-wrap;text-align:right;margin-bottom:14px;');
       ptxt.textContent = pr.text;
       inner.appendChild(ptxt);
 
       if(pr.note){
         var note = document.createElement('div');
         note.setAttribute('style',
-          'font-family:Heebo,sans-serif;font-size:12px;color:#a89060;line-height:1.75;' +
-          'padding:10px 14px;background:rgba(201,151,44,.08);border-radius:9px;' +
-          'border-right:3px solid #8b6820;margin-bottom:14px;');
+          'font-family:Heebo,sans-serif;font-size:12px;color:' + col('#a89060','#5a3a10') + ';line-height:1.75;' +
+          'padding:10px 14px;background:' + col('rgba(201,151,44,.08)','rgba(139,94,16,.08)') + ';border-radius:9px;' +
+          'border-right:3px solid ' + col('#8b6820','#8b5e10') + ';margin-bottom:14px;');
         note.textContent = '💡 ' + pr.note;
         inner.appendChild(note);
       }
@@ -3113,8 +3196,8 @@ function renderPrayers(){
       var copyBtn = document.createElement('button');
       copyBtn.textContent = '📋 העתק';
       copyBtn.setAttribute('style',
-        'flex:1;padding:10px;background:transparent;border:1px solid rgba(201,151,44,.55);' +
-        'border-radius:10px;font-family:Heebo,sans-serif;font-size:13px;color:#c9972c;' +
+        'flex:1;padding:10px;background:transparent;border:1px solid ' + col('rgba(201,151,44,.55)','rgba(139,94,16,.55)') + ';' +
+        'border-radius:10px;font-family:Heebo,sans-serif;font-size:13px;color:' + col('#c9972c','#8b5e10') + ';' +
         'cursor:pointer;touch-action:manipulation;outline:none;');
       copyBtn.addEventListener('click', function(e){
         e.stopPropagation();
@@ -3127,8 +3210,8 @@ function renderPrayers(){
       var closeBtn = document.createElement('button');
       closeBtn.textContent = '✕ סגור';
       closeBtn.setAttribute('style',
-        'flex:1;padding:10px;background:#31200d;border:1px solid rgba(201,151,44,.22);' +
-        'border-radius:10px;font-family:Heebo,sans-serif;font-size:13px;color:#a89060;' +
+        'flex:1;padding:10px;background:' + col('#31200d','#e8dcc8') + ';border:1px solid ' + col('rgba(201,151,44,.22)','rgba(139,94,16,.25)') + ';' +
+        'border-radius:10px;font-family:Heebo,sans-serif;font-size:13px;color:' + col('#a89060','#5a3a10') + ';' +
         'cursor:pointer;touch-action:manipulation;outline:none;');
       closeBtn.addEventListener('click', function(e){
         e.stopPropagation();
@@ -3504,6 +3587,11 @@ function stopTimer(){
   if(el) el.classList.remove('on');
 }
 
+// ── Theme-aware color helper for JS-built elements ──
+function col(dark, light){
+  return _lightMode ? light : dark;
+}
+
 // ═══════════════════════════════════════════════════
 //  FEATURE 7: THEME TOGGLE
 // ═══════════════════════════════════════════════════
@@ -3549,10 +3637,226 @@ document.getElementById('r-note-save').addEventListener('click', function(){
 });
 
 // ═══════════════════════════════════════════════════
+//  TREE OF LIFE — עץ החיים
+// ═══════════════════════════════════════════════════
+var SEFIROT = [
+  {
+    id:'keter', name:'כֶּתֶר', heb:'KETER — הכתר', color:'#ffffff', glow:'rgba(255,255,255,.8)', textCol:'#1a1a2e',
+    x:50, y:6,
+    desc:'הספירה הגבוהה ביותר — הרצון האלוהי הראשון שמעל השכל והרגש. מקום האחדות המוחלטת שלפני כל פירוד. "אין" — אין סוף, ללא גבולות.',
+    attr:'🌟 מידה: רצון עליון\n🔗 גוף: קודקוד הראש\n🎨 צבע: לבן מאיר\n♾️ מספר: 1',
+    psalms:[8,19,90,150], verse:'מה אדוש כי תזכרנו ובן אדם כי תפקדנו (תהילים ח, ה)'
+  },
+  {
+    id:'chochma', name:'חָכְמָה', heb:'CHOCHMA — חכמה', color:'#60c8ff', glow:'rgba(96,200,255,.8)', textCol:'#0a1a2e',
+    x:20, y:18,
+    desc:'הבזק הראשון של אור — רעיון שמגיע ללא מחשבה. ה"יש" הראשון מן ה"אין". נקודה אחת של אור טהור ללא ממד.',
+    attr:'⚡ מידה: חכמה וביטול\n🔗 גוף: המוח הימני\n🎨 צבע: כחול בהיר\n♾️ מספר: 2',
+    psalms:[19,33,104,139], verse:'השמים מספרים כבוד אל ומעשה ידיו מגיד הרקיע (תהילים יט, ב)'
+  },
+  {
+    id:'bina', name:'בִּינָה', heb:'BINA — בינה', color:'#c060ff', glow:'rgba(192,96,255,.8)', textCol:'#1a0030',
+    x:80, y:18,
+    desc:'ה"אם העליונה" — הרחם שמעבד את הרעיון לצורה. הבנה, עיבוד, הבחנה בין דבר לדבר. מקור הזמן ועולם הבריאה.',
+    attr:'🧠 מידה: הבנה ועיבוד\n🔗 גוף: המוח השמאלי\n🎨 צבע: סגול\n♾️ מספר: 3',
+    psalms:[42,77,88,130], verse:'מן המעמקים קראתיך ה׳ (תהילים קל, א)'
+  },
+  {
+    id:'chesed', name:'חֶסֶד', heb:'CHESED — חסד', color:'#3a8fff', glow:'rgba(58,143,255,.8)', textCol:'#000820',
+    x:20, y:40,
+    desc:'אהבה ללא גבולות — הרצון לתת ולהשפיע. ה"אב" — מקור השפע שזורם ללא תנאי. ספירת הטוב המוחלט.',
+    attr:'💙 מידה: אהבה ונתינה\n🔗 גוף: הזרוע הימנית\n🎨 צבע: כחול\n♾️ מספר: 4',
+    psalms:[23,36,103,136], verse:'כי לעולם חסדו (תהילים קלו, א)'
+  },
+  {
+    id:'gevura', name:'גְּבוּרָה', heb:'GEVURA — גבורה', color:'#ff3a3a', glow:'rgba(255,58,58,.8)', textCol:'#200000',
+    x:80, y:40,
+    desc:'דין וגבול — הכוח שמצמצם ומסדר. בלי גבורה, החסד יציף הכל. צדק, משמעת, עוצמה. כוח שמגן.',
+    attr:'🔥 מידה: דין וצדק\n🔗 גוף: הזרוע השמאלית\n🎨 צבע: אדום\n♾️ מספר: 5',
+    psalms:[29,35,68,94], verse:'ה׳ עוז לעמו יתן ה׳ יברך את עמו בשלום (תהילים כט, יא)'
+  },
+  {
+    id:'tiferet', name:'תִּפְאֶרֶת', heb:'TIFERET — תפארת', color:'#ffd700', glow:'rgba(255,215,0,.8)', textCol:'#1a1000',
+    x:50, y:52,
+    desc:'ה"לב" של עץ החיים — האיזון המושלם בין חסד לגבורה. יופי, הרמוניה, אמת. מקום הנשמה. נקרא "בן" ו"מלך".',
+    attr:'✨ מידה: יופי ואמת\n🔗 גוף: הלב\n🎨 צבע: זהוב\n♾️ מספר: 6',
+    psalms:[27,46,62,91], verse:'ה׳ אורי וישעי ממי אירא (תהילים כז, א)'
+  },
+  {
+    id:'netzach', name:'נֶצַח', heb:'NETZACH — נצח', color:'#20d060', glow:'rgba(32,208,96,.8)', textCol:'#001a10',
+    x:20, y:65,
+    desc:'ניצחון ונצחיות — הכוח שמניע לפעולה. רגש, יצר, דחף, יצירה. מקור האמנות והמוזיקה.',
+    attr:'🎵 מידה: נצח ורגש\n🔗 גוף: הירך הימנית\n🎨 צבע: ירוק\n♾️ מספר: 7',
+    psalms:[9,20,60,70], verse:'יענך ה׳ ביום צרה (תהילים כ, ב)'
+  },
+  {
+    id:'hod', name:'הוֹד', heb:'HOD — הוד', color:'#ff8c00', glow:'rgba(255,140,0,.8)', textCol:'#1a0800',
+    x:80, y:65,
+    desc:'הוד וענווה — ההד של הנצח. כשמבטלים עצמך, מגיעה ה"הודיה". מקור הנבואה. שפיכת לב בשתיקה.',
+    attr:'🙏 מידה: הוד וענווה\n🔗 גוף: הירך השמאלית\n🎨 צבע: כתום\n♾️ מספר: 8',
+    psalms:[50,65,100,138], verse:'טוב להודות לה׳ ולזמר לשמך עליון (תהילים צב, ב)'
+  },
+  {
+    id:'yesod', name:'יְסוֹד', heb:'YESOD — יסוד', color:'#40e0a0', glow:'rgba(64,224,160,.8)', textCol:'#001a10',
+    x:50, y:78,
+    desc:'הצינור — מחבר את כל השפע העליון ומוריד למלכות. "צדיק יסוד עולם". ברית, קשר, חיבור. יוסף.',
+    attr:'🌊 מידה: קשר וחיבור\n🔗 גוף: הברית\n🎨 צבע: ירוק-טורקיז\n♾️ מספר: 9',
+    psalms:[23,31,54,125], verse:'בוטח בה׳ חסד יסובבנו (תהילים לב, י)'
+  },
+  {
+    id:'malchut', name:'מַלְכוּת', heb:'MALCHUT — מלכות', color:'#c040c0', glow:'rgba(192,64,192,.8)', textCol:'#1a001a',
+    x:50, y:92,
+    desc:'ה"כלה" — המלכות שמקבלת מכל הספירות ומורידה לעולם הזה. השכינה. "ארץ". הנוכחות האלוהית בחיי היום-יום.',
+    attr:'👑 מידה: מלכות וקבלה\n🔗 גוף: הרגליים\n🎨 צבע: סגול-מלכותי\n♾️ מספר: 10',
+    psalms:[22,87,102,113,122], verse:'ה׳ מלך גאות לבש (תהילים צג, א)'
+  }
+];
+
+// Connections between sefirot (pairs of IDs)
+var TREE_PATHS = [
+  ['keter','chochma'],['keter','bina'],['keter','tiferet'],
+  ['chochma','bina'],['chochma','chesed'],['chochma','tiferet'],
+  ['bina','gevura'],['bina','tiferet'],
+  ['chesed','gevura'],['chesed','tiferet'],['chesed','netzach'],
+  ['gevura','tiferet'],['gevura','hod'],
+  ['tiferet','netzach'],['tiferet','hod'],['tiferet','yesod'],
+  ['netzach','hod'],['netzach','yesod'],
+  ['hod','yesod'],
+  ['yesod','malchut']
+];
+
+var _activeSefirah = null;
+
+function renderTree(){
+  var wrap = document.getElementById('tree-svg-wrap');
+  if(!wrap) return;
+
+  var W = Math.min(window.innerWidth - 32, 360);
+  var H = Math.round(W * 1.15);
+  var R = Math.round(W * 0.075); // node radius
+
+  // Build SVG
+  var ns = 'http://www.w3.org/2000/svg';
+  var svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('width', W);
+  svg.setAttribute('height', H);
+  svg.setAttribute('viewBox', '0 0 100 108');
+
+  // Defs for glows
+  var defs = document.createElementNS(ns, 'defs');
+  SEFIROT.forEach(function(s){
+    var f = document.createElementNS(ns, 'filter');
+    f.setAttribute('id', 'glow-'+s.id);
+    var fe = document.createElementNS(ns, 'feGaussianBlur');
+    fe.setAttribute('stdDeviation', '1.5');
+    fe.setAttribute('result', 'blur');
+    f.appendChild(fe);
+    var feMerge = document.createElementNS(ns, 'feMerge');
+    var n1 = document.createElementNS(ns, 'feMergeNode');
+    n1.setAttribute('in','blur');
+    var n2 = document.createElementNS(ns, 'feMergeNode');
+    n2.setAttribute('in','SourceGraphic');
+    feMerge.appendChild(n1); feMerge.appendChild(n2);
+    f.appendChild(feMerge);
+    defs.appendChild(f);
+  });
+  svg.appendChild(defs);
+
+  // Draw paths first (behind nodes)
+  TREE_PATHS.forEach(function(pair){
+    var a = SEFIROT.find(function(s){ return s.id===pair[0]; });
+    var b = SEFIROT.find(function(s){ return s.id===pair[1]; });
+    if(!a||!b) return;
+    var line = document.createElementNS(ns, 'line');
+    line.setAttribute('x1', a.x); line.setAttribute('y1', a.y);
+    line.setAttribute('x2', b.x); line.setAttribute('y2', b.y);
+    line.setAttribute('stroke', 'rgba(180,120,255,0.55)');
+    line.setAttribute('stroke-width', '0.9');
+    svg.appendChild(line);
+  });
+
+  // Draw nodes
+  SEFIROT.forEach(function(s){
+    var isActive = _activeSefirah === s.id;
+    var g = document.createElementNS(ns, 'g');
+    g.setAttribute('filter', 'url(#glow-'+s.id+')');
+    g.style.cursor = 'pointer';
+
+    var circle = document.createElementNS(ns, 'circle');
+    circle.setAttribute('cx', s.x);
+    circle.setAttribute('cy', s.y);
+    circle.setAttribute('r', isActive ? 7 : 5.8);
+    circle.setAttribute('fill', s.color);
+    circle.setAttribute('fill-opacity', isActive ? '1' : '0.85');
+    circle.setAttribute('stroke', isActive ? '#fff' : 'rgba(255,255,255,0.5)');
+    circle.setAttribute('stroke-width', isActive ? '1.5' : '0.6');
+
+    var text = document.createElementNS(ns, 'text');
+    text.setAttribute('x', s.x);
+    text.setAttribute('y', s.y + 0.5);
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('dominant-baseline', 'middle');
+    text.setAttribute('fill', s.textCol || '#0d0820');
+    text.setAttribute('font-size', '2.1');
+    text.setAttribute('font-family', 'Heebo, sans-serif');
+    text.setAttribute('font-weight', '800');
+    text.textContent = s.name;
+
+    g.appendChild(circle);
+    g.appendChild(text);
+    g.addEventListener('click', function(){ selectSefirah(s.id); });
+    svg.appendChild(g);
+  });
+
+  wrap.innerHTML = '';
+  wrap.appendChild(svg);
+}
+
+function selectSefirah(id){
+  // Toggle — second click closes
+  if(_activeSefirah === id){
+    _activeSefirah = null;
+    document.getElementById('tree-detail').style.display = 'none';
+    renderTree();
+    return;
+  }
+  _activeSefirah = id;
+  var s = SEFIROT.find(function(x){ return x.id===id; });
+  if(!s) return;
+
+  // Update detail panel
+  var panel = document.getElementById('tree-detail');
+  panel.style.display = 'block';
+  document.getElementById('td-name').textContent = s.name;
+  document.getElementById('td-heb').textContent  = s.heb;
+  document.getElementById('td-desc').textContent = s.desc;
+  document.getElementById('td-attr').textContent = s.attr;
+  document.getElementById('td-verse').textContent = s.verse;
+
+  // Psalm pills
+  var psContainer = document.getElementById('td-psalms');
+  psContainer.innerHTML = '';
+  s.psalms.forEach(function(n){
+    var ps = PSALMS.find(function(p){ return p.n===n; });
+    if(!ps) return;
+    var pill = document.createElement('button');
+    pill.className = 'tree-psalm-pill';
+    pill.textContent = 'מזמור ' + heb(n);
+    pill.addEventListener('click', function(){
+      openReader(ps, 'tree');
+    });
+    psContainer.appendChild(pill);
+  });
+
+  // Re-render SVG to update active state
+  renderTree();
+
+  // Scroll to detail
+  setTimeout(function(){ panel.scrollIntoView({behavior:'smooth', block:'nearest'}); }, 80);
+}
+// ═══════════════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════════════
-checkStreak();
-applyFontSize();
 applyTheme();
 renderParasha();
 updateCycleDisplay();
