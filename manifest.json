@@ -1,7 +1,7 @@
 {
-  "name": "ספר תהילים",
-  "short_name": "תהילים",
-  "description": "ספר תהילים — 150 מזמורים עם פרשנות ותפילות",
+  "name": "ניצוץ — מסע הנשמה",
+  "short_name": "ניצוץ",
+  "description": "קבלה · תהילים · התעוררות — מסע הנשמה לאור",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0d0800",
