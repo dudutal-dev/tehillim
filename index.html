@@ -4807,6 +4807,76 @@ var TTS = (function(){
     window.speechSynthesis.speak(utt);
   }
 
+
+  function testTTSConnection(){
+    var openaiKey = LS.get('tts_api_key','');
+    var elKey     = LS.get('tts_el_key','');
+
+    if(!openaiKey && !elKey){
+      showInfoToast('⚠️ לא הוזן מפתח\nלחץ על 🔊 ♀ → שמור מפתח');
+      return;
+    }
+
+    if(openaiKey){
+      showInfoToast('🔍 בודק OpenAI...');
+      fetch('https://api.openai.com/v1/audio/speech',{
+        method:'POST',
+        headers:{'Authorization':'Bearer '+openaiKey,'Content-Type':'application/json'},
+        body:JSON.stringify({model:'tts-1',voice:'nova',input:'שלום',response_format:'mp3'})
+      }).then(function(r){
+        if(r.status===401){ showInfoToast('❌ OpenAI: מפתח לא תקין (401)\nבדוק שהמפתח נכון ויש קרדיט'); return null; }
+        if(r.status===429){ showInfoToast('❌ OpenAI: מגבלת קריאות (429)\nנסה שוב בעוד רגע'); return null; }
+        if(!r.ok){ showInfoToast('❌ OpenAI שגיאה: '+r.status); return null; }
+        return r.blob();
+      }).then(function(blob){
+        if(!blob) return;
+        showInfoToast('✅ OpenAI מחובר!\nמשמיע דוגמה...');
+        var url=URL.createObjectURL(blob);
+        var a=new Audio(url);
+        a.onended=function(){ URL.revokeObjectURL(url); };
+        a.play().catch(function(e){ showInfoToast('✅ מחובר אבל דפדפן חסם השמעה — נסה ללחוץ על 🔊 בפרק'); });
+      }).catch(function(e){
+        showInfoToast('❌ שגיאת רשת OpenAI:\n'+e.message+'\n\nאפשרי: חסימת CORS ב-GitHub Pages');
+      });
+    } else {
+      showInfoToast('🔍 בודק ElevenLabs...');
+      fetch('https://api.elevenlabs.io/v1/user',{headers:{'xi-api-key':elKey}})
+      .then(function(r){
+        if(r.status===401){ showInfoToast('❌ ElevenLabs: מפתח לא תקין (401)'); return null; }
+        if(!r.ok){ showInfoToast('❌ ElevenLabs שגיאה: '+r.status); return null; }
+        return r.json();
+      }).then(function(data){
+        if(!data) return;
+        var used = data.subscription&&data.subscription.character_count||0;
+        var lim  = data.subscription&&data.subscription.character_limit||10000;
+        showInfoToast('✅ ElevenLabs מחובר!\n'+
+          'שם: '+(data.first_name||'')+'\n'+
+          'תווים שנותרו: '+(lim-used)+'/'+lim+'\n\nמשמיע דוגמה...');
+        _elKey = elKey;
+        speakElevenLabs('שלום', 'general', null);
+      }).catch(function(e){
+        showInfoToast('❌ שגיאת רשת ElevenLabs:\n'+e.message);
+      });
+    }
+  }
+
+  function showInfoToast(msg){
+    var old=document.getElementById('tts-toast');
+    if(old) old.remove();
+    var t=document.createElement('div');
+    t.id='tts-toast';
+    t.setAttribute('style',
+      'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:9999;'+
+      'background:var(--surf2);border:1px solid var(--brd);border-radius:12px;'+
+      'padding:14px 18px;font-family:Heebo,sans-serif;font-size:13px;color:var(--txt);'+
+      'max-width:320px;width:90%;white-space:pre-line;line-height:1.7;'+
+      'box-shadow:0 4px 20px rgba(0,0,0,.5);cursor:pointer;text-align:right');
+    t.textContent=msg;
+    t.addEventListener('click',function(){ t.remove(); });
+    document.body.appendChild(t);
+    setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); },12000);
+  }
+
   function showTTSError(msg){
     stop();
     var t = document.createElement('div');
@@ -4934,6 +5004,18 @@ var TTS = (function(){
         note.setAttribute('style','padding:0 18px 10px;font-family:Heebo,sans-serif;font-size:10px;color:var(--txt-mut);line-height:1.6');
         note.textContent='ללא מפתח: קול דפדפן. עם מפתח: קול אנושי-טבעי.';
         m.appendChild(note);
+
+        // Test button
+        var testBtn=document.createElement('button');
+        testBtn.textContent='🔍 בדוק חיבור';
+        testBtn.setAttribute('style','display:block;width:calc(100% - 24px);margin:0 12px 10px;padding:9px;'+
+          'border-radius:8px;font-size:13px;cursor:pointer;font-family:Heebo,sans-serif;'+
+          'background:rgba(201,151,44,.15);border:1px solid rgba(201,151,44,.4);color:var(--gold-l)');
+        testBtn.addEventListener('click',function(){
+          m.remove();
+          testTTSConnection();
+        });
+        m.appendChild(testBtn);
 
         document.body.appendChild(m);
         setTimeout(function(){
