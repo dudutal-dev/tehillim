@@ -770,13 +770,15 @@ body.light .rem-time { background: var(--surf3); color: var(--gold-d); border-co
 /* Parasha reader — exact highlight-card style */
 body.light #par-pshot-card,
 body.light #par-kab-card,
-body.light #par-kab-card + div { background: linear-gradient(135deg,#fff3e0,#ffecc8) !important; border-color: rgba(139,94,16,.4) !important; }
+body.light #par-kab-card + div,
+body.light #par-kab-card + div + div { background: linear-gradient(135deg,#fff3e0,#ffecc8) !important; border-color: rgba(139,94,16,.4) !important; }
 body.light #par-pshot-card .suez-title,
 body.light #par-kab-card  .suez-title { color: #8b5e10 !important; text-shadow: none !important; }
 body.light #par-pshot      { color: #5a3a10 !important; }
 body.light #par-kab        { color: #5a3a10 !important; }
 body.light #par-kab-insight{ color: #5a3a10 !important; background: rgba(0,0,0,.05) !important; }
 body.light #par-kab-sefirah{ color: #8b5e10 !important; }
+body.light #par-full { color: #5a3a10 !important; }
 body.light #par-psalms button { background: rgba(139,94,16,.1) !important; border-color: rgba(139,94,16,.3) !important; color: #6b3e00 !important; }
 
 /* Mood bar */
@@ -1216,6 +1218,12 @@ body.light .mood-pill { background: var(--surf3); border-color: var(--brd); colo
     <div style="margin:12px 14px 0;background:linear-gradient(135deg,#1a1000,#0d0800);border:1px solid rgba(201,151,44,.45);border-right:3px solid var(--gold);border-radius:14px;padding:16px 18px">
       <div style="font-family:'Suez One',serif;font-size:15px;color:var(--gold-l);letter-spacing:.5px;margin-bottom:10px;text-shadow:0 0 12px rgba(201,151,44,.3);text-align:center">מזמורים מומלצים לפרשה</div>
       <div id="par-psalms" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+    </div>
+
+    <!-- Full parasha text -->
+    <div style="margin:12px 14px 0;background:linear-gradient(135deg,#1a1000,#0d0800);border:1px solid rgba(201,151,44,.45);border-right:3px solid var(--gold);border-radius:14px;padding:16px 18px">
+      <div style="font-family:'Suez One',serif;font-size:15px;color:var(--gold-l);letter-spacing:.5px;margin-bottom:10px;text-shadow:0 0 12px rgba(201,151,44,.3);text-align:center">הפרשה</div>
+      <div id="par-full" style="font-family:'Frank Ruhl Libre',serif;font-size:16px;color:var(--txt-dim);line-height:2.1;white-space:pre-line"></div>
     </div>
 
     <div style="height:24px"></div>
@@ -3488,10 +3496,10 @@ function updateCycleDisplay(){
 //  FEATURE 4: PARASHA OF THE WEEK
 // ═══════════════════════════════════════════════════
 var PARASHIOT = [
-  {n:'בראשית',b:'בראשית',d:'הסיפור הגדול מתחיל — בריאת העולם בשישה ימים, גן עדן, חטא אדם וחוה, קין והבל. העולם נוצר מאהבה, אבל כבר בפרק הראשון של האנושות מגיעה הבחירה הראשונה.',kab:{sefirah:'✡ מלכות — תחילת ההתגלות',text:'הבריאה היא הרגע שבו אין-סוף צמצם את עצמו. הקבלה רואה בבריאה את ירידת האור האלוהי דרך עשר הספירות. גן עדן הוא עולם הבריאה, והנחש הוא הקליפה שבלי נוכחותה לא הייתה בחירה.',insight:'כל יום הוא "יום ראשון" — בריאה חדשה. מה אתה בורא היום?'},psalms:[8, 19, 104]},
-  {n:'נח',b:'בראשית',d:'העולם השתבש — ה\' רואה רק רשעות. נח, האיש הצדיק, מקבל משימה: לבנות תיבה ולהציל את החיים. המבול שוטף הכל, ואחריו — קשת בענן. הבטחה שלא יהיה מבול שוב.',kab:{sefirah:'✡ יסוד — הצדיק שמחזיק את העולם',text:'נח הוא "צדיק יסוד עולם". התיבה היא הנפש שמגינה על הניצוץ האלוהי בתוך גלי החומר. המבול אינו עונש — הוא טיהור.',insight:'כשהעולם מציף אותך, מה התיבה הפנימית שלך? מה שמור בתוכך?'},psalms:[29, 46, 93]},
-  {n:'לך לך',b:'בראשית',d:'אברהם שומע קול: "לך מארצך, ממולדתך, מבית אביך." הוא הולך — בלי לדעת לאן. זוהי הפרשה שבה מתחילה האמונה היהודית: הכל מתחיל בהליכה לפי אמון עיוור.',kab:{sefirah:'✡ חסד — הליכה מתוך אמונה',text:'אברהם הוא ספירת החסד המגולמת. "לך לך" — לך לתוך עצמך. ארבעת המקומות שעוזב הם ארבע קליפות שמכסות את הנשמה: ארץ, מולדת, בית, אב.',insight:'כל עבודה רוחנית מתחילה בעזיבת ה"ארץ" של ההרגלים — ובהליכה אל עצמך האמיתי.'},psalms:[27, 23, 121]},
-  {n:'וירא',b:'בראשית',d:'מלאכים מבקרים אצל אברהם, שרה שומעת שתלד בגיל תשעים ומצחיקה. עיר סדום נהרסת. ואז — הרגע הקשה ביותר: העקידה. אברהם מוכן להקריב את יצחק. הוא נעצר ברגע האחרון.',kab:{sefirah:'✡ כתר — הרצון העליון מעל השכל',text:'העקידה היא הגעה לכתר — מעל שכל, מעל הרגש, מעל הטבע. מי שמסוגל לוותר על הכל — לא צריך לוותר על כלום.',insight:'הבדיקה הגדולה: מה אתה מוכן לשחרר? ולפעמים ברגע השחרור מתגלה שלא צריך.'},psalms:[27, 16, 91]},
+  {n:'בראשית',b:'בראשית',d:'הסיפור הגדול מתחיל — בריאת העולם בשישה ימים, גן עדן, חטא אדם וחוה, קין והבל. העולם נוצר מאהבה, אבל כבר בפרק הראשון של האנושות מגיעה הבחירה הראשונה.',kab:{sefirah:'✡ מלכות — תחילת ההתגלות',text:'הבריאה היא הרגע שבו אין-סוף צמצם את עצמו. הקבלה רואה בבריאה את ירידת האור האלוהי דרך עשר הספירות. גן עדן הוא עולם הבריאה, והנחש הוא הקליפה שבלי נוכחותה לא הייתה בחירה.',insight:'כל יום הוא "יום ראשון" — בריאה חדשה. מה אתה בורא היום?'},psalms:[8, 19, 104],full:'בְּרֵאשִׁית בָּרָא אֱלֹהִים אֵת הַשָּׁמַיִם וְאֵת הָאָרֶץ.\n\nבששת ימי הבריאה יצר האלוהים את העולם: אור וחושך, שמיים וארץ, יבשה וים, צמחים, מאורות, חיות ולבסוף — האדם.\n\n"וַיִּבְרָא אֱלֹהִים אֶת הָאָדָם בְּצַלְמוֹ, בְּצֶלֶם אֱלֹהִים בָּרָא אֹתוֹ, זָכָר וּנְקֵבָה בָּרָא אֹתָם."\n\nבגן עדן חיו אדם וחוה בשלמות — עד שהנחש פיתה את חוה לאכול מעץ הדעת. "וַתֵּרֶא הָאִשָּׁה כִּי טוֹב הָעֵץ לְמַאֲכָל... וַתֹּאכַל, וַתִּתֵּן גַּם לְאִישָׁהּ עִמָּהּ."\n\nעם גירושם מהגן נולדו קין והבל. קין, מתוך קנאה, הרג את אחיו — ועם זאת קיבל מה\' סימן הגנה. סיפור ראשית האנושות.'},
+  {n:'נח',b:'בראשית',d:'העולם השתבש — ה\' רואה רק רשעות. נח, האיש הצדיק, מקבל משימה: לבנות תיבה ולהציל את החיים. המבול שוטף הכל, ואחריו — קשת בענן. הבטחה שלא יהיה מבול שוב.',kab:{sefirah:'✡ יסוד — הצדיק שמחזיק את העולם',text:'נח הוא "צדיק יסוד עולם". התיבה היא הנפש שמגינה על הניצוץ האלוהי בתוך גלי החומר. המבול אינו עונש — הוא טיהור.',insight:'כשהעולם מציף אותך, מה התיבה הפנימית שלך? מה שמור בתוכך?'},psalms:[29, 46, 93],full:'אֵלֶּה תּוֹלְדֹת נֹחַ, נֹחַ אִישׁ צַדִּיק תָּמִים הָיָה בְּדֹרֹתָיו.\n\nבדור שכולו חמס וקלקול, בחר האלוהים בנח — האיש הצדיק. ציווה אותו לבנות תיבה גדולה ולהכניס אליה זוג מכל חיה.\n\n"וַיַּעַשׂ נֹחַ כְּכֹל אֲשֶׁר צִוָּה אֹתוֹ אֱלֹהִים כֵּן עָשָׂה."\n\nארבעים יום וארבעים לילה ירד הגשם. כשנסו המים, שלח נח עורב ואחר כך יונה — "וְהִנֵּה עֲלֵה זַיִת טָרָף בְּפִיהָ." סימן השלום.\n\nהאלוהים כרת ברית עם נח: "אֶת קַשְׁתִּי נָתַתִּי בֶּעָנָן, וְהָיְתָה לְאוֹת בְּרִית בֵּינִי וּבֵין הָאָרֶץ." הקשת בענן — לא יהיה מבול שוב.'},
+  {n:'לך לך',b:'בראשית',d:'אברהם שומע קול: "לך מארצך, ממולדתך, מבית אביך." הוא הולך — בלי לדעת לאן. זוהי הפרשה שבה מתחילה האמונה היהודית: הכל מתחיל בהליכה לפי אמון עיוור.',kab:{sefirah:'✡ חסד — הליכה מתוך אמונה',text:'אברהם הוא ספירת החסד המגולמת. "לך לך" — לך לתוך עצמך. ארבעת המקומות שעוזב הם ארבע קליפות שמכסות את הנשמה: ארץ, מולדת, בית, אב.',insight:'כל עבודה רוחנית מתחילה בעזיבת ה"ארץ" של ההרגלים — ובהליכה אל עצמך האמיתי.'},psalms:[27, 23, 121],full:'וַיֹּאמֶר ה\' אֶל אַבְרָם: לֶךְ לְךָ מֵאַרְצְךָ וּמִמּוֹלַדְתְּךָ וּמִבֵּית אָבִיךָ אֶל הָאָרֶץ אֲשֶׁר אַרְאֶךָּ.\n\nושבעה הבטחות: "וְאֶעֶשְׂךָ לְגוֹי גָּדוֹל, וַאֲבָרֶכְךָ וַאֲגַדְּלָה שְׁמֶךָ, וֶהְיֵה בְּרָכָה."\n\nאברם, בן שבעים וחמש, הלך — בלי לדעת לאן. עם שרי אשתו, לוט אחיינו, ורב של עבדים. הגיע לכנען, ירד למצרים בבצורת, חזר עשיר.\n\n"וְהֶאֱמִן בַּה\', וַיַּחְשְׁבֶהָ לּוֹ צְדָקָה."\n\nברית בין הבתרים: האלוהים הבטיח לאברם את הארץ. וברית המילה — "זֹאת בְּרִיתִי אֲשֶׁר תִּשְׁמְרוּ בֵּינִי וּבֵינֵיכֶם." שמו שונה לאברהם.'},
+  {n:'וירא',b:'בראשית',d:'מלאכים מבקרים אצל אברהם, שרה שומעת שתלד בגיל תשעים ומצחיקה. עיר סדום נהרסת. ואז — הרגע הקשה ביותר: העקידה. אברהם מוכן להקריב את יצחק. הוא נעצר ברגע האחרון.',kab:{sefirah:'✡ כתר — הרצון העליון מעל השכל',text:'העקידה היא הגעה לכתר — מעל שכל, מעל הרגש, מעל הטבע. מי שמסוגל לוותר על הכל — לא צריך לוותר על כלום.',insight:'הבדיקה הגדולה: מה אתה מוכן לשחרר? ולפעמים ברגע השחרור מתגלה שלא צריך.'},psalms:[27, 16, 91],full:'וַיֵּרָא אֵלָיו ה\' בְּאֵלֹנֵי מַמְרֵא, וְהוּא יֹשֵׁב פֶּתַח הָאֹהֶל כְּחֹם הַיּוֹם.\n\nשלושה מלאכים בדמות אנשים ביקרו את אברהם. בישרו לו: "לַמּוֹעֵד אָשׁוּב אֵלֶיךָ... וּלְשָׂרָה בֵן." שרה צחקה — "אַחֲרֵי בְלֹתִי הָיְתָה לִי עֶדְנָה?"\n\nסדום ועמורה נהרסו. לוט ניצל עם בנותיו — אשתו הפכה לנציב מלח.\n\n"וַיִּזְכֹּר אֱלֹהִים אֶת אַבְרָהָם, וַיְשַׁלַּח אֶת לוֹט מִתּוֹךְ הַהֲפֵכָה."\n\nולבסוף — העקידה: "קַח נָא אֶת בִּנְךָ, אֶת יְחִידְךָ... וְהַעֲלֵהוּ שָׁם לְעֹלָה." אברהם הלך. ברגע האחרון: "אַל תִּשְׁלַח יָדְךָ אֶל הַנַּעַר." הוא עמד בניסיון.'},
   {n:'חיי שרה',b:'בראשית',d:'שרה מתה — ואברהם קונה קבר. הוא שולח את עבדו למצוא אשה ליצחק. המסע המסתורי מוביל לרבקה, שרואה את יצחק ומכסה את פניה. אהבה ראשונה בתורה.',kab:{sefirah:'✡ בינה — עיבוד אחרי האובדן',text:'בינה היא "אם" שמעבדת ומכילה. אברהם קונה קבר ואז שולח לחפש חיים חדשים — שני הדברים יחד. עצב ושמחה לא סותרים.',insight:'עצב ושמחה אינם סותרים. הכל כשמסוגל להכיל את האובדן ולהמשיך לפנות לעתיד.'},psalms:[23, 131, 90]},
   {n:'תולדות',b:'בראשית',d:'עשו ויעקב — שני תאומים שלוחמים עוד ברחם. עשו מוכר את הבכורה בעבור נזיד עדשים. יעקב, בהדרכת אמו, לוקח את ברכת האב. הסכסוך הגדול מתחיל.',kab:{sefirah:'✡ גבורה — הכוח שמגדיר גבולות',text:'עשו ויעקב הם גבורה וחסד — כוח ואהבה. יעקב לוקח את הברכה לא בגנבה אלא כי הכלי שלו בשל יותר לקבלה.',insight:'הכרה בכלי שלך — מה אתה מסוגל לקבל ולשאת?'},psalms:[131, 37, 1]},
   {n:'ויצא',b:'בראשית',d:'יעקב בורח ומחלם על סולם המגיע לשמים. הוא מגיע ללבן, מתאהב ברחל ועובד שבע שנים — ומתברר שנישא ללאה. שבע שנים נוספות, ו-12 שבטי ישראל מתחילים להיוולד.',kab:{sefirah:'✡ תפארת — הסולם שמחבר שמים וארץ',text:'סולם יעקב — "מוצב ארצה וראשו מגיע השמימה" — זה הציור המדויק של תפארת: הלב שמחבר. יעקב ישן על האדמה ורואה חזון שמימי כי השמים והארץ אחד.',insight:'אתה לא צריך לברוח לרוחניות. הסולם מתחיל מתחתך ממש.'},psalms:[91, 139, 16]},
@@ -3504,7 +3512,7 @@ var PARASHIOT = [
   {n:'וארא',b:'שמות',d:'משה ואהרן עומדים לפני פרעה. מכות מצרים מתחילות: דם, צפרדע, כינים, ערוב, דבר, שחין. פרעה מקשה את לבו שוב ושוב. המאבק בין קוסמי המלך לבין ה\' הולך ומחריף.',kab:{sefirah:'✡ גבורה — הדין שמטהר',text:'המכות הן ביטוי לגבורה האלוהית — דין שמנקה. כל מכה שוברת קליפה אחרת. לב פרעה מתקשה — כי חלקו אינו מוכן לשחרור.',insight:'לפעמים הלב שלנו מתקשה גם כשאנחנו רואים נסים. מה מקשה את לבך?'},psalms:[29, 94, 35]},
   {n:'בא',b:'שמות',d:'ארבה, חושך — ואז המכה האחרונה: מות הבכורות. ליל הסדר הראשון נחגג בחיפזון. ואז — הפלא: "ויאמר גם אתם לכו!" יציאת מצרים. כי מיליון אנשים קמו ויצאו.',kab:{sefirah:'✡ מלכות — הגאולה שמתגלה בעולם',text:'ליל הסדר הוא ליל "שמורים". השכינה יורדת למצרים כדי להעלות את ניצוצות ישראל. "ועברתי בארץ מצרים" — רק ה\' עצמו, ולא מלאך.',insight:'בכל גאולה יש לילה — חושך שמקדים את אור הבוקר. מה אתה ממתין לו?'},psalms:[113, 114, 115]},
   {n:'בשלח',b:'שמות',d:'ים סוף נבקע. בני ישראל עוברים ביבשה, המצרים טובעים. שירת הים — שיר ניצחון. ואז מיד: מרים מחוללת בתוף. ואז: רעב, צמא, מן. המדבר מתחיל.',kab:{sefirah:'✡ נצח — הניצחון שבר מן הרגיל',text:'קריעת ים סוף: ניצחון מעל הטבע. "אז ישיר משה" — לשון עתיד. השיר שרים במעמד זה יתרחש שוב לעתיד לבוא. מרים מחוללת: שמחה אמיתית צריכה גוף.',insight:'שירה בגוף — ריקוד, שיר, צחוק — היא תפילה עמוקה. אתה מאפשר לנצחון להתגלם?'},psalms:[114, 136, 98]},
-  {n:'יתרו',b:'שמות',d:'חותן משה מגיע עם עצה ניהולית — תייצר מנהיגות מדורגת. ואז: הר סיני, ענן כבד, קול שופר. עשרת הדברות נאמרות לכל העם. הרגע שמגדיר את כל יהדות.',kab:{sefirah:'✡ כתר — ההתגלות מעל לשפה',text:'מתן תורה: "כל העם רואים את הקולות." רואים קולות — הנשמות יצאו. כתר: מעל השכל, מעל המילה. הרמ"ק: עשרת הדברות הן עשר הספירות.',insight:'יש רגעים שהם "מתן תורה" אישי — כשאתה יודע בלי להסביר. שמור על הרגעים האלה.'},psalms:[19, 29, 68]},
+  {n:'יתרו',b:'שמות',d:'חותן משה מגיע עם עצה ניהולית — תייצר מנהיגות מדורגת. ואז: הר סיני, ענן כבד, קול שופר. עשרת הדברות נאמרות לכל העם. הרגע שמגדיר את כל יהדות.',kab:{sefirah:'✡ כתר — ההתגלות מעל לשפה',text:'מתן תורה: "כל העם רואים את הקולות." רואים קולות — הנשמות יצאו. כתר: מעל השכל, מעל המילה. הרמ"ק: עשרת הדברות הן עשר הספירות.',insight:'יש רגעים שהם "מתן תורה" אישי — כשאתה יודע בלי להסביר. שמור על הרגעים האלה.'},psalms:[19, 29, 68],full:'וַיִּשְׁמַע יִתְרוֹ כֹהֵן מִדְיָן חֹתֵן מֹשֶׁה אֵת כָּל אֲשֶׁר עָשָׂה אֱלֹהִים לְמֹשֶׁה וּלְיִשְׂרָאֵל עַמּוֹ.\n\nיתרו הגיע למחנה, ראה את משה שופט לבדו מבוקר עד ערב, ונתן עצה: "לֹא טוֹב הַדָּבָר אֲשֶׁר אַתָּה עֹשֶׂה." הציע מבנה שיפוטי: שרי אלפים, שרי מאות, שרי חמישים.\n\nואז — הר סיני. עם ישראל התקדש שלושה ימים.\n\n"וַיְהִי בַיּוֹם הַשְּׁלִישִׁי בִּהְיֹת הַבֹּקֶר, וַיְהִי קֹלֹת וּבְרָקִים וְעָנָן כָּבֵד עַל הָהָר, וְקֹל שֹׁפָר חָזָק מְאֹד, וַיֶּחֱרַד כָּל הָעָם."\n\nעשרת הדברות:\n"אָנֹכִי ה\' אֱלֹהֶיךָ... לֹא יִהְיֶה לְךָ אֱלֹהִים אֲחֵרִים... לֹא תִשָּׂא... זָכוֹר אֶת יוֹם הַשַּׁבָּת... כַּבֵּד אֶת אָבִיךָ... לֹא תִרְצָח, לֹא תִנְאָף, לֹא תִגְנֹב, לֹא תַעֲנֶה עֵד שָׁקֶר, לֹא תַחְמֹד."'},
   {n:'משפטים',b:'שמות',d:'מיד אחרי עשרת הדברות — עשרות חוקים. עבד, רצח, שור נוגח, אש פרצה, שמיטה. התורה אומרת: קדושה היא לא רק מה שמרגיש רוחני — היא איך מתנהגים ביום יום.',kab:{sefirah:'✡ תפארת — האמת ביחסים',text:'מיד אחרי מתן תורה — חוקים יומיומיים. "ואלה המשפטים" — הוו מוסיפה: גם אלה אלוהיים. כל מריבת שכנים, כל עסק — מקום להוציא את האמת.',insight:'הקדושה נמצאת בחוזה השכנות לא פחות מבסיני. איך אתה מתנהל ביחסים?'},psalms:[37, 1, 119]},
   {n:'תרומה',b:'שמות',d:'ה\' מבקש תרומה "מכל איש אשר ידבנו לבו." ומה לעשות עם התרומה? לבנות משכן — בית נייד לשכינה. ארון, שולחן, מנורה — כל כלי מתואר בפרטי פרטים.',kab:{sefirah:'✡ יסוד — השפע זורם כלפי מטה',text:'"ויקחו לי תרומה מאת כל איש אשר ידבנו לבו." המשכן הוא עולם הספירות: ארון=בינה, מנורה=חכמה, שולחן=מלכות. כל תרומה שנתת מרצון בונה את המשכן הפנימי שלך.',insight:'מה אתה יכול לתרום היום — לא מחובה, אלא כי "ידבנו לבו"?'},psalms:[24, 87, 122]},
   {n:'תצוה',b:'שמות',d:'בגדי הכהונה — שמונה בגדים לכהן גדול, כל אחד עם משמעות. ציץ הזהב על מצחו כתוב עליו: "קודש לה\'." ואחר כך חנוכת המשכן — שבעה ימים של טקסים.',kab:{sefirah:'✡ הוד — ההוד שבלבוש',text:'בגדי הכהונה: שמונה בגדים, כל אחד ממקם. הלבוש הוא הנוגה — הניצוץ שעוטף את הנשמה. ציץ הזהב: "קודש לה\'" — על המצח — הרצון נחקק שם.',insight:'מה אתה לובש כלפי חוץ — לא בבגד, אלא ב"אנרגיה"? הלבוש החיצוני משפיע על הפנימי.'},psalms:[93, 29, 8]},
@@ -3517,7 +3525,7 @@ var PARASHIOT = [
   {n:'תזריע',b:'ויקרא',d:'טהרה וטומאה — מושגים שנשמעים עתיקים אבל מלמדים על מודעות לגוף ולמצב. הפרשה עוסקת בצרעת — מחלה שאינה גופנית בלבד, אלא קשורה לדיבורים ולמצב רוח.',kab:{sefirah:'✡ בינה — הלידה שדורשת זמן',text:'טהרה אחרי לידה — גוף ונשמה צריכים זמן. צרעת לשון הרע — הדיבור הוא כוח נשמה שכשמשתמשים בו רע מחריב.',insight:'מה עזבת שמחייב "זמן טהרה"? לפעמים חיים חדשים דורשים מעט בידוד לפני כניסה מחדש.'},psalms:[51, 32, 41]},
   {n:'מצורע',b:'ויקרא',d:'הכהן יוצא מחוץ למחנה לבדוק את המצורע — הכהן הולך אל הטמא, לא להפך. ואחר כך — טקס טהרה מפורט. ספר ויקרא אומר: אפשר לחזור. לכל שפל יש טהרה.',kab:{sefirah:'✡ יסוד — הטהרה שמחזירה לחיבור',text:'הכהן יוצא אל מחוץ למחנה — ירידה לגלות — כדי להעלות את המצורע. "ושלח את הציפור החיה על פני השדה" — שחרור הנשמה.',insight:'מה בתוכך צריך שחרור? יש ציפור שכלואה — מחשבה, תשוקה, רגש — שמחכה להשתחרר.'},psalms:[130, 32, 116]},
   {n:'אחרי מות',b:'ויקרא',d:'אחרי מות בני אהרן — הכהן הגדול נכנס לקודש הקודשים רק פעם אחת בשנה, ביום הכיפורים. "ועינתם את נפשותיכם" — יום צום וחשבון נפש שמגדיר כל שנה.',kab:{sefirah:'✡ בינה — מות שמוביל לתיקון',text:'יום הכיפורים: הכהן הגדול נכנס לקודש הקודשים — לבינה. לובש לבן — ביטול עצמי. לשעה קלה — אדם שרק נשמה. הסתכלות ישירה על ה"אין".',insight:'פעם בשנה כדאי לעצור לגמרי. מה נשאר? זה אתה.'},psalms:[51, 25, 143]},
-  {n:'קדושים',b:'ויקרא',d:'"קדושים תהיו כי קדוש אני." ואז — לא רק טקסים: "לא תיקום, לא תיטור, ואהבת לרעך כמוך." רש"י אומר: זה הכלל הגדול בתורה. קדושה היא דרך חיים, לא מצב.',kab:{sefirah:'✡ תפארת — האמת שמופיעה ביחסים',text:'"קדושים תהיו כי קדוש אני." "ואהבת לרעך כמוך" — לרב עקיבא זה כלל גדול. כשאוהב את הזולת — מחבר את כל הספירות.',insight:'היכן אתה מרגיש שאתה הופך ליותר שלם? זה לא תמיד בבית כנסת.'},psalms:[15, 24, 101]},
+  {n:'קדושים',b:'ויקרא',d:'"קדושים תהיו כי קדוש אני." ואז — לא רק טקסים: "לא תיקום, לא תיטור, ואהבת לרעך כמוך." רש"י אומר: זה הכלל הגדול בתורה. קדושה היא דרך חיים, לא מצב.',kab:{sefirah:'✡ תפארת — האמת שמופיעה ביחסים',text:'"קדושים תהיו כי קדוש אני." "ואהבת לרעך כמוך" — לרב עקיבא זה כלל גדול. כשאוהב את הזולת — מחבר את כל הספירות.',insight:'היכן אתה מרגיש שאתה הופך ליותר שלם? זה לא תמיד בבית כנסת.'},psalms:[15, 24, 101],full:'וַיְדַבֵּר ה\' אֶל מֹשֶׁה לֵּאמֹר: דַּבֵּר אֶל כָּל עֲדַת בְּנֵי יִשְׂרָאֵל וְאָמַרְתָּ אֲלֵהֶם: קְדֹשִׁים תִּהְיוּ כִּי קָדוֹשׁ אֲנִי ה\' אֱלֹהֵיכֶם.\n\nפרשת קדושים היא "תורה בתורה" — מרכז ספר ויקרא, מרכז החיים. כוללת מצוות שבין אדם לאדם ושבין אדם למקום:\n\n"לֹא תִקֹּם וְלֹא תִטֹּר אֶת בְּנֵי עַמֶּךָ, וְאָהַבְתָּ לְרֵעֲךָ כָּמוֹךָ — אֲנִי ה\'."\n\nזה הכלל הגדול — אהבת הרֵע כמוך. רבי עקיבא אמר: "זה כלל גדול בתורה."\n\nעוד מצוות בפרשה:\n"לֹא תַעֲמֹד עַל דַּם רֵעֶךָ" — חובת ההצלה.\n"מִפְּנֵי שֵׂיבָה תָּקוּם" — כבוד לזקן.\n"לֹא תַעֲשׂוּ עָוֶל בַּמִּשְׁפָּט" — צדק שווה לכל.\n\n"וַאֲהַבְתֶּם אֶת הַגֵּר כִּי גֵרִים הֱיִיתֶם בְּאֶרֶץ מִצְרָיִם." הניסיון של מצרים הפך למצווה: אהבו את הגר.'},
   {n:'אמור',b:'ויקרא',d:'חגי ישראל בסדר: שבת, פסח, שבועות, ראש השנה, כיפור, סוכות. כל אחד עם ייחוד ומשמעות. "ואספתם את קצירה ולא תכלה פאת שדך" — אפילו בשמחה, תחשוב על העני.',kab:{sefirah:'✡ מלכות — הזמן כמפגש',text:'מועדי ה\': כל חג הוא ספירה בזמן. פסח=חסד, שבועות=בינה, סוכות=שבע ספירות תחתונות. המלכות היא מפגש הזמן עם הנצח.',insight:'כל מועד הוא חלון — כוח מסוים נגיש יותר. מה אתה קולט בחג שאתה חוגג?'},psalms:[81, 92, 113]},
   {n:'בהר',b:'ויקרא',d:'שמיטה — שנה שביעית שהאדמה שובתת. ויובל — שנת החמישים שכל עבד משתחרר וכל אדמה חוזרת לבעליה. "הארץ לא תימכר לצמיתות" — לא הכל שלך לנצח.',kab:{sefirah:'✡ יסוד — השמיטה כשחרור',text:'שמיטה: שנה שביעית הארץ שובתת. שנת היובל — חזרה מוחלטת לשורש. כשם שהיסוד מחבר ומשחרר, כך השמיטה מחזירה קרקע לשורשים.',insight:'האם יש בחייך "שמיטה" — זמן שבו אתה מרפה ומחזיר הכל לשורש?'},psalms:[65, 104, 146]},
   {n:'בחוקותי',b:'ויקרא',d:'אם תשמרו את המצוות — גשם בעיתו, שלום, ברכה. אם לא — קללות. הפרשה מציגה בחירה בלתי נמנעת: חיים ומוות — בחר בחיים. ספר ויקרא נסגר.',kab:{sefirah:'✡ כתר — הברכה שמעל ההבנה',text:'"אם בחוקותי תלכו" — "בחוקותי" לשון חקיקה. הברית עם ה\' חרוטה עמוק יותר מהבנה. הברכות הן זרימת אור מכתר כלפי מטה.',insight:'מה חרוט בתוכך מעבר להבנה? מה אתה עושה גם כשלא מבין למה?'},psalms:[1, 19, 119]},
@@ -3577,6 +3585,10 @@ function openParasha(p){
   document.getElementById('par-kab-sefirah').textContent = kab.sefirah || '';
   document.getElementById('par-kab').textContent         = kab.text    || '';
   document.getElementById('par-kab-insight').textContent = kab.insight || '';
+
+  // Full parasha text — use full field if available, else longer summary
+  var fullEl = document.getElementById('par-full');
+  if(fullEl) fullEl.textContent = p.full || p.d || '';
 
   // Psalm pills
   var container = document.getElementById('par-psalms');
@@ -4405,7 +4417,7 @@ function renderCalc(){
   // ── Results ──
   if(_calcShowResults){
     var resDiv=document.createElement('div');
-    resDiv.setAttribute('style','border-top:1px solid '+bdr+';padding-top:12px');
+    resDiv.setAttribute('style','border-top:1px solid '+bdr+';padding-top:14px');
     el.appendChild(resDiv);
 
     function addEl(parent, style, txt, tag){
@@ -4416,8 +4428,16 @@ function renderCalc(){
       return e;
     }
 
-    addEl(resDiv,'font-family:"Frank Ruhl Libre",serif;font-size:15px;color:'+txtH+';text-align:center;margin-bottom:3px','✡ ספירות הנשמה שלך');
-    addEl(resDiv,'font-family:Heebo,sans-serif;font-size:10px;color:'+txtS+';text-align:center;margin-bottom:14px','לפי ספר יצירה, זוהר וגימטריה');
+    // Title — like פשט וסוד style
+    addEl(resDiv,
+      'font-family:"Frank Ruhl Libre",serif;font-size:17px;font-weight:700;color:'+txtH+
+      ';text-align:center;margin-bottom:2px;letter-spacing:.5px;'+
+      (isDark?'text-shadow:0 0 12px rgba(201,151,44,.3)':''),
+      '✡ ספירות הנשמה שלך');
+    addEl(resDiv,
+      'font-family:Heebo,sans-serif;font-size:11px;font-weight:600;color:'+txtS+
+      ';text-align:center;margin-bottom:16px',
+      'לפי ספר יצירה, זוהר וגימטריה');
 
     var sources=[];
     if(_calcDow){
@@ -4434,7 +4454,6 @@ function renderCalc(){
       sources.push({id:_calcGematria, label:'ספירת הגימטריה ('+_calcName+')', sub:sf2?sf2.desc.substring(0,50)+'...':''});
     }
 
-    // Count duplicates for "חזק" badge
     var seen={};
     sources.forEach(function(x){seen[x.id]=(seen[x.id]||0)+1;});
     var shown=[];
@@ -4447,36 +4466,56 @@ function renderCalc(){
       var tik=TIKKUN_PSALMS[src.id];
       var isDouble=seen[src.id]>1;
 
+      // Card — exact highlight-card style + sefirah border
       var card=document.createElement('div');
       card.setAttribute('style',
-        'margin-bottom:12px;padding:14px 16px;border-radius:14px;' +
+        'margin-bottom:14px;padding:16px 18px;border-radius:14px;' +
         'background:' + bg0 + ';' +
-        'border:1px solid ' + s.color + '44;' +
-        'border-right:3px solid ' + s.color + ';' +
-        'position:relative;overflow:hidden;');
+        'border:1px solid ' + s.color + '55;' +
+        'border-right:3px solid ' + s.color + ';');
 
-      // Header
+      // Sefirah name — large, colored, centered
       var hdr=document.createElement('div');
-      hdr.setAttribute('style','display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap');
+      hdr.setAttribute('style','display:flex;align-items:center;justify-content:space-between;margin-bottom:4px');
       hdr.innerHTML=
-        '<div style="width:14px;height:14px;border-radius:50%;background:'+s.color+';flex-shrink:0"></div>'+
-        '<div style="font-family:\'Frank Ruhl Libre\',serif;font-size:17px;color:'+s.color+'">'+s.name+'</div>'+
-        (isDouble?'<div style="font-family:Heebo,sans-serif;font-size:10px;color:'+s.color+';background:'+s.color+'22;padding:2px 8px;border-radius:10px">✨ חזק</div>':'')+
-        '<div style="font-family:Heebo,sans-serif;font-size:10px;color:'+txtS+';margin-right:auto">'+src.label+'</div>';
+        '<div style="display:flex;align-items:center;gap:8px">'+
+          '<div style="width:16px;height:16px;border-radius:50%;background:'+s.color+';flex-shrink:0"></div>'+
+          '<div style="font-family:\'Frank Ruhl Libre\',serif;font-size:20px;font-weight:700;color:'+s.color+';'+
+            (isDark?'text-shadow:0 0 10px '+s.color+'55':'')+'">'
+            +s.name+'</div>'+
+          (isDouble?'<span style="font-family:Heebo,sans-serif;font-size:11px;font-weight:700;color:'+s.color+
+            ';background:'+s.color+'20;padding:2px 8px;border-radius:10px">✨ חזק</span>':'')+
+        '</div>'+
+        '<div style="font-family:Heebo,sans-serif;font-size:11px;font-weight:600;color:'+txtS+'">'+src.label+'</div>';
       card.appendChild(hdr);
 
-      addEl(card,'font-family:Heebo,sans-serif;font-size:12px;color:'+txtB+';line-height:1.7;margin-bottom:8px',s.desc);
+      // Sefirah label
+      addEl(card,
+        'font-family:Heebo,sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;'+
+        'color:'+s.color+'99;margin-bottom:10px',
+        s.heb);
 
+      // Description — readable, bold
+      addEl(card,
+        'font-family:Heebo,sans-serif;font-size:13px;font-weight:500;line-height:1.9;'+
+        'margin-bottom:12px;color:'+txtB,
+        s.desc);
+
+      // Tikkun psalms
       if(tik){
-        addEl(card,'font-family:Heebo,sans-serif;font-size:10px;color:'+txtS+';font-weight:800;letter-spacing:1px;margin-bottom:5px','✦ מזמורי תיקון — '+tik.label);
+        addEl(card,
+          'font-family:Heebo,sans-serif;font-size:11px;font-weight:800;letter-spacing:1.5px;'+
+          'color:'+txtS+';margin-bottom:7px',
+          '✦ מזמורי תיקון — '+tik.label);
         var pills=document.createElement('div');
-        pills.setAttribute('style','display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px');
+        pills.setAttribute('style','display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px');
         tik.psalms.forEach(function(n){
           var ps=PSALMS.find(function(p){return p.n===n;});
           if(!ps) return;
           var pill=document.createElement('button');
-          pill.setAttribute('style','background:'+bg1+';border:1px solid '+bdr+';border-radius:20px;'+
-            'padding:5px 12px;font-family:Heebo,sans-serif;font-size:12px;color:'+s.color+';'+
+          pill.setAttribute('style',
+            'background:'+s.color+'18;border:1px solid '+s.color+'44;border-radius:20px;'+
+            'padding:6px 14px;font-family:Heebo,sans-serif;font-size:13px;font-weight:600;color:'+s.color+';'+
             'cursor:pointer;touch-action:manipulation;');
           pill.textContent='מזמור '+heb(n);
           pill.addEventListener('click',function(){openReader(ps,'tree');});
@@ -4485,16 +4524,25 @@ function renderCalc(){
         card.appendChild(pills);
       }
 
-      addEl(card,'font-family:Heebo,sans-serif;font-size:11px;color:'+txtS+';border-top:1px solid rgba(128,128,128,.15);padding-top:6px',
-        '⚡ לעבוד על: '+(s.weaknesses?s.weaknesses[0]:''));
+      // Work on — bold label
+      var workDiv=document.createElement('div');
+      workDiv.setAttribute('style',
+        'border-top:1px solid rgba(128,128,128,.15);padding-top:8px;'+
+        'font-family:Heebo,sans-serif;font-size:12px;color:'+txtB);
+      workDiv.innerHTML=
+        '<span style="font-weight:800;color:'+txtS+'">⚡ לעבוד על: </span>'+
+        '<span style="font-weight:500">'+(s.weaknesses?s.weaknesses[0]:'')+'</span>';
+      card.appendChild(workDiv);
 
       resDiv.appendChild(card);
     });
 
     var rst=document.createElement('button');
     rst.textContent='🔄 חישוב מחדש';
-    rst.setAttribute('style','width:100%;padding:10px;background:transparent;border:1px solid '+bdr+';'+
-      'border-radius:10px;font-family:Heebo,sans-serif;font-size:13px;color:'+txtS+';cursor:pointer;touch-action:manipulation;');
+    rst.setAttribute('style',
+      'width:100%;padding:10px;background:transparent;border:1px solid '+bdr+';'+
+      'border-radius:10px;font-family:Heebo,sans-serif;font-size:13px;font-weight:600;'+
+      'color:'+txtS+';cursor:pointer;touch-action:manipulation;');
     rst.addEventListener('click',function(){
       _calcShowResults=false; _calcGregorianDate=''; _calcDateResult='';
       _calcDow=null; _calcMonth=null; _calcName=''; _calcGematria=null;
