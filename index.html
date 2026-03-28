@@ -3725,7 +3725,7 @@ function col(dark, light){
 // ═══════════════════════════════════════════════════
 //  FEATURE 7: THEME TOGGLE
 // ═══════════════════════════════════════════════════
-var _lightMode = LS.get('t_light', false);
+var _lightMode = LS.get('t_light', true);
 function applyTheme(){
   if(_lightMode){
     document.body.classList.add('light');
