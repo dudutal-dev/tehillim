@@ -4661,18 +4661,18 @@ var TTS = (function(){
   var _activeBtn= null;
   var _audio    = null;
 
-  // ── Voice config (from skill api-guides.md) ──
-  var OPENAI_VOICES  = { female:'nova',  male:'onyx'    };
-  var EL_VOICES      = {
-    female: { id:'21m00Tcm4TlvDq8ikWAM', name:'Rachel' },
+  // ── Voice config ──
+  // Per skill: for Hebrew accent, prefer voices with less American English bias
+  var EL_VOICES = {
+    female: { id:'oWsMb4a16KJjSfCx1set', name:'Grace'  },
     male:   { id:'VR6AewLTigWG4xSOukaG', name:'Arnold' }
   };
 
-  // TTS params by content type (from skill table)
+  // Hebrew needs slow rate — speed 0.7 = much slower, reduces American cadence
   var PARAMS = {
-    bible:      { stability:0.65, similarity:0.80, style:0.25, speed:0.82 },
-    commentary: { stability:0.50, similarity:0.75, style:0.35, speed:0.92 },
-    general:    { stability:0.55, similarity:0.75, style:0.30, speed:0.95 }
+    bible:      { stability:0.70, similarity:0.85, style:0.10, speed:0.70 },
+    commentary: { stability:0.58, similarity:0.82, style:0.22, speed:0.78 },
+    general:    { stability:0.62, similarity:0.82, style:0.18, speed:0.80 }
   };
 
   function stop(){
@@ -4751,7 +4751,7 @@ var TTS = (function(){
     var vid  = EL_VOICES[_gender].id;
     setActive(btn, true); _speaking=true; _activeBtn=btn;
 
-    fetch('https://api.elevenlabs.io/v1/text-to-speech/'+vid,{
+    fetch('https://api.elevenlabs.io/v1/text-to-speech/'+vid+'/stream',{
       method:'POST',
       headers:{
         'xi-api-key': _elKey,
@@ -4766,20 +4766,28 @@ var TTS = (function(){
           similarity_boost: p.similarity,
           style: p.style,
           use_speaker_boost: true
-        }
+        },
+        speed: p.speed
       })
     })
-    .then(function(r){ if(!r.ok) throw new Error('EL '+r.status); return r.blob(); })
+    .then(function(r){
+      if(r.status===401) throw new Error('מפתח API לא תקין (401)');
+      if(r.status===422) throw new Error('שגיאה בטקסט (422)');
+      if(r.status===429) throw new Error('חרגת מהמכסה החינמית (429)');
+      if(!r.ok) throw new Error('שגיאת שרת '+r.status);
+      return r.blob();
+    })
     .then(function(blob){
       if(!_speaking) return;
+      if(blob.size < 100) throw new Error('תגובה ריקה מהשרת');
       var url = URL.createObjectURL(blob);
       _audio = new Audio(url);
       _audio.onended = function(){ stop(); URL.revokeObjectURL(url); };
-      _audio.onerror = function(){ stop(); };
-      _audio.play();
+      _audio.onerror = function(e){ showTTSError('שגיאת השמעה: '+e.message); stop(); };
+      _audio.play().catch(function(e){ showTTSError('הדפדפן חסם השמעה: '+e.message); stop(); });
     })
     .catch(function(e){
-      console.warn('ElevenLabs failed:', e.message);
+      showTTSError('ElevenLabs: '+e.message+' — עובר לקול דפדפן');
       speakWebSpeech(rawText, btn);
     });
   }
@@ -4799,14 +4807,33 @@ var TTS = (function(){
     window.speechSynthesis.speak(utt);
   }
 
+  function showTTSError(msg){
+    stop();
+    var t = document.createElement('div');
+    t.setAttribute('style',
+      'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:9999;'+
+      'background:#1a0800;border:1px solid rgba(255,100,50,.6);border-radius:10px;'+
+      'padding:10px 18px;font-family:Heebo,sans-serif;font-size:13px;color:#ff9060;'+
+      'max-width:300px;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.5)');
+    t.textContent = '⚠️ ' + msg;
+    document.body.appendChild(t);
+    setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); }, 5000);
+  }
+
   function speak(rawText, btn, mode){
     if(!rawText||!rawText.trim()) return;
     if(_speaking&&_activeBtn===btn){ stop(); return; }
     stop();
     mode = mode||'general';
+    // Reload keys from storage every call (in case just saved)
+    _apiKey = LS.get('tts_api_key','');
+    _elKey  = LS.get('tts_el_key','');
     if(_apiKey)       speakOpenAI(rawText, mode, btn);
     else if(_elKey)   speakElevenLabs(rawText, mode, btn);
-    else              speakWebSpeech(rawText, btn);
+    else{
+      showTTSError('לא הוזן מפתח API — משתמש בקול דפדפן (פחות טבעי)');
+      speakWebSpeech(rawText, btn);
+    }
   }
 
   function setGender(g){ _gender=g; LS.set('tts_gender',g); stop(); updateToggleBtn(); }
@@ -4854,7 +4881,7 @@ var TTS = (function(){
         gHdr.textContent='בחר קול';
         m.appendChild(gHdr);
 
-        [{g:'female',lbl:'♀  קול נשי — Nova / Rachel'},{g:'male',lbl:'♂  קול גברי — Onyx / Arnold'}].forEach(function(opt){
+        [{g:'female',lbl:'♀  קול נשי — Nova / Aria'},{g:'male',lbl:'♂  קול גברי — Onyx / Josh'}].forEach(function(opt){
           var item=document.createElement('div');
           item.setAttribute('style','padding:10px 18px;font-family:Heebo,sans-serif;font-size:13px;cursor:pointer;'+
             'color:var(--txt);font-weight:'+(_gender===opt.g?'800':'400')+';'+
@@ -4893,8 +4920,15 @@ var TTS = (function(){
           m.appendChild(row);
         }
 
-        addKeyInput('OpenAI API Key (מומלץ — Nova / Onyx)','sk-...', _apiKey, 'openai');
-        addKeyInput('ElevenLabs API Key (איכות גבוהה)','xi-...', _elKey, 'el');
+        addKeyInput('⭐ OpenAI API Key — Nova ♀ / Onyx ♂','sk-...', _apiKey, 'openai');
+        addKeyInput('ElevenLabs API Key — Grace ♀ / Arnold ♂','xi-...', _elKey, 'el');
+
+        var tip=document.createElement('div');
+        tip.setAttribute('style','padding:0 18px 10px;font-family:Heebo,sans-serif;font-size:11px;color:var(--txt-mut);line-height:1.7;border-top:1px solid var(--brd);margin-top:4px;padding-top:8px');
+        tip.innerHTML =
+          '<strong style="color:var(--gold-d)">עברית טבעית:</strong> OpenAI (nova/onyx) — ניב ישראלי, זרימה טבעית<br>'+
+          '<strong style="color:var(--txt-dim)">ElevenLabs:</strong> ניב אמריקאי, מומלץ לאנגלית';
+        m.appendChild(tip);
 
         var note=document.createElement('div');
         note.setAttribute('style','padding:0 18px 10px;font-family:Heebo,sans-serif;font-size:10px;color:var(--txt-mut);line-height:1.6');
