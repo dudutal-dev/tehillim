@@ -873,6 +873,24 @@ body.light #home-journey-card  > div { background: linear-gradient(135deg,#fff3e
 </head>
 <body>
 <div id="app">
+
+  <!-- Journey navigation bar -->
+  <div id="journey-nav-bar" style="display:none;position:fixed;top:0;left:0;right:0;z-index:999;
+    background:linear-gradient(135deg,#1a1000,#0a0700);border-bottom:2px solid var(--gold);
+    padding:10px 16px;align-items:center;justify-content:space-between;gap:12px;">
+    <button onclick="_journeyReturn()" style="background:none;border:1px solid var(--gold);border-radius:20px;
+      padding:6px 14px;font-family:Heebo,sans-serif;font-size:13px;font-weight:700;
+      color:var(--gold-l);cursor:pointer;touch-action:manipulation;white-space:nowrap;">
+      ← חזור למסע
+    </button>
+    <button onclick="_journeyDone(window._journeyActiveStep||'');showScreen('home')" 
+      style="background:var(--gold);border:none;border-radius:20px;padding:6px 14px;
+      font-family:Heebo,sans-serif;font-size:13px;font-weight:800;color:#1a0e02;
+      cursor:pointer;touch-action:manipulation;white-space:nowrap;">
+      ✓ סיימתי שלב זה
+    </button>
+  </div>
+
   <!-- SCREEN: HOME -->
   <div id="s-home" class="screen active">
     <div class="home-hero">
@@ -1338,7 +1356,7 @@ body.light #home-journey-card  > div { background: linear-gradient(135deg,#fff3e
         <div style="font-family:'Suez One',serif;font-size:14px;color:var(--gold-d);margin-bottom:6px">תְּהִלִים</div>
         <div style="font-family:'Heebo',sans-serif;font-size:12px;color:var(--txt-mut);line-height:1.8">
           © כל הזכויות שמורות לדודו טל<br>
-          <span style="font-size:11px;color:var(--txt-mut);opacity:.7">גרסה 3.2 · 2026</span>
+          <span style="font-size:11px;color:var(--txt-mut);opacity:.7">גרסה 3.3 · 2026</span>
         </div>
       </div>
     </div>
@@ -2732,7 +2750,8 @@ const PRAYERS = [
 
 אָמֵן.`,
     note: "מקובל לאמר תפילה זו לפני תהילים כ ו-קכא, המסורתיים לשלום החיילים."
-  },
+  ,
+    kab: {sefirah:"✡ גבורה — עוצמה מתוך אהבה",text:"כשמתפללים לשלום החיילים, אנחנו מחברים את מידת הגבורה — הכוח והגבול — עם מידת החסד. לוחם שלם אינו רק חזק, אלא גם יודע מתי לעצור. התפילה הזו מכוונת שה׳ ישמור את ה׳חסד שבגבורה׳.",insight:"מי האדם בחייך שצריך שתתפלל עליו עכשיו?"}},
   {
     id: 2, cat: "ביטחון", icon: "🕊️",
     name: "לשלום ירושלים",
@@ -2753,7 +2772,8 @@ const PRAYERS = [
 "פֹּה אֲשֵׁב כִּי אִוִּיתִיהָ."
 וְנֹאמַר: אָמֵן.`,
     note: "שלם — שלום — ירושלים: אחד משמות העיר הנגזרים מהשלום."
-  },
+  ,
+    kab: {sefirah:"✡ מלכות — ירושלים כמרכז השכינה",text:"ירושלים היא ׳שֵׁם שְׁלֵמוּת׳ — עיר של שלום שלם. בקבלה, ירושלים היא ביטוי של מלכות — השכינה השורה בעולם הזה. כשמתפללים לשלומה, מחברים את עצמם לשכינה.",insight:"מה ׳ירושלים׳ בחייך — המקום הפנימי שמחפש שלמות?"}},
   {
     id: 3, cat: "בריאות", icon: "💊",
     name: "לרפואה שלמה",
@@ -2776,7 +2796,8 @@ const PRAYERS = [
 "כִּי אֲנִי ה׳ רֹפְאֶךָ."
 אָמֵן.`,
     note: "יש להחליף את הסוגריים בשם החולה ושם אמו. לפי הקבלה, השם הנכון לרפואה הוא שם פלוני בן/בת פלונית (שם האם)."
-  },
+  ,
+    kab: {sefirah:"✡ יסוד — זרימת חיות לגוף",text:"רפואה שלמה היא ׳רפואת הנפש ורפואת הגוף׳ — לפי הסדר הזה. הגוף הוא ביטוי של יסוד — הצינור שמחבר שמיים לארץ. כשהיסוד סתום — הגוף חולה. התפילה מכוונת לפתוח את הצינור.",insight:"מה צריך רפואה בחייך כרגע — גוף, נפש, או יחס?"}},
   {
     id: 4, cat: "בריאות", icon: "🧠",
     name: "לבריאות הנפש",
@@ -2799,7 +2820,8 @@ const PRAYERS = [
 עֲזֹר לִי לִרְאוֹת אֶת הָאוֹר גַּם בַּחֹשֶׁךְ.
 אָמֵן.`,
     note: "אין בושה לבקש עזרה — גם מבני אדם. תפילה זו מלווה פנייה למטפל מקצועי, לא מחליפה אותה."
-  },
+  ,
+    kab: {sefirah:"✡ בינה — הכלה של הצל הפנימי",text:"בינה היא אם העולמות — היא מכילה גם את האור וגם את החושך. דיכאון וחרדה הם לעיתים קליפות שמכסות על ניצוץ אלוהי שמנסה לעלות. התפילה הזו פונה לבינה — להרחיב את הכלי.",insight:"מה המחשבה שמצמצמת אותך ביותר עכשיו?"}},
   {
     id: 5, cat: "דרך", icon: "🚗",
     name: "תפילת הדרך",
@@ -2826,7 +2848,8 @@ const PRAYERS = [
 
 בָּרוּךְ אַתָּה ה׳, שׁוֹמֵעַ תְּפִלָּה.`,
     note: "אומרים תפילת הדרך לאחר שיצאו מחוץ לעיר ויש לפחות פרסה (כ-4 ק״מ) לפני היעד. אפשר לאמרה גם בטיסה."
-  },
+  ,
+    kab: {sefirah:"✡ נצח — ההליכה כמעשה אמוני",text:"כל נסיעה היא מסע של הנשמה. ׳תפילת הדרך׳ אינה רק בקשת ביטוח — היא הצהרה: אני הולך, ואת הדרך אני מוסר לה׳. ספירת נצח היא ספירת התנועה, ההמשכיות, ה׳גם כשקשה — ממשיכים׳.",insight:"לאן אתה הולך עכשיו — גם במשמעות הרוחנית?"}},
   {
     id: 6, cat: "משפחה", icon: "👶",
     name: "לברכת הילדים",
@@ -2846,7 +2869,8 @@ const PRAYERS = [
 
 אָמֵן.`,
     note: "מנהג יהודי עתיק לברך ילדים ביום שישי בערב לפני הדלקת נרות. מניחים שתי הידיים על ראש הילד."
-  },
+  ,
+    kab: {sefirah:"✡ חסד — האהבה שמורידה אור",text:"ברכת הילדים בערב שבת היא מהרגעים הקדושים ביותר בחיים היהודיים. ההורה הופך לכהן גדול לרגע — ידיו מונחות על ראש הילד, וכל אהבתו מוזגת לתוך הברכה. זהו חסד טהור — נתינה ללא תנאי.",insight:"את מה אתה מעביר לדור הבא — מעבר למילים?"}},
   {
     id: 7, cat: "משפחה", icon: "💑",
     name: "לזיווג הגון",
@@ -2870,7 +2894,8 @@ const PRAYERS = [
 
 אָמֵן.`,
     note: "מקובל לאמר תפילה זו בערב שבת ובראש חודש, ואחריה לבקש מחשאים לאמור אמן."
-  },
+  ,
+    kab: {sefirah:"✡ יסוד — החיבור הגדול",text:"זיווג הגון הוא אחד מ׳40 יום לפני יצירת הולד׳ — השידוך נקבע משמיים. ספירת יסוד היא ספירת הזיווג — החיבור בין ימין לשמאל, בין גבר לאישה, בין שמיים לארץ. כשזיווג הגון מתגשם — כל הספירות מתאחדות.",insight:"מה אתה מחפש באמת בזיווג — מעבר לרשימת התכונות?"}},
   {
     id: 8, cat: "פרנסה", icon: "💼",
     name: "לפרנסה ולהצלחה",
@@ -2893,7 +2918,8 @@ const PRAYERS = [
 וְיִקֻּיַּם בִּי: "ה׳ עֹז לְעַמּוֹ יִתֵּן."
 אָמֵן.`,
     note: "מקובל לאמר לאחר שחרית, ולכוון לברכה מתוך מאמץ — לא ישועה ניסית בלי מעשה."
-  },
+  ,
+    kab: {sefirah:"✡ מלכות — השפע יורד דרך עשייה",text:"פרנסה אינה עונש — היא מקום של תיקון. הרמב׳׳ם: ׳המלאכה מעלה את האדם׳. ספירת מלכות מקבלת את השפע מכל הספירות ומורידה אותו לעולם הזה. כשאנחנו עובדים בכוונה — אנחנו שותפים לבריאה.",insight:"מה העבודה שלך ׳מתקנת׳ בעולם, מעבר לפרנסה?"}},
   {
     id: 9, cat: "פרנסה", icon: "🏠",
     name: "לדירה ולבית",
@@ -2918,7 +2944,8 @@ const PRAYERS = [
 
 אָמֵן.`,
     note: "נהוג לקבוע מזוזה מיד עם הכניסה לבית, ולאמר תפילה זו בטקס קטן עם המשפחה."
-  },
+  ,
+    kab: {sefirah:"✡ מלכות — הבית כמקדש קטן",text:"המשכן בורח אל הבית. בית מחמם, בית מגן — כל בית יכול להיות ׳מקדש מעט׳. מלכות שורה בבית שיש בו שלום, אמת ואהבה. קדושת הבית אינה נפחדת מהיומיום — היא ממש שם.",insight:"מה מחסר בבית שלך כדי שיהיה ׳מקדש קטן׳?"}},
   {
     id: 10, cat: "שנה ומועדים", icon: "🍎",
     name: "לראש השנה",
@@ -2939,7 +2966,8 @@ const PRAYERS = [
 שָׁנָה טוֹבָה וּמְבֹרֶכֶת.
 אָמֵן.`,
     note: "ראש השנה הוא יום הדין — ״מי יחיה ומי ימות״. התפילה היא לשנה של חיים, בריאות ושלום."
-  },
+  ,
+    kab: {sefirah:"✡ כתר — הרצון הראשוני מתחדש",text:"ראש השנה הוא יום הולדת העולם ויום הולדת הנשמה. כתר — הרצון — מתחדש. השנה החדשה אינה המשך ישיר של הקודמת — היא עיגול חדש. ׳תכתב ותחתם לחיים טובים׳ — אנחנו כותבים את הפרק הבא.",insight:"מה הרצון האחד שאתה מחדש השנה?"}},
   {
     id: 11, cat: "שנה ומועדים", icon: "🕯️",
     name: "הדלקת נרות שבת",
@@ -2963,7 +2991,8 @@ const PRAYERS = [
 
 שַׁבָּת שָׁלוֹם וּמְבֹרָךְ.`,
     note: "מנהג ידוע שהנשים מוסיפות אחרי ברכת הנרות תפילה אישית מהלב — זה הרגע המיוחד ביותר."
-  },
+  ,
+    kab: {sefirah:"✡ בינה — הדלקת הנר כהזמנת השכינה",text:"נר השבת הוא הזמנה — ׳ובאת אלינו׳. בינה היא ׳אם השבת׳ — הכלי שמקבל את האור. האישה המדליקה נרות היא כמו בינה המקבלת מחכמה ומזרימה לתפארת. שתי הנרות: נכור ושמור — שניים שהם אחד.",insight:"את מה אתה מזמין לחייך עם הדלקת הנרות?"}},
   {
     id: 12, cat: "שנה ומועדים", icon: "🙏",
     name: "ביום כיפור",
@@ -2988,7 +3017,8 @@ const PRAYERS = [
 גְּמַר חֲתִימָה טוֹבָה.
 אָמֵן.`,
     note: "יום כיפור הוא שיא ה׳עשרת ימי תשובה׳ — המסורת אומרת שבו נחתם גורל השנה."
-  },
+  ,
+    kab: {sefirah:"✡ בינה — ׳יום כיפור — מיתה קטנה׳",text:"ביום הכיפורים אנחנו כמו מלאכים — לא אוכלים, לא שותים, לובשים לבן. בינה: ביטול עצמי מוחלט כדי להיפגש עם ה׳אין׳ שבתוכנו. הווידוי אינו רשימת עוונות — הוא שחרור.",insight:"מה אתה מוכן לשחרר השנה?"}},
   {
     id: 13, cat: "צרה ועזרה", icon: "⚡",
     name: "בשעת צרה",
@@ -3012,7 +3042,8 @@ const PRAYERS = [
 
 אָמֵן.`,
     note: "בשעה שנדמה שהכל קורס — שני מילים: ה׳ עמדי. לא צריך יותר מזה."
-  },
+  ,
+    kab: {sefirah:"✡ גבורה — הצרה כשבירת הקליפה",text:"׳מִן הַמֵּצַר קָרָאתִי יָּהּ׳ — מתוך הצרה קראתי. גבורה היא הכוח שמגיע מהגבול — מהמצר. כשהכל נסגר, נשאר רק הצינור הישיר לה׳. לפעמים הצרה היא הדרך היחידה אל הפתח.",insight:"מה הצרה הנוכחית מנסה ללמד אותך?"}},
   {
     id: 14, cat: "צרה ועזרה", icon: "🌙",
     name: "לפני השינה",
@@ -3034,7 +3065,8 @@ const PRAYERS = [
 
 לַיְלָה טוֹב. אָמֵן.`,
     note: "ה׳קריאת שמע על המיטה׳ היא מנהג עתיק: מוסרים את הנפש לה׳ לפני השינה ומאמינים שיחזירה בבוקר."
-  },
+  ,
+    kab: {sefirah:"✡ יסוד — מסירת הנשמה ושמירתה",text:"׳ביד ה׳ אפקיד רוחי׳. כל לילה הנשמה עולה ומתוקנת. השינה היא ׳1/60 מן המיתה׳ — ניסיון קטן של ביטול. יסוד הוא הצינור שמחבר — הלילה הוא הצינור בין יום ליום.",insight:"מה אתה מוסר הלילה ומה אתה מצפה לקבל בבוקר?"}},
   {
     id: 15, cat: "צרה ועזרה", icon: "✡️",
     name: "להנצחת נשמה",
@@ -3055,7 +3087,8 @@ const PRAYERS = [
 שָׂרָה רִבְקָה רָחֵל וְלֵאָה.
 וְנֹאמַר: אָמֵן.`,
     note: "יש לשנות את הצורה הדקדוקית לפי מין הנפטר. ניתן להוסיף: ׳בזכות שאני מבטיח/ה לתרום לצדקה לעילוי נשמתו/ה.׳"
-  },
+  ,
+    kab: {sefirah:"✡ הוד — ההכרת הטוב לנשמה שהלכה",text:"הוד היא ״תודה״ — הכרת הטוב לדבר שהיה. כשמתפללים לנשמה שהלכה, אנחנו ממשיכים את הקשר. לפי הקבלה, הנשמה עוברת לשלב גבוה יותר — והזכרתה מעלה אותה ומשמחת אותה.",insight:"מה הנשמה הזו השאירה בך שממשיך לחיות?"}},
   {
     id: 16, cat: "שנה ומועדים", icon: "🌅",
     name: "ברכות השחר",
@@ -3099,7 +3132,8 @@ const PRAYERS = [
 
 אָמֵן.`,
     note: "מנהג הספרדים: לאמר ׳מודה/מודה אני׳ מיד עם הקימה, לפני כל נטילת ידיים. ברכות השחר הן ה׳תרגום׳ של הגוף לשפת הקדושה — כל אבר, כל כוח, מתעורר עם הכרת תודה."
-  },
+  ,
+    kab: {sefirah:"✡ חסד — הקימה כמעשה בריאה",text:"׳מודה אני לפניך... שהחזרת בי נשמתי׳. ברכות השחר הן 18 ברכות שמלבישות את הנשמה חזרה בגוף. כל ברכה היא קבלת כוח מספירה אחרת — מחסד ועד מלכות. ה׳מודה אני׳ הוא הרגע שהנשמה מוכרת את החסד שקיבלה.",insight:"מה אתה מכיר בתור חסד בחייך הבוקר?"}},
   {
     id: 17, cat: "ביטחון", icon: "🕍",
     name: "ברכת כהנים",
@@ -3118,8 +3152,105 @@ const PRAYERS = [
 כֵּן יְהִי רָצוֹן.
 אָמֵן.`,
     note: "זוהי הברכה העתיקה ביותר שנמצאה בכתב — על לוחות כסף מלפני 2,700 שנה, שנחשפו בירושלים. אפשר לברך בה כל אדם אהוב — ילד, בן זוג, חבר — בכל עת. פשוט לשים יד על ראשו ולאמר."
+  ,
+    kab: {sefirah:"✡ תפארת — אמת שיוצאת בברכה",text:"ברכת כהנים — שלושה פסוקים: 3 מילים, 5 מילים, 7 מילים. 3+5+7=15=יה, שם ה׳. הכהן הוא ״ימין״ — חסד. ידיו פרוסות — לא לוקח, רק נותן. תפארת היא הלב — ממנו הברכה מזרימה.",insight:"למי ברצונך לברך עכשיו — ומה אתה מברך אותם?"}},
+  {
+    id: 18, cat: "ערב", icon: "🌆",
+    name: "ערבית",
+    occasion: "תפילת ערב קצרה — בכל ערב",
+    essence: "ערבית היא הפגישה עם חשיכה כמסוגלת להכיל אור. רגע של עצירה, חשבון, ומסירה.",
+    text: `הַמַּעֲרִיב עֲרָבִים בְּחָכְמָה,
+פּוֹתֵחַ שְׁעָרִים בִּתְבוּנָה,
+מְשַׁנֶּה עִתִּים וּמַחֲלִיף אֶת הַזְּמַנִּים,
+וּמְסַדֵּר אֶת הַכּוֹכָבִים.
+
+גּוֹלֵל אוֹר מִפְּנֵי חֹשֶׁךְ,
+וְחֹשֶׁךְ מִפְּנֵי אוֹר.
+מַעֲבִיר יוֹם וּמֵבִיא לָיְלָה.
+
+בָּרוּךְ אַתָּה ה׳, הַמַּעֲרִיב עֲרָבִים.
+
+*
+
+רִבּוֹנוֹ שֶׁל עוֹלָם,
+הַיּוֹם הַזֶּה נִגְמַר.
+מָה לָקַחְתִּי מִמֶּנּוּ?
+מָה אֲנִי מֵנִיחַ כָּאן?
+
+יְהִי רָצוֹן שֶׁמַּה שֶּׁהָיָה טוֹב — יִשָּׁמֵר,
+וּמַה שֶּׁטָּעִיתִי — יִסְלַח.
+
+שְׁמֹר עָלַי בַּלַּיְלָה,
+וְהָשֵׁב אֶת נִשְׁמָתִי שְׁלֵמָה בַּבֹּקֶר.
+
+אָמֵן.`,
+    kab: {sefirah:"מלכות — קבלת החשיכה",text:"הערב הוא רגע של מלכות — ממשות. הלילה אינו היעדר האור, אלא עולם אחר שיש בו חיים. 'ויהי ערב ויהי בוקר' — הלילה קודם ליום. הכל מתחיל בחשיכה.",insight:"עצור בערב. מה אתה לוקח מהיום הזה למחר?"}
   },
-];
+  {
+    id: 19, cat: "לילה", icon: "🌙",
+    name: "קריאת שמע על המיטה",
+    occasion: "לפני שינה — כל לילה",
+    essence: "קריאת שמע על המיטה היא מסירת הנשמה לשמים, אישור שה׳ שומר עלינו בשינה — ועלייתנו הקטנה בכל לילה.",
+    text: `שְׁמַע יִשְׂרָאֵל,
+ה׳ אֱלֹהֵינוּ, ה׳ אֶחָד.
+
+בָּרוּךְ שֵׁם כְּבוֹד מַלְכוּתוֹ לְעוֹלָם וָעֶד.
+
+וְאָהַבְתָּ אֵת ה׳ אֱלֹהֶיךָ
+בְּכָל לְבָבְךָ, וּבְכָל נַפְשְׁךָ
+וּבְכָל מְאֹדֶךָ.
+
+*
+
+יְהִי רָצוֹן מִלְּפָנֶיךָ,
+ה׳ אֱלֹהַי וֵאלֹהֵי אֲבוֹתַי,
+שֶׁתַּשְׁכִּיבֵנִי לְשָׁלוֹם
+וְתַעֲמִידֵנִי לְשָׁלוֹם.
+
+אַל יְבַהֲלוּנִי רַעְיוֹנַי,
+וַחֲלוֹמוֹת רָעִים לֹא יְבַהֲלוּנִי.
+
+בְּיָדְךָ אַפְקִיד רוּחִי —
+פָּדִיתָ אוֹתִי, ה׳ אֵל אֱמֶת.
+
+הַמַּלְאָךְ הַגֹּאֵל אֹתִי מִכָּל רָע,
+יְבָרֵךְ אֶת הַנְּשָׁמָה הַזֹּאת.
+
+אָמֵן.`,
+    kab: {sefirah:"יסוד — חיבור שמים וארץ בשינה",text:"בכל לילה הנשמה עולה ומתוקנת. 'ביד' — ה׳ לוקח את נשמתנו כפיקדון ומחזיר אותה בבוקר. זוהי מיתה קטנה ותחייה קטנה בכל לילה.",insight:"לפני שאתה נרדם — מה אתה מוסר? יש נשמה שמחכה לחזור מחר."}
+  },
+  {
+    id: 20, cat: "שבת", icon: "✨",
+    name: "הבדלה",
+    occasion: "מוצאי שבת — לאחר צאת הכוכבים",
+    essence: "הבדלה היא ברכה על ההבחנה — בין קדושה לחולין, בין שבת לשבוע. כשאומרים הבדלה, מכניסים את קדושת השבת לתוך שבוע החול.",
+    text: `בָּרוּךְ אַתָּה ה׳,
+אֱלֹהֵינוּ מֶלֶךְ הָעוֹלָם,
+הַמַּבְדִּיל בֵּין קֹדֶשׁ לְחֹל,
+בֵּין אוֹר לְחֹשֶׁךְ,
+בֵּין יִשְׂרָאֵל לָעַמִּים,
+בֵּין יוֹם הַשְּׁבִיעִי
+לְשֵׁשֶׁת יְמֵי הַמַּעֲשֶׂה.
+
+בָּרוּךְ אַתָּה ה׳,
+הַמַּבְדִּיל בֵּין קֹדֶשׁ לְחֹל.
+
+*
+
+אֱלִיָּהוּ הַנָּבִיא,
+אֱלִיָּהוּ הַתִּשְׁבִּי,
+אֱלִיָּהוּ הַגִּלְעָדִי.
+בִּמְהֵרָה יָבוֹא אֵלֵינוּ
+עִם מָשִׁיחַ בֶּן דָּוִד.
+
+שָׁבוּעַ טוֹב.
+שָׁבוּעַ שֶׁל שָׁלוֹם.
+שָׁבוּעַ שֶׁל בְּרָכָה.
+
+אָמֵן.`,
+    kab: {sefirah:"בינה — ההבחנה שמשמרת",text:"הבדלה היא מלאכת הבינה — להבחין. הבינה מפרידה בין עולמות לא כדי לפרוד, אלא כדי לשמר. ניצוץ הקדושה נכנס לשבוע דרך הכוס, הנר והבשמים.",insight:"מה מהשבת נכנס איתך לשבוע? הבדלה היא לא סיום — היא חיבור."}
+  },
+];;
 
 const PRAYER_CATS = ['הכל','⭐ מועדפים','ביטחון','בריאות','משפחה','פרנסה','שנה ומועדים','צרה ועזרה','דרך'];
 var activePrayerCat = 'הכל';
@@ -3297,6 +3428,50 @@ function renderPrayers(){
           'border-right:3px solid ' + col('#8b6820','#8b5e10') + ';margin-bottom:14px;');
         note.textContent = '💡 ' + pr.note;
         inner.appendChild(note);
+      }
+
+
+      if(pr.kab){
+        var kabWrap = document.createElement('div');
+        kabWrap.setAttribute('style',
+          'margin-top:14px;border-radius:12px;overflow:hidden;' +
+          'border:1px solid ' + col('rgba(201,151,44,.3)','rgba(139,94,16,.3)') + ';');
+
+        // Header
+        var kabHdr = document.createElement('div');
+        kabHdr.setAttribute('style',
+          'padding:9px 14px;background:' + col('rgba(201,151,44,.12)','rgba(139,94,16,.1)') + ';' +
+          'display:flex;align-items:center;gap:8px;');
+        kabHdr.innerHTML =
+          '<span style="font-size:14px">✡</span>' +
+          '<span style="font-family:Heebo,sans-serif;font-size:10px;font-weight:800;letter-spacing:1.5px;color:' + col('#c9972c','#8b5e10') + '">כוונה קבלית</span>' +
+          '<span style="font-family:Heebo,sans-serif;font-size:11px;color:' + col('#a89060','#5a3a10') + ';margin-right:auto">' + (pr.kab.sefirah||'') + '</span>';
+        kabWrap.appendChild(kabHdr);
+
+        // Body
+        var kabBody = document.createElement('div');
+        kabBody.setAttribute('style',
+          'padding:12px 14px;background:' + col('#271808','#fdf6ec') + ';');
+
+        var kabText = document.createElement('div');
+        kabText.setAttribute('style',
+          'font-family:Heebo,sans-serif;font-size:13px;color:' + col('#c8a870','#5a3a10') + ';' +
+          'line-height:1.85;margin-bottom:10px;');
+        kabText.textContent = pr.kab.text || '';
+        kabBody.appendChild(kabText);
+
+        if(pr.kab.insight){
+          var kabQ = document.createElement('div');
+          kabQ.setAttribute('style',
+            'font-family:\'Frank Ruhl Libre\',serif;font-size:14px;font-weight:700;' +
+            'color:' + col('var(--gold-l)','#3a1a00') + ';' +
+            'padding:10px 12px;background:' + col('rgba(201,151,44,.1)','rgba(139,94,16,.08)') + ';' +
+            'border-radius:8px;border-right:3px solid ' + col('var(--gold)','#8b5e10') + ';');
+          kabQ.textContent = '✦ ' + pr.kab.insight;
+          kabBody.appendChild(kabQ);
+        }
+        kabWrap.appendChild(kabBody);
+        inner.appendChild(kabWrap);
       }
 
       var btnRow = document.createElement('div');
@@ -3596,13 +3771,7 @@ var PARASHIOT = [
   {n:'וזאת הברכה',b:'דברים',d:'משה מברך כל שבט — ברכה אחרונה מאב לבניו. ואז: "ויעל משה... וימת שם... ולא ידע איש את קבורתו עד היום הזה." שתים עשרה מילים. הנביא הגדול — נקבר בידי ה\' בלבד.',kab:{sefirah:'✡ כתר — הסיום שהוא התחלה',text:'"וזאת הברכה אשר ברך משה." כל שבט מקבל ניצוצו. "לא קם עוד נביא בישראל כמשה." ומיד — פותחים שוב מבראשית. התורה מעגלית כמו כתר.',insight:'הסיום הוא תמיד גם התחלה. מה מסתיים עבורך — ומה זה פותח?'},psalms:[150, 1, 90]}
 ];
 
-function getCurrentParasha(){
-  // Week 1 of 5784 = Oct 7, 2023
-  var epoch = new Date('2023-10-07');
-  var now   = new Date();
-  var week  = Math.floor((now - epoch) / (7*24*3600*1000));
-  return PARASHIOT[week % PARASHIOT.length];
-}
+// getCurrentParasha() moved above (uses PARASHA_LOOKUP_5786)
 
 var _parashaOpen = false;
 
@@ -3611,7 +3780,10 @@ function renderParasha(){
   var nm = document.getElementById('parasha-name');
   var bk = document.getElementById('parasha-book');
   if(nm) nm.textContent = 'פרשת ' + p.n;
-  if(bk) bk.textContent = 'ספר ' + p.b + ' · לחץ לקרוא עוד';
+  var bkTxt = 'ספר ' + p.b;
+  if(p._note) bkTxt += ' · ' + p._note;
+  else bkTxt += ' · לחץ לקרוא עוד';
+  if(bk) bk.textContent = bkTxt;
 }
 
 // Parasha card click — open full reader screen
@@ -4941,6 +5113,315 @@ function renderCalc(){
 //  תוכנית יומית — שלושה שלבים
 // ═══════════════════════════════════════════════════
 
+// ═══════════════════════════════════════════════════
+//  פרשה נכונה — טבלת שבתות 5786
+// ═══════════════════════════════════════════════════
+var PARASHA_LOOKUP_5786 = {
+  '2025-10-18':'בראשית','2025-10-25':'נח','2025-11-01':'לך לך',
+  '2025-11-08':'וירא','2025-11-15':'חיי שרה','2025-11-22':'תולדות',
+  '2025-11-29':'ויצא','2025-12-06':'וישלח','2025-12-13':'וישב',
+  '2025-12-20':'מקץ','2025-12-27':'ויגש','2026-01-03':'ויחי',
+  '2026-01-10':'שמות','2026-01-17':'וארא','2026-01-24':'בא',
+  '2026-01-31':'בשלח','2026-02-07':'יתרו','2026-02-14':'משפטים',
+  '2026-02-21':'תרומה','2026-02-28':'תצוה','2026-03-07':'כי תשא',
+  '2026-03-14':'ויקהל','2026-03-21':'ויקרא','2026-03-28':'צו',
+  '2026-04-11':'שמיני','2026-04-18':'תזריע','2026-04-25':'מצורע',
+  '2026-05-02':'אחרי מות','2026-05-09':'קדושים','2026-05-16':'אמור',
+  '2026-05-23':'בהר','2026-05-30':'בחוקותי','2026-06-06':'במדבר',
+  '2026-06-13':'נשא','2026-06-20':'בהעלותך','2026-06-27':'שלח',
+  '2026-07-04':'קורח','2026-07-11':'חוקת','2026-07-18':'בלק',
+  '2026-07-25':'פינחס','2026-08-01':'מטות','2026-08-08':'מסעי',
+  '2026-08-15':'דברים','2026-08-22':'ואתחנן','2026-08-29':'עקב',
+  '2026-09-05':'ראה','2026-09-12':'שופטים','2026-09-19':'כי תצא',
+  '2026-09-26':'כי תבוא','2026-10-03':'נצבים','2026-10-10':'וילך',
+  '2026-10-17':'האזינו','2026-10-24':'וזאת הברכה'
+};
+
+// Special combined/holiday notes
+var PARASHA_NOTES_5786 = {
+  '2026-03-14':'ויקהל-פקודי · שבת החודש',
+  '2026-03-28':'שבת הגדול',
+  '2026-02-14':'שבת זכור',
+  '2026-03-07':'שבת פרה',
+  '2026-08-15':'שבת חזון'
+};
+
+function getLastSaturday(date){
+  var d = new Date(date);
+  var dow = d.getDay();
+  d.setDate(d.getDate() - (dow === 6 ? 0 : dow + 1));
+  d.setHours(0,0,0,0);
+  return d;
+}
+
+function getCurrentParasha(){
+  var lastSat = getLastSaturday(new Date());
+  var key = lastSat.toISOString().split('T')[0];
+  var name = PARASHA_LOOKUP_5786[key];
+  if(name){
+    var p = PARASHIOT.find(function(x){ return x.n===name; });
+    if(p){
+      var note = PARASHA_NOTES_5786[key];
+      if(note) p._note = note; else delete p._note;
+      return p;
+    }
+  }
+  // fallback: epoch-based (may drift)
+  var epoch = new Date('2025-10-18');
+  var weeks = Math.floor((lastSat - epoch) / (7*24*3600*1000));
+  return PARASHIOT[((weeks % PARASHIOT.length) + PARASHIOT.length) % PARASHIOT.length];
+}
+
+// ═══════════════════════════════════════════════════
+//  מסע יומי — שעות, שלבים, מעקב
+// ═══════════════════════════════════════════════════
+
+// שעות לפי סוג תפילה
+var PRAYER_TIMES = {
+  1:{t:'09:00',h:9},  2:{t:'09:00',h:9},  3:{t:'10:00',h:10},
+  4:{t:'10:00',h:10}, 5:{t:'08:00',h:8},  6:{t:'18:30',h:18.5},
+  7:{t:'10:00',h:10}, 8:{t:'08:00',h:8},  9:{t:'10:00',h:10},
+  10:{t:'09:00',h:9}, 11:{t:'18:00',h:18},12:{t:'09:00',h:9},
+  13:{t:'06:00',h:6}, 14:{t:'21:30',h:21.5},15:{t:'10:00',h:10},
+  16:{t:'06:30',h:6.5},17:{t:'08:00',h:8},
+  18:{t:'19:00',h:19},19:{t:'21:30',h:21.5},20:{t:'21:00',h:21}
+};
+
+var JOURNEY_DAY_KEY = 'journey_day_v1';
+
+function getJourneyDayState(){
+  var todayKey = new Date().toISOString().split('T')[0];
+  var s = LS.get(JOURNEY_DAY_KEY, null);
+  if(!s || s.date !== todayKey) return { date:todayKey, started:false, done:[] };
+  return s;
+}
+function saveJourneyDayState(s){ LS.set(JOURNEY_DAY_KEY, s); }
+
+function buildJourneySchedule(psalm, prayer, lc){
+  var pt = PRAYER_TIMES[prayer.id] || {t:'09:00',h:9};
+  var steps = [
+    { id:'psalm',  h:7,    t:'07:00', icon:'📖',
+      title:'מזמור '+heb(psalm.n)+' — '+psalm.t, sub:psalm.kw,
+      action:'openPsalmN('+psalm.n+')' },
+    { id:'prayer', h:pt.h, t:pt.t,   icon:prayer.icon,
+      title:prayer.name, sub:prayer.occasion,
+      action:'openPrayerNav('+prayer.id+')' },
+    { id:'lesson', h:20,   t:'20:00', icon:lc.icon||'✡',
+      title:lc.title, sub:lc.sub||'',
+      action:lc.action||lc.onclick,
+      kcId:(function(){ var m=(lc.action||lc.onclick||'').match(/openKCById\((\d+)\)/); return m?+m[1]:null; })() }
+  ];
+  // If morning prayer (before 08:00), add as extra first step
+  if(pt.h < 7){
+    steps[1] = { id:'prayer', h:pt.h, t:pt.t, icon:prayer.icon,
+      title:prayer.name, sub:prayer.occasion,
+      action:'openPrayerNav('+prayer.id+')' };
+  }
+  // שלב ערב: ערבית קצרה (19:00)
+  var dow2 = new Date().getDay();
+  var eveningPrayerId = dow2 === 6 ? 20 : 18; // מוצ"ש → הבדלה, אחרת ערבית
+  var eveningPrayer = (typeof PRAYERS !== 'undefined') ? PRAYERS.find(function(p){return p.id===eveningPrayerId;}) : null;
+  if(eveningPrayer){
+    steps.push({ id:'evening', h:19, t:'19:00', icon:eveningPrayer.icon,
+      title:eveningPrayer.name, sub:eveningPrayer.occasion,
+      action:'openPrayerNav('+eveningPrayerId+')' });
+  }
+  // שלב לילה: קריאת שמע על המיטה (21:30)
+  var nightPrayer = (typeof PRAYERS !== 'undefined') ? PRAYERS.find(function(p){return p.id===19;}) : null;
+  if(nightPrayer){
+    steps.push({ id:'night', h:21.5, t:'21:30', icon:'🌙',
+      title:nightPrayer.name, sub:nightPrayer.occasion,
+      action:'openPrayerNav(19)' });
+  }
+  steps.sort(function(a,b){ return a.h-b.h; });
+  return steps;
+}
+
+function getCurrentHour(){
+  var d = new Date();
+  return d.getHours() + d.getMinutes()/60;
+}
+
+// Render the journey card
+function renderJourneyCard(psalm, prayer, lc, dailyS, personalS){
+  var el = document.getElementById('home-journey-card');
+  if(!el) return;
+  var jState = getJourneyDayState();
+  var steps  = buildJourneySchedule(psalm, prayer, lc);
+  var curH   = getCurrentHour();
+  var isDark = !_lightMode;
+  var bg     = isDark ? 'linear-gradient(135deg,#1a1000,#0d0800)' : 'linear-gradient(135deg,#fff3e0,#ffecc8)';
+  var itemBg = isDark ? 'rgba(201,151,44,.08)' : 'rgba(139,94,16,.06)';
+  var txtH   = isDark ? 'var(--cream)' : '#2a1a00';
+  var mutC   = isDark ? 'var(--txt-mut)' : '#a08060';
+  var goldD  = isDark ? 'var(--gold-d)' : '#8b6820';
+  var doneDoneC = isDark ? 'rgba(80,200,80,.15)' : 'rgba(60,160,60,.1)';
+  var doneTextC = isDark ? '#90e090' : '#2a8030';
+
+  var DAY_HEB = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+  var dow = new Date().getDay();
+  var sefirotLine = '';
+  if(dailyS)   sefirotLine += 'ספירת היום: <strong style="color:'+dailyS.color+'">'+dailyS.name+'</strong>';
+  if(personalS) sefirotLine += '&nbsp;·&nbsp;שלך: <strong style="color:'+personalS.color+'">'+personalS.name+'</strong>';
+
+  var doneCnt  = jState.done.length;
+  var totalCnt = steps.length;
+
+  // ── Header ──
+  var html = '<div style="background:'+bg+';border:1px solid rgba(201,151,44,.45);border-right:3px solid var(--gold);border-radius:var(--r);padding:16px 18px;">';
+  html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">';
+  html += '<div style="font-family:\'Suez One\',serif;font-size:16px;color:var(--gold-l);'+(isDark?'text-shadow:0 0 12px rgba(201,151,44,.3)':'')+'">🌟 מסע יום '+DAY_HEB[dow]+'</div>';
+  if(doneCnt > 0){
+    html += '<div style="font-family:Heebo,sans-serif;font-size:11px;color:'+doneTextC+';font-weight:700">'+doneCnt+'/'+totalCnt+' הושלמו ✓</div>';
+  }
+  html += '</div>';
+  if(sefirotLine) html += '<div style="font-family:Heebo,sans-serif;font-size:11px;color:'+mutC+';margin-bottom:12px">'+sefirotLine+'</div>';
+  else html += '<div style="height:8px"></div>';
+
+  // ── Steps ──
+  // בברירת מחדל: הצג רק את השלב הנוכחי/הבא. showAll: הצג הכל.
+  var showAll = jState.showAll || false;
+  var nextUndone = null;
+  steps.forEach(function(st){ if(!nextUndone && jState.done.indexOf(st.id)<0) nextUndone=st.id; });
+
+  steps.forEach(function(step){
+    var isDone    = jState.done.indexOf(step.id) >= 0;
+    var isCurrent = !isDone && curH >= step.h-0.25 && curH < step.h+2;
+    // בתצוגה קומפקטית: הצג שלב שהושלם אחרון + השלב הבא (או הנוכחי)
+    if(!showAll && !isDone && step.id !== nextUndone) return; // הסתר שלבים עתידיים
+    var bg2 = isDone ? doneDoneC : (isCurrent ? 'rgba(201,151,44,.13)' : itemBg);
+    var border = isDone ? '1px solid '+doneTextC+'44' : (isCurrent ? '1px solid rgba(201,151,44,.4)' : 'none');
+    var titleC = isDone ? doneTextC : txtH;
+
+    html += '<div style="background:'+bg2+';border:'+border+';border-radius:10px;padding:10px 12px;margin-bottom:8px;">';
+    html += '<div style="display:flex;align-items:center;gap:10px;">';
+    // Time badge
+    html += '<div style="font-family:Heebo,sans-serif;font-size:10px;font-weight:800;color:'+(isDone?doneTextC:'var(--gold-d)')+';min-width:38px;text-align:center;'+(isCurrent?'font-size:11px':'')+'">'+step.t+'</div>';
+    // Status dot
+    html += '<div style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:'+(isDone?doneTextC:isCurrent?'var(--gold)':'rgba(180,150,80,.3)')+'"></div>';
+    // Content
+    html += '<div style="flex:1;min-width:0;overflow:hidden;">';
+    html += '<div style="font-family:\'Frank Ruhl Libre\',serif;font-size:13px;font-weight:700;color:'+titleC+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">';
+    html += (isDone?'<s style="opacity:.7">':'')+step.icon+' '+step.title+(isDone?'</s>':'')+'</div>';
+    if(step.sub && !isDone) html += '<div style="font-family:Heebo,sans-serif;font-size:10px;color:'+mutC+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px">'+step.sub+'</div>';
+    html += '</div>';
+    // Action buttons
+    if(!isDone){
+      html += '<div style="display:flex;gap:6px;flex-shrink:0;">';
+      html += '<button onclick="_journeyOpen(\''+step.id+'\',function(){'+step.action+'},'+(step.kcId||'null')+')" '+
+        'style="padding:5px 8px;border-radius:8px;background:var(--gold);color:#1a0e02;'+
+        'border:none;font-family:Heebo,sans-serif;font-size:11px;font-weight:800;cursor:pointer;touch-action:manipulation;">פתח</button>';
+      html += '<button onclick="_journeyDone(\''+step.id+'\')" '+
+        'style="padding:5px 8px;border-radius:8px;background:none;border:1px solid '+goldD+';'+
+        'color:'+goldD+';font-family:Heebo,sans-serif;font-size:11px;cursor:pointer;touch-action:manipulation;">✓</button>';
+      html += '</div>';
+    } else {
+      html += '<div style="font-size:16px;flex-shrink:0">✅</div>';
+    }
+    html += '</div></div>'; // row + step
+  });
+
+  // ── Start button / progress bar ──
+  if(!jState.started && doneCnt === 0){
+    html += '<button id="journey-start-btn" onclick="_journeyStart()" '+
+      'style="width:100%;margin-top:6px;padding:12px;border-radius:10px;'+
+      'background:linear-gradient(135deg,var(--gold),#9a7015);color:#1a0e02;'+
+      'font-family:Heebo,sans-serif;font-size:14px;font-weight:800;border:none;'+
+      'cursor:pointer;touch-action:manipulation;">🌟 התחל מסע היום</button>';
+  } else if(doneCnt < totalCnt){
+    var pct = Math.round(doneCnt/totalCnt*100);
+    html += '<div style="margin-top:8px;height:4px;background:rgba(201,151,44,.2);border-radius:2px;">';
+    html += '<div style="width:'+pct+'%;height:100%;background:var(--gold);border-radius:2px;transition:width .3s"></div></div>';
+    html += '<div style="font-family:Heebo,sans-serif;font-size:10px;color:'+mutC+';text-align:center;margin-top:4px">'+doneCnt+' מתוך '+totalCnt+' שלבים הושלמו</div>';
+  } else {
+    html += '<div style="margin-top:8px;text-align:center;font-family:\'Suez One\',serif;font-size:14px;color:var(--gold-l);">✨ המסע היומי הושלם! ✨</div>';
+  }
+
+  // כפתור "ראה את כל המסע" — מרחיב לתצוגה מלאה
+  var allShown = jState.showAll || false;
+  if(!allShown){
+    html += '<button onclick="_journeyShowAll()" '+
+      'style="width:100%;margin-top:8px;padding:8px;border-radius:8px;background:none;'+
+      'border:1px dashed rgba(201,151,44,.35);font-family:Heebo,sans-serif;font-size:12px;'+
+      'color:'+mutC+';cursor:pointer;touch-action:manipulation;">▾ ראה את כל המסע</button>';
+  } else {
+    html += '<button onclick="_journeyHideAll()" '+
+      'style="width:100%;margin-top:8px;padding:8px;border-radius:8px;background:none;'+
+      'border:1px dashed rgba(201,151,44,.35);font-family:Heebo,sans-serif;font-size:12px;'+
+      'color:'+mutC+';cursor:pointer;touch-action:manipulation;">▴ צמצם</button>';
+  }
+
+  html += '</div>'; // outer div
+  el.innerHTML = html;
+}
+
+function _journeyStart(){
+  var s = getJourneyDayState();
+  s.started = true;
+  saveJourneyDayState(s);
+  renderDailyJourneyHome();
+}
+
+function _journeyDone(stepId){
+  var s = getJourneyDayState();
+  if(s.done.indexOf(stepId) < 0){ s.done.push(stepId); s.started = true; }
+  saveJourneyDayState(s);
+
+  // אם השלב הוא שיעור קבלה — עדכן גם בקורס הקבלה
+  if(stepId === 'lesson' && window._journeyLessonKcId){
+    var kcId = window._journeyLessonKcId;
+    if(typeof _kcCompleted !== 'undefined' && _kcCompleted.indexOf(kcId) < 0){
+      _kcCompleted.push(kcId);
+      LS.set('kc_done', JSON.stringify(_kcCompleted));
+    }
+    window._journeyLessonKcId = null;
+  }
+
+  renderDailyJourneyHome();
+  // hide journey nav bar if visible
+  var jb = document.getElementById('journey-nav-bar');
+  if(jb) jb.style.display = 'none';
+  window._journeyActiveStep = null;
+}
+
+function _journeyOpen(stepId, fn, kcId){
+  // Mark journey as active + show nav bar
+  var s = getJourneyDayState();
+  s.started = true;
+  saveJourneyDayState(s);
+  window._journeyActiveStep = stepId;
+  // שמור KC lesson ID אם רלוונטי
+  window._journeyLessonKcId = kcId || null;
+  // Show journey nav bar
+  var jb = document.getElementById('journey-nav-bar');
+  if(jb) jb.style.display = 'flex';
+  // Execute the open action
+  fn();
+}
+
+function _journeyShowAll(){
+  var s = getJourneyDayState();
+  s.showAll = true;
+  saveJourneyDayState(s);
+  renderDailyJourneyHome();
+}
+function _journeyHideAll(){
+  var s = getJourneyDayState();
+  s.showAll = false;
+  saveJourneyDayState(s);
+  renderDailyJourneyHome();
+}
+function _journeyReturn(){
+  // Mark current step as done + return home
+  if(window._journeyActiveStep){
+    _journeyDone(window._journeyActiveStep);
+  }
+  window._journeyActiveStep = null;
+  var jb = document.getElementById('journey-nav-bar');
+  if(jb) jb.style.display = 'none';
+  showScreen('home');
+}
+
 var JOURNEY_START_KEY = 'home_journey_start_v1';
 
 function getJourneyDay(){
@@ -5038,6 +5519,7 @@ var PRAYER_BY_SEFIRAH = {
   chesed:[6,17,10], gevura:[13,1,2], tiferet:[16,11,12],
   netzach:[5,8,9],  hod:[16,3,15],  yesod:[7,3,6],
   malchut:[11,9,14],keter:[10,12,16],chochma:[16,17,1],bina:[4,16,15]
+  // תפילות 18,19,20 מופיעות כשלבים קבועים בערב — לא דרך PRAYER_BY_SEFIRAH
 };
 
 // שיעור קבלה לפי ספירה אישית
@@ -5196,34 +5678,8 @@ function renderDailyJourneyHome(){
   if(dailyS)   sefirotLine += 'ספירת היום: <strong style="color:'+dailyS.color+'">'+dailyS.name+'</strong>';
   if(personalS) sefirotLine += '&nbsp;·&nbsp;שלך: <strong style="color:'+personalS.color+'">'+personalS.name+'</strong>';
 
-  // builder לכל שורה
-  function row(icon, title, sub, fn){
-    return '<div onclick="'+fn+'" '+
-      'ontouchstart="this.style.background=\''+itemAc+'\';" ontouchend="this.style.background=\''+itemBg+'\';" '+
-      'style="background:'+itemBg+';border-radius:10px;padding:10px 12px;margin-bottom:8px;'+
-      'display:flex;align-items:center;gap:12px;cursor:pointer;touch-action:manipulation;'+
-      '-webkit-tap-highlight-color:transparent;">'+
-      '<div style="font-size:22px;flex-shrink:0">'+icon+'</div>'+
-      '<div style="flex:1;min-width:0;overflow:hidden;">'+
-        '<div style="font-family:\'Frank Ruhl Libre\',serif;font-size:14px;font-weight:700;color:'+txtH+';'+
-          'margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+title+'</div>'+
-        '<div style="font-family:Heebo,sans-serif;font-size:11px;color:'+mutC+';'+
-          'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+(sub||'')+'</div>'+
-      '</div>'+
-      '<div style="color:'+goldD+';font-size:14px;flex-shrink:0">←</div>'+
-    '</div>';
-  }
-
-  el.innerHTML =
-    '<div style="background:'+bg+';border:1px solid rgba(201,151,44,.45);border-right:3px solid var(--gold);border-radius:var(--r);padding:16px 18px;">'+
-      '<div style="font-family:\'Suez One\',serif;font-size:16px;color:var(--gold-l);'+
-        'margin-bottom:'+(sefirotLine?'4':'12')+'px;'+(isDark?'text-shadow:0 0 12px rgba(201,151,44,.3)':'')+'">'+
-        '🌟 מסע יום '+DAY_HEB[dow]+'</div>'+
-      (sefirotLine?'<div style="font-family:Heebo,sans-serif;font-size:11px;color:'+mutC+';margin-bottom:12px">'+sefirotLine+'</div>':'')+
-      row('📖', 'מזמור '+heb(psalm.n)+' — '+psalm.t, psalm.kw, 'openPsalmN('+psalm.n+')')+
-      row(prayer.icon, prayer.name, prayer.occasion, 'openPrayerNav('+prayer.id+')')+
-      row(lc.icon, lc.title, (lc.badge?' <span style="font-family:Heebo,sans-serif;font-size:9px;opacity:.65">'+lc.badge+'</span>':'')+lc.sub, lc.onclick)+
-    '</div>';
+  // delegate to time-ordered journey renderer
+  renderJourneyCard(psalm, prayer, lc, dailyS, personalS);
 }
 
 // ═══════════════════════════════════════════════════
