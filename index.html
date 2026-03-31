@@ -895,6 +895,11 @@ body.light #home-journey-card  > div { background: linear-gradient(135deg,#fff3e
   <div id="s-home" class="screen active">
     <div class="home-hero">
       <button class="theme-toggle" id="theme-toggle" title="בהיר/כהה">☀️</button>
+      <button id="reload-btn" onclick="location.reload(true)" title="עדכן אפליקציה"
+        style="position:absolute;top:14px;right:14px;
+          background:var(--surf2);border:1px solid var(--brd);
+          border-radius:20px;padding:5px 10px;font-size:15px;
+          cursor:pointer;touch-action:manipulation;z-index:10;line-height:1;">🔄</button>
 
 
       <div class="menorah-wrap">
@@ -3421,7 +3426,7 @@ const PRAYERS = [
   }
 ];;
 
-const PRAYER_CATS = ['הכל','⭐ מועדפים','ביטחון','בריאות','משפחה','פרנסה','שנה ומועדים','צרה ועזרה','דרך'];
+const PRAYER_CATS = ['הכל','⭐ מועדפים','שבת וחגים','ביטחון','בריאות','משפחה','פרנסה','שנה ומועדים','צרה ועזרה','דרך'];
 var activePrayerCat = 'הכל';
 var openPrayerId = null;
 
