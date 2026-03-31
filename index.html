@@ -68,8 +68,8 @@ nav {
   padding: 6px 2px; cursor: pointer; transition: all .2s; border: none;
   background: none; color: var(--txt-mut);
 }
-.nb svg { width: 24px; height: 24px; transition: all .2s; }
-.nb span { font-family: 'Heebo', sans-serif; font-size: 9px; font-weight: 600; transition: all .2s; letter-spacing: .3px; }
+.nb svg { width: 20px; height: 20px; transition: all .2s; }
+.nb span { font-family: 'Heebo', sans-serif; font-size: 8px; font-weight: 600; transition: all .2s; letter-spacing: .3px; }
 .nb.on { color: var(--gold); }
 .nb.on svg { filter: drop-shadow(0 0 5px var(--gold)); }
 .nb:active { transform: scale(.88); }
@@ -444,6 +444,7 @@ nav {
   border-radius:8px; padding:5px 8px; font-family:'Heebo',sans-serif; font-size:12px;
   color:var(--txt); outline:none; display:none;
 }
+.reset-btn {
   display: block; width: calc(100% - 28px); margin: 0 14px 16px;
   padding: 11px; background: transparent; border: 1px solid rgba(122,24,24,.5);
   border-radius: 10px; font-family: 'Heebo', sans-serif; font-size: 12px;
@@ -662,6 +663,7 @@ nav {
 }
 
 /* ── FAVORITES ── */
+.pt-star {
   position: absolute; top: 2px; left: 3px;
   font-size: 9px; line-height: 1; opacity: 0.3;
   cursor: pointer; padding: 2px; z-index: 5;
@@ -706,26 +708,7 @@ nav {
 }
 .tree-psalm-pill:active { background: rgba(138,43,226,.4); }
 
-/* ── SPEAKER BUTTON ── */
-.spk-btn {
-  background: rgba(201,151,44,.12);
-  border: 1px solid rgba(201,151,44,.3);
-  border-radius: 50%;
-  width: 28px; height: 28px;
-  font-size: 14px; cursor: pointer;
-  display: inline-flex; align-items: center; justify-content: center;
-  touch-action: manipulation; flex-shrink: 0;
-  transition: background .15s;
-  padding: 0;
-}
-.spk-btn:active, .spk-btn.speaking {
-  background: rgba(201,151,44,.35);
-  border-color: var(--gold);
-}
-body.light .spk-btn {
-  background: rgba(139,94,16,.1);
-  border-color: rgba(139,94,16,.3);
-}
+
 
 /* ── ANIMATIONS ── */
 @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
@@ -902,12 +885,6 @@ body.light .mood-pill { background: var(--surf3); border-color: var(--brd); colo
         border-radius:20px;padding:5px 10px;font-size:13px;cursor:pointer;
         font-family:Heebo,sans-serif;color:var(--gold-d);font-weight:700;
         touch-action:manipulation;z-index:10">א+</button>
-      <button id="voice-toggle" title="בחר קול" style="
-        position:absolute;top:14px;left:50px;
-        background:rgba(201,151,44,.15);border:1px solid rgba(201,151,44,.3);
-        border-radius:20px;padding:6px 12px;font-size:12px;cursor:pointer;
-        font-family:Heebo,sans-serif;color:var(--gold-d);font-weight:600;
-        touch-action:manipulation;z-index:10">🔊 ♀</button>
       <div class="menorah-wrap">
         <svg width="60" height="52" viewBox="0 0 60 52" fill="none">
           <line x1="30" y1="8" x2="30" y2="48" stroke="#c9972c" stroke-width="2.5" stroke-linecap="round"/>
@@ -1069,7 +1046,7 @@ body.light .mood-pill { background: var(--surf3); border-color: var(--brd); colo
       <div class="btab" data-book="4">ספר ד׳ (צ-קו)</div>
       <div class="btab" data-book="5">ספר ה׳ (קז-קנ)</div>
     </div>
-    <div class="psalms-grid" id="home-grid" style="display:none"></div>
+    <div class="psalms-grid" id="home-grid"></div>
     <div style="height:8px"></div>
   </div>
 
@@ -1096,14 +1073,12 @@ body.light .mood-pill { background: var(--surf3); border-color: var(--brd); colo
       <div class="psalm-num-badge" id="r-badge"></div>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center">
         <div class="psalm-main-t" id="r-title"></div>
-        <button class="spk-btn" id="spk-title" title="הקרא שם ופרשנות">🔊</button>
       </div>
       <div class="psalm-sub" id="r-sub"></div>
 
       <div class="commentary">
         <div class="com-label" style="display:flex;align-items:center;justify-content:space-between">
           <span>פרשנות ועיון</span>
-          <button class="spk-btn" id="spk-com" title="הקרא פרשנות">🔊</button>
         </div>
         <div class="com-text" id="r-com"></div>
       </div>
@@ -1114,7 +1089,6 @@ body.light .mood-pill { background: var(--surf3); border-color: var(--brd); colo
         <div class="text-hdr">
           <span>טקסט המזמור</span>
           <div style="display:flex;align-items:center;gap:6px">
-            <button class="spk-btn" id="spk-verses" title="הקרא מזמור">🔊</button>
             <div class="font-controls">
               <button class="fc-btn" id="fc-sm">א−</button>
               <button class="fc-btn" id="fc-lg">א+</button>
@@ -1140,7 +1114,6 @@ body.light .mood-pill { background: var(--surf3); border-color: var(--brd); colo
         <div style="position:absolute;top:0;right:0;width:3px;height:100%;background:linear-gradient(180deg,#c8a8f0,#7b2fd4)"></div>
         <div style="padding:12px 16px 6px;font-family:'Heebo',sans-serif;font-size:10px;font-weight:800;color:#b090e0;letter-spacing:2px;display:flex;align-items:center;justify-content:space-between">
           <span>✡ עולם הקבלה — סוד המזמור</span>
-          <button class="spk-btn" id="spk-kab" title="הקרא פרשנות קבלה">🔊</button>
         </div>
         <div id="r-kab-sefirot" style="padding:0 16px 8px;font-family:'Heebo',sans-serif;font-size:11px;color:rgba(200,168,240,0.6);letter-spacing:.5px"></div>
         <div id="r-kab-text" style="padding:4px 18px 14px;font-family:'Heebo',sans-serif;font-size:14px;line-height:1.95;color:#e0d0f8;font-weight:300"></div>
@@ -1253,7 +1226,6 @@ body.light .mood-pill { background: var(--surf3); border-color: var(--brd); colo
       <div class="badge" id="par-badge" style="margin-bottom:6px">פרשת השבוע</div>
       <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:4px">
         <div style="font-family:'Frank Ruhl Libre',serif;font-size:26px;color:var(--cream);text-align:center" id="par-name"></div>
-        <button class="spk-btn" id="spk-parasha" title="הקרא פרשה">🔊</button>
       </div>
       <div style="font-family:Heebo,sans-serif;font-size:12px;color:var(--gold-d);font-weight:600;letter-spacing:.5px;text-align:center" id="par-book"></div>
     </div>
@@ -1292,12 +1264,12 @@ body.light .mood-pill { background: var(--surf3); border-color: var(--brd); colo
     <!-- Header -->
     <div style="background:linear-gradient(180deg,#0d0018 0%,#080010 100%);padding:24px 16px 20px;text-align:center;position:relative">
       <div style="font-family:'Suez One',serif;font-size:28px;color:#c8a8f0;text-shadow:0 0 20px rgba(138,43,226,.5);margin-bottom:6px">קורס קבלה</div>
-      <div style="font-family:Heebo,sans-serif;font-size:13px;color:rgba(180,130,255,.7);font-weight:600">מבוא מקיף לחכמת הקבלה · 9 שיעורים</div>
+      <div style="font-family:Heebo,sans-serif;font-size:13px;color:rgba(180,130,255,.7);font-weight:600">מבוא מקיף לחכמת הקבלה · 12 שיעורים</div>
       <!-- Progress bar -->
       <div style="margin:14px auto 0;max-width:280px;height:5px;background:rgba(138,43,226,.2);border-radius:10px;overflow:hidden">
         <div id="kc-prog-bar" style="height:100%;background:linear-gradient(90deg,#8840d0,#c8a8f0);border-radius:10px;transition:width .4s;width:0%"></div>
       </div>
-      <div id="kc-prog-text" style="font-family:Heebo,sans-serif;font-size:10px;color:rgba(180,130,255,.5);margin-top:4px">0 מתוך 9 שיעורים הושלמו</div>
+      <div id="kc-prog-text" style="font-family:Heebo,sans-serif;font-size:10px;color:rgba(180,130,255,.5);margin-top:4px">0 מתוך 0 שיעורים הושלמו</div>
     </div>
 
     <!-- Lesson list -->
@@ -1311,7 +1283,6 @@ body.light .mood-pill { background: var(--surf3); border-color: var(--brd); colo
       <div style="padding:16px 14px 0;display:flex;align-items:center;gap:10px">
         <button id="kc-back" style="background:rgba(138,43,226,.15);border:1px solid rgba(138,43,226,.3);border-radius:20px;padding:6px 14px;font-family:Heebo,sans-serif;font-size:13px;color:#c8a8f0;cursor:pointer;touch-action:manipulation">← חזרה</button>
         <div id="kc-lesson-num" style="font-family:Heebo,sans-serif;font-size:11px;color:rgba(180,130,255,.5);font-weight:700;letter-spacing:1px"></div>
-        <button class="spk-btn" id="spk-kc" style="margin-right:auto" title="הקרא שיעור">🔊</button>
       </div>
       <div id="kc-content" style="padding:0 14px"></div>
     </div>
@@ -1377,7 +1348,7 @@ body.light .mood-pill { background: var(--surf3); border-color: var(--brd); colo
         <div style="font-family:'Suez One',serif;font-size:14px;color:var(--gold-d);margin-bottom:6px">תְּהִלִים</div>
         <div style="font-family:'Heebo',sans-serif;font-size:12px;color:var(--txt-mut);line-height:1.8">
           © כל הזכויות שמורות לדודו טל<br>
-          <span style="font-size:11px;color:var(--txt-mut);opacity:.7">גרסה 3.0 · 2026</span>
+          <span style="font-size:11px;color:var(--txt-mut);opacity:.7">גרסה 3.1 · 2026</span>
         </div>
       </div>
     </div>
@@ -2390,7 +2361,7 @@ function showScreen(id){
 // ═══════════════════════════════════════════════════
 //  HOME SCREEN
 // ═══════════════════════════════════════════════════
-let homeBook='none';
+let homeBook=0;
 
 function renderHome(){
   // Stats
@@ -2411,10 +2382,7 @@ function renderHome(){
   illus.innerHTML=SVG[tp.ilk]||SVG.scroll;
   document.getElementById('tc-read').onclick=()=>openReader(tp,'home');
 
-  // Grid — only render if a tab is already selected (not on first load)
-  if(homeBook !== 'none'){
-    renderHomeGrid(homeBook);
-  }
+  renderHomeGrid(homeBook);
 }
 
 function renderHomeGrid(book){
@@ -2446,21 +2414,12 @@ function renderHomeGrid(book){
 // Book tabs — show grid only when a tab is clicked
 document.querySelectorAll('.btab').forEach(function(t){
   t.addEventListener('click', function(){
-    var isAlreadyOn = t.classList.contains('on');
     document.querySelectorAll('.btab').forEach(function(x){ x.classList.remove('on'); });
-
-    if(isAlreadyOn){
-      // Second click — turn off, hide grid
-      homeBook = 'none';
-      document.getElementById('home-grid').style.display = 'none';
-    } else {
-      // First click — activate and show grid
-      t.classList.add('on');
-      var val = t.dataset.book;
-      homeBook = val==='fav' ? 'fav' : +val;
-      document.getElementById('home-grid').style.display = '';
-      renderHomeGrid(homeBook);
-    }
+    t.classList.add('on');
+    var val = t.dataset.book;
+    homeBook = val==='fav' ? 'fav' : +val;
+    document.getElementById('home-grid').style.display = '';
+    renderHomeGrid(homeBook);
   });
 });
 
@@ -2587,11 +2546,6 @@ function renderReader(ps, scrollTop){
 
   // Scroll to top only when opening a new psalm
   if(scrollTop) document.getElementById('s-reader').scrollTop=0;
-
-  // Re-wire TTS buttons with fresh text getters
-  if(window.TTS){
-    TTS.rewireReader(ps);
-  }
 }
 
 // Mark as read
@@ -4054,7 +4008,8 @@ function renderKCScreen(){
   var done = _kcCompleted;
 
   // Update progress
-  var pct = Math.round(done.length / KC_LESSONS.length * 100);
+  var lcEl=document.getElementById('kc-lesson-count'); if(lcEl) lcEl.textContent='מבוא מקיף לחכמת הקבלה · '+KC_LESSONS.length+' שיעורים';
+    var pct = Math.round(done.length / KC_LESSONS.length * 100);
   var pb = document.getElementById('kc-prog-bar');
   var pt = document.getElementById('kc-prog-text');
   if(pb) pb.style.width = pct + '%';
@@ -4232,14 +4187,6 @@ function openKCLesson(lesson){
   }
   content.appendChild(navRow);
 
-  // Wire TTS
-  if(window.TTS){
-    var spkBtn = document.getElementById('spk-kc');
-    if(spkBtn){
-      var spkText = lesson.sections.map(function(s){ return s.h+': '+s.t; }).join('\n\n');
-      TTS.wireDynamic(spkBtn, function(){ return spkText; }, 'commentary');
-    }
-  }
 
   reader.scrollTop = 0;
   document.getElementById('s-kabcourse').scrollTop = 0;
@@ -4989,563 +4936,6 @@ function renderCalc(){
     if(window._saveCalcState) _saveCalcState();
   });
 }
-// ═══════════════════════════════════════════════════
-// ═══════════════════════════════════════════════════
-//  TTS — Hebrew Text-to-Speech Engine
-//  Primary: OpenAI TTS-1-HD (nova/onyx)
-//  Secondary: ElevenLabs Multilingual v2
-//  Fallback: Web Speech API
-//  Based on hebrew-tts-expert skill
-// ═══════════════════════════════════════════════════
-
-// ── Hebrew TTS Preprocessor — optimized for biblical Hebrew ──
-function preprocessHebrew(text, mode){
-  if(!text) return '';
-
-  var t = text
-    // ── Strip niqqud (vowel marks) ──
-    .replace(/[\u05B0-\u05C7]/g, '')
-    // ── Strip cantillation marks (trop/taamim) ──
-    .replace(/[\u0591-\u05AF\u05BD\u05C0\u05C3\u05C6]/g, '')
-    // ── Strip special punctuation marks ──
-    .replace(/[\uFB1D-\uFB4F]/g, '')
-    // ── Divine names → readable ──
-    .replace(/יהוה/g, 'השם')
-    .replace(/ה׳/g, 'השם')
-    .replace(/ד׳/g, 'השם')
-    .replace(/אֲדֹנָי|אדני/g, 'אדוני')
-    .replace(/שכינה/g, 'שְׁכִינָה')
-    // ── Hebrew abbreviations ──
-    .replace(/בע"מ/g, 'בערבון מוגבל')
-    .replace(/מע"מ/g, 'מס ערך מוסף')
-    .replace(/ד"ר/g, 'דוקטור')
-    .replace(/ח"כ/g, 'חבר כנסת')
-    .replace(/א"י/g, 'ארץ ישראל')
-    .replace(/ת"ח/g, 'תלמיד חכם')
-    .replace(/ז"ל/g, 'זיכרונו לברכה')
-    // ── Kabbalah terms — phonetic guidance ──
-    .replace(/צמצום/g, 'צִמְצוּם')
-    .replace(/ספירות/g, 'סְפִירוֹת')
-    .replace(/ספירה/g, 'סְפִירָה')
-    .replace(/קליפות/g, 'קְלִיפּוֹת')
-    .replace(/ניצוצות/g, 'נִיצוֹצוֹת')
-    // ── Numbers/symbols ──
-    .replace(/₪\s?(\d+)/g, '$1 שקלים')
-    .replace(/\$\s?(\d+)/g, '$1 דולרים')
-    .replace(/(\d+)%/g, '$1 אחוזים')
-    // ── Punctuation → natural pauses ──
-    .replace(/[—–]/g, ', ')
-    .replace(/\.\.\./g, '. ')
-    .replace(/[•✦✡★☆▶▼►◄]/g, '')
-    // ── Markdown cleanup ──
-    .replace(/#{1,6}\s*/g, '')
-    .replace(/\*\*/g, '').replace(/\*/g, '')
-    .replace(/__/g, '').replace(/_/g, ' ')
-    // ── Clean whitespace ──
-    .replace(/[ \t]+/g, ' ')
-    .replace(/\n{3,}/g, '\n\n')
-    .trim();
-
-  if(mode === 'bible'){
-    t = t
-      // Verse numbers at start of line
-      .replace(/^\d+\s+/gm, '')
-      // End-of-verse sof pasuk
-      .replace(/\u05C3/g, '.')
-      // Add natural pause after each verse (period)
-      .replace(/\.\s*/g, '. ')
-      // Hebrew chapter headings
-      .replace(/פרק ([א-ת]+)/g, 'פרק $1. ');
-  }
-
-  return t;
-}
-
-var TTS = (function(){
-  var _gender   = LS.get('tts_gender','female');
-  var _apiKey   = LS.get('tts_api_key','');
-  var _elKey    = LS.get('tts_el_key','');
-  var _provider = LS.get('tts_provider','auto'); // 'auto'|'openai'|'elevenlabs'|'browser'
-  var _speaking = false;
-  var _activeBtn= null;
-  var _audio    = null;
-
-  // ── Voice config ──
-  // Per skill: shimmer = warmest female for Hebrew; onyx = best male
-  var OPENAI_VOICES = { female:'shimmer', male:'onyx' };
-  var EL_VOICES = {
-    female: { id:'EXAVITQu4vr4xnSDxMaL', name:'Bella'  }, // Bella — warm, natural
-    male:   { id:'ErXwobaYiN019PkySvjV',  name:'Antoni' } // Antoni — professional
-  };
-
-  // Slower rate = better Hebrew naturalness (less American cadence)
-  var PARAMS = {
-    bible:      { stability:0.70, similarity:0.85, style:0.10, speed:0.78 },
-    commentary: { stability:0.58, similarity:0.82, style:0.22, speed:0.85 },
-    general:    { stability:0.62, similarity:0.82, style:0.18, speed:0.88 }
-  };
-
-  function stop(){
-    if(_audio){ _audio.pause(); _audio=null; }
-    if(window.speechSynthesis) window.speechSynthesis.cancel();
-    _speaking=false;
-    if(_activeBtn){ _activeBtn.textContent='🔊'; _activeBtn.classList.remove('speaking'); }
-    _activeBtn=null;
-  }
-
-  function setActive(btn, on){
-    if(!btn) return;
-    btn.textContent = on ? '⏹' : '🔊';
-    if(on) btn.classList.add('speaking');
-    else   btn.classList.remove('speaking');
-  }
-
-  function setLoading(btn, on){
-    if(!btn) return;
-    btn.textContent = on ? '⏳' : '🔊';
-    btn.style.opacity = on ? '0.6' : '1';
-  }
-
-  // ── OpenAI TTS (primary — best for Hebrew) ──
-  function speakOpenAI(rawText, mode, btn){
-    var text = preprocessHebrew(rawText, mode);
-    var p    = PARAMS[mode]||PARAMS.general;
-    setLoading(btn, true);
-    _speaking=true; _activeBtn=btn;
-
-    var chunks=[], tmp=text;
-    while(tmp.length>3800){
-      var cut=tmp.lastIndexOf('.',3800); if(cut<0) cut=3800;
-      chunks.push(tmp.substring(0,cut+1)); tmp=tmp.substring(cut+1).trim();
-    }
-    if(tmp) chunks.push(tmp);
-
-    function playChunk(idx){
-      if(idx>=chunks.length){ stop(); return; }
-      if(!_speaking&&idx>0) return;
-      fetch('https://api.openai.com/v1/audio/speech',{
-        method:'POST',
-        headers:{'Authorization':'Bearer '+_apiKey,'Content-Type':'application/json'},
-        body:JSON.stringify({
-          model:'tts-1', // faster than tts-1-hd, minimal difference for Hebrew
-          voice:OPENAI_VOICES[_gender],
-          input:chunks[idx],
-          speed:p.speed,
-          response_format:'mp3'
-        })
-      })
-      .then(function(r){
-        if(r.status===401) throw new Error('מפתח לא תקין (401)');
-        if(r.status===429) throw new Error('מגבלת קריאות (429)');
-        if(!r.ok) throw new Error('שגיאה '+r.status);
-        return r.blob();
-      })
-      .then(function(blob){
-        setLoading(btn,false); setActive(btn,true);
-        var url=URL.createObjectURL(blob);
-        _audio=new Audio(url);
-        _audio.onended=function(){ URL.revokeObjectURL(url); playChunk(idx+1); };
-        _audio.onerror=function(){ stop(); };
-        _audio.play().catch(function(){ stop(); });
-      })
-      .catch(function(e){
-        setLoading(btn,false); stop();
-        showTTSError('OpenAI: '+e.message);
-        if(idx===0&&_elKey) speakElevenLabs(rawText,mode,btn);
-      });
-    }
-    playChunk(0);
-  }
-
-  // ── ElevenLabs (secondary) ──
-  function speakElevenLabs(rawText, mode, btn){
-    var text = preprocessHebrew(rawText, mode);
-    var p    = PARAMS[mode]||PARAMS.general;
-    var vid  = EL_VOICES[_gender].id;
-    setLoading(btn, true); _speaking=true; _activeBtn=btn;
-
-    fetch('https://api.elevenlabs.io/v1/text-to-speech/'+vid+'/stream',{
-      method:'POST',
-      headers:{
-        'xi-api-key': _elKey,
-        'Content-Type':'application/json',
-        'Accept':'audio/mpeg'
-      },
-      body:JSON.stringify({
-        text: text.substring(0,2500),
-        model_id:'eleven_multilingual_v2',
-        voice_settings:{
-          stability: p.stability,
-          similarity_boost: p.similarity,
-          style: p.style,
-          use_speaker_boost: true
-        },
-        speed: p.speed
-      })
-    })
-    .then(function(r){
-      if(r.status===401) throw new Error('מפתח API לא תקין (401)');
-      if(r.status===422) throw new Error('שגיאה בטקסט (422)');
-      if(r.status===429) throw new Error('חרגת מהמכסה החינמית (429)');
-      if(!r.ok) throw new Error('שגיאת שרת '+r.status);
-      return r.blob();
-    })
-    .then(function(blob){
-      if(!_speaking) return;
-      if(blob.size < 100) throw new Error('תגובה ריקה מהשרת');
-      setLoading(btn, false); setActive(btn, true);
-      var url = URL.createObjectURL(blob);
-      _audio = new Audio(url);
-      _audio.onended = function(){ stop(); URL.revokeObjectURL(url); };
-      _audio.onerror = function(e){ showTTSError('שגיאת השמעה'); stop(); };
-      _audio.play().catch(function(){ stop(); });
-    })
-    .catch(function(e){
-      setLoading(btn, false);
-      showTTSError('ElevenLabs: '+e.message+' — עובר לקול דפדפן');
-      speakWebSpeech(rawText, btn);
-    });
-  }
-
-  // ── Web Speech API (fallback — richer Hebrew voice selection) ──
-  function speakWebSpeech(rawText, btn){
-    if(!window.speechSynthesis){ stop(); return; }
-    var text = preprocessHebrew(rawText,'general');
-    var voices = window.speechSynthesis.getVoices();
-    var hebVoice = voices.find(function(v){ return v.lang&&v.lang.indexOf('he')===0; });
-    var utt = new SpeechSynthesisUtterance(text);
-    utt.lang='he-IL'; utt.rate=0.88;
-    utt.pitch=_gender==='female'?1.1:0.85;
-    if(hebVoice) utt.voice=hebVoice;
-    utt.onstart=function(){ setActive(btn,true); _speaking=true; _activeBtn=btn; };
-    utt.onend=utt.onerror=function(){ stop(); };
-    window.speechSynthesis.speak(utt);
-  }
-
-
-  function testTTSConnection(){
-    var openaiKey = LS.get('tts_api_key','');
-    var elKey     = LS.get('tts_el_key','');
-
-    if(!openaiKey && !elKey){
-      showInfoToast('⚠️ לא הוזן מפתח\nלחץ על 🔊 ♀ ← שמור מפתח');
-      return;
-    }
-
-    var results = [];
-    var pending = 0;
-    function done(){ if(--pending===0) showInfoToast(results.join('\n')); }
-
-    if(openaiKey){
-      pending++;
-      results.push('🔍 בודק OpenAI...');
-      fetch('https://api.openai.com/v1/audio/speech',{
-        method:'POST',
-        headers:{'Authorization':'Bearer '+openaiKey,'Content-Type':'application/json'},
-        body:JSON.stringify({model:'tts-1',voice:'shimmer',input:'שלום',response_format:'mp3'})
-      }).then(function(r){
-        var idx=results.findIndex(function(s){return s.indexOf('OpenAI')>=0;});
-        if(r.status===401){results[idx]='❌ OpenAI: מפתח לא תקין (401)';done();return null;}
-        if(r.status===429){results[idx]='❌ OpenAI: מגבלת קריאות (429)';done();return null;}
-        if(!r.ok){results[idx]='❌ OpenAI שגיאה: '+r.status;done();return null;}
-        results[idx]='✅ OpenAI מחובר!'; done();
-        return r.blob();
-      }).then(function(blob){
-        if(!blob) return;
-        var url=URL.createObjectURL(blob);
-        var a=new Audio(url);
-        a.onended=function(){URL.revokeObjectURL(url);};
-        a.play();
-      }).catch(function(e){
-        var idx=results.findIndex(function(s){return s.indexOf('OpenAI')>=0;});
-        results[idx]='❌ OpenAI שגיאת רשת:\n'+e.message; done();
-      });
-    }
-
-    if(elKey){
-      pending++;
-      results.push('🔍 בודק ElevenLabs...');
-      fetch('https://api.elevenlabs.io/v1/user',{headers:{'xi-api-key':elKey}})
-      .then(function(r){
-        var idx=results.findIndex(function(s){return s.indexOf('ElevenLabs')>=0;});
-        if(r.status===401){results[idx]='❌ ElevenLabs: מפתח לא תקין (401)';done();return null;}
-        if(!r.ok){results[idx]='❌ ElevenLabs שגיאה: '+r.status;done();return null;}
-        return r.json();
-      }).then(function(data){
-        if(!data) return;
-        var used=data.subscription&&data.subscription.character_count||0;
-        var lim =data.subscription&&data.subscription.character_limit||10000;
-        var idx =results.findIndex(function(s){return s.indexOf('ElevenLabs')>=0;});
-        results[idx]='✅ ElevenLabs מחובר!\nתווים שנותרו: '+(lim-used)+'/'+lim;
-        done();
-      }).catch(function(e){
-        var idx=results.findIndex(function(s){return s.indexOf('ElevenLabs')>=0;});
-        results[idx]='❌ ElevenLabs שגיאת רשת:\n'+e.message; done();
-      });
-    }
-  }
-
-  function showInfoToast(msg){
-    var old=document.getElementById('tts-toast');
-    if(old) old.remove();
-    var t=document.createElement('div');
-    t.id='tts-toast';
-    t.setAttribute('style',
-      'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:9999;'+
-      'background:var(--surf2);border:1px solid var(--brd);border-radius:12px;'+
-      'padding:14px 18px;font-family:Heebo,sans-serif;font-size:13px;color:var(--txt);'+
-      'max-width:320px;width:90%;white-space:pre-line;line-height:1.7;'+
-      'box-shadow:0 4px 20px rgba(0,0,0,.5);cursor:pointer;text-align:right');
-    t.textContent=msg;
-    t.addEventListener('click',function(){ t.remove(); });
-    document.body.appendChild(t);
-    setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); },12000);
-  }
-
-  function showTTSError(msg){
-    stop();
-    var t = document.createElement('div');
-    t.setAttribute('style',
-      'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:9999;'+
-      'background:#1a0800;border:1px solid rgba(255,100,50,.6);border-radius:10px;'+
-      'padding:10px 18px;font-family:Heebo,sans-serif;font-size:13px;color:#ff9060;'+
-      'max-width:300px;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.5)');
-    t.textContent = '⚠️ ' + msg;
-    document.body.appendChild(t);
-    setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); }, 5000);
-  }
-
-  function speak(rawText, btn, mode){
-    if(!rawText||!rawText.trim()){
-      showInfoToast('⚠️ אין טקסט להקריא\nוודא שהפרק נטען');
-      return;
-    }
-    if(_speaking&&_activeBtn===btn){ stop(); return; }
-    stop();
-    mode = mode||'general';
-    _apiKey   = LS.get('tts_api_key','');
-    _elKey    = LS.get('tts_el_key','');
-    _provider = LS.get('tts_provider','auto');
-
-    console.log('[TTS] speak mode='+mode+' provider='+_provider+' len='+rawText.length);
-
-    if(_provider==='openai'){
-      if(!_apiKey){ showInfoToast('⚠️ אין OpenAI Key — הוסף מפתח בתפריט 🔊'); return; }
-      speakOpenAI(rawText, mode, btn);
-    } else if(_provider==='elevenlabs'){
-      if(!_elKey){ showInfoToast('⚠️ אין ElevenLabs Key — הוסף מפתח בתפריט 🔊'); return; }
-      speakElevenLabs(rawText, mode, btn);
-    } else if(_provider==='browser'){
-      speakWebSpeech(rawText, btn);
-    } else {
-      // auto: OpenAI → ElevenLabs → Browser
-      if(_apiKey)     speakOpenAI(rawText, mode, btn);
-      else if(_elKey) speakElevenLabs(rawText, mode, btn);
-      else{ showInfoToast('⚠️ לא הוזן מפתח — משתמש בקול דפדפן'); speakWebSpeech(rawText, btn); }
-    }
-  }
-
-  function setGender(g){ _gender=g; LS.set('tts_gender',g); stop(); updateToggleBtn(); }
-  function setApiKey(k,type){
-    if(type==='el'){ _elKey=k.trim(); LS.set('tts_el_key',_elKey); }
-    else           { _apiKey=k.trim(); LS.set('tts_api_key',_apiKey); }
-  }
-
-  function updateToggleBtn(){
-    var btn=document.getElementById('voice-toggle');
-    if(!btn) return;
-    var hasKey = _apiKey||_elKey;
-    btn.textContent = (_gender==='female'?'🔊 ♀':'🔊 ♂') + (hasKey?'':' ·');
-    btn.title = hasKey ? 'קול: '+(_gender==='female'?'נשי':'גברי') : 'לחץ להוסיף API Key לקול טבעי';
-  }
-
-  function wireBtn(id, getText, mode){
-    var btn=document.getElementById(id);
-    if(!btn) return;
-    // Remove old listeners by cloning
-    var newBtn = btn.cloneNode(true);
-    btn.parentNode.replaceChild(newBtn, btn);
-    newBtn.addEventListener('click',function(e){
-      e.stopPropagation();
-      var text = getText();
-      console.log('[TTS] btn='+id, 'text len='+text.length, text.substring(0,50));
-      speak(text, newBtn, mode||'general');
-    });
-  }
-
-  function init(){
-    updateToggleBtn();
-    if(window.speechSynthesis) window.speechSynthesis.onvoiceschanged=function(){};
-
-    var toggleBtn=document.getElementById('voice-toggle');
-    if(toggleBtn){
-      toggleBtn.addEventListener('click',function(){
-        var menu=document.getElementById('voice-menu');
-        if(menu){ menu.remove(); return; }
-        var m=document.createElement('div');
-        m.id='voice-menu';
-        m.setAttribute('style',
-          'position:fixed;top:54px;left:10px;z-index:9999;direction:rtl;'+
-          'background:var(--surf2);border:1px solid var(--brd);border-radius:14px;'+
-          'padding:8px 0;box-shadow:0 8px 28px rgba(0,0,0,.4);min-width:240px');
-
-        // Gender options
-        var gHdr=document.createElement('div');
-        gHdr.setAttribute('style','padding:8px 18px 4px;font-family:Heebo,sans-serif;font-size:10px;color:var(--txt-mut);font-weight:700;letter-spacing:1px');
-        gHdr.textContent='בחר קול';
-        m.appendChild(gHdr);
-
-        [{g:'female',lbl:'♀  קול נשי — Nova / Aria'},{g:'male',lbl:'♂  קול גברי — Onyx / Josh'}].forEach(function(opt){
-          var item=document.createElement('div');
-          item.setAttribute('style','padding:10px 18px;font-family:Heebo,sans-serif;font-size:13px;cursor:pointer;'+
-            'color:var(--txt);font-weight:'+(_gender===opt.g?'800':'400')+';'+
-            (_gender===opt.g?'color:var(--gold-l)':''));
-          item.textContent=opt.lbl+(_gender===opt.g?'  ✓':'');
-          item.addEventListener('click',function(){ setGender(opt.g); m.remove(); });
-          m.appendChild(item);
-        });
-
-        // Divider
-        m.appendChild(Object.assign(document.createElement('div'),{
-          setAttribute:function(a,b){this.style.cssText='border-top:1px solid var(--brd);margin:4px 0';}
-        }));
-        var div2=document.createElement('div');
-        div2.setAttribute('style','border-top:1px solid var(--brd);margin:4px 0');
-        m.appendChild(div2);
-
-        // Provider selector
-        var provHdr=document.createElement('div');
-        provHdr.setAttribute('style','padding:8px 18px 4px;font-family:Heebo,sans-serif;font-size:10px;color:var(--txt-mut);font-weight:700;letter-spacing:1px');
-        provHdr.textContent='שירות קול';
-        m.appendChild(provHdr);
-
-        var curProv=LS.get('tts_provider','auto');
-        [{v:'auto',lbl:'🔄 אוטומטי'},{v:'openai',lbl:'⚡ OpenAI'},{v:'elevenlabs',lbl:'🎙 ElevenLabs'},{v:'browser',lbl:'🖥 קול דפדפן'}]
-        .forEach(function(opt){
-          var item=document.createElement('div');
-          item.setAttribute('style','padding:9px 18px;font-family:Heebo,sans-serif;font-size:13px;cursor:pointer;'+
-            'color:var(--txt);background:'+(curProv===opt.v?'rgba(201,151,44,.08)':'transparent'));
-          item.textContent=opt.lbl+(curProv===opt.v?' ✓':'');
-          if(curProv===opt.v) item.style.color='var(--gold-l)';
-          item.addEventListener('click',function(){ LS.set('tts_provider',opt.v); updateToggleBtn(); m.remove(); });
-          m.appendChild(item);
-        });
-
-        var div3=document.createElement('div');
-        div3.setAttribute('style','border-top:1px solid var(--brd);margin:4px 0');
-        m.appendChild(div3);
-
-        // API key inputs
-        function addKeyInput(label, placeholder, val, type){
-          var lbl=document.createElement('div');
-          lbl.setAttribute('style','padding:6px 18px 2px;font-family:Heebo,sans-serif;font-size:10px;color:var(--txt-mut);font-weight:700;letter-spacing:1px');
-          lbl.textContent=label;
-          m.appendChild(lbl);
-          var row=document.createElement('div');
-          row.setAttribute('style','display:flex;gap:6px;padding:0 12px 8px');
-          var inp=document.createElement('input');
-          inp.type='password'; inp.placeholder=placeholder; inp.value=val;
-          inp.setAttribute('style','flex:1;padding:7px 10px;border-radius:8px;font-size:11px;'+
-            'background:var(--surf3);border:1px solid var(--brd);color:var(--txt);direction:ltr;outline:none');
-          var save=document.createElement('button');
-          save.textContent='שמור';
-          save.setAttribute('style','padding:7px 10px;border-radius:8px;font-size:12px;cursor:pointer;'+
-            'background:var(--gold-dim);border:1px solid var(--gold-d);color:var(--gold-l);font-family:Heebo,sans-serif;white-space:nowrap');
-          save.addEventListener('click',function(){ setApiKey(inp.value,type); updateToggleBtn(); m.remove(); });
-          row.appendChild(inp); row.appendChild(save);
-          m.appendChild(row);
-        }
-
-        addKeyInput('⭐ OpenAI API Key — Nova ♀ / Onyx ♂','sk-...', _apiKey, 'openai');
-        addKeyInput('ElevenLabs API Key — Grace ♀ / Arnold ♂','xi-...', _elKey, 'el');
-
-        var tip=document.createElement('div');
-        tip.setAttribute('style','padding:0 18px 10px;font-family:Heebo,sans-serif;font-size:11px;color:var(--txt-mut);line-height:1.7;border-top:1px solid var(--brd);margin-top:4px;padding-top:8px');
-        tip.innerHTML =
-          '<strong style="color:var(--gold-d)">עברית טבעית:</strong> OpenAI (nova/onyx) — ניב ישראלי, זרימה טבעית<br>'+
-          '<strong style="color:var(--txt-dim)">ElevenLabs:</strong> ניב אמריקאי, מומלץ לאנגלית';
-        m.appendChild(tip);
-
-        var note=document.createElement('div');
-        note.setAttribute('style','padding:0 18px 10px;font-family:Heebo,sans-serif;font-size:10px;color:var(--txt-mut);line-height:1.6');
-        note.textContent='ללא מפתח: קול דפדפן. עם מפתח: קול אנושי-טבעי.';
-        m.appendChild(note);
-
-        // Test button
-        var testBtn=document.createElement('button');
-        testBtn.textContent='🔍 בדוק חיבור';
-        testBtn.setAttribute('style','display:block;width:calc(100% - 24px);margin:0 12px 10px;padding:9px;'+
-          'border-radius:8px;font-size:13px;cursor:pointer;font-family:Heebo,sans-serif;'+
-          'background:rgba(201,151,44,.15);border:1px solid rgba(201,151,44,.4);color:var(--gold-l)');
-        testBtn.addEventListener('click',function(){
-          m.remove();
-          testTTSConnection();
-        });
-        m.appendChild(testBtn);
-
-        document.body.appendChild(m);
-        setTimeout(function(){
-          document.addEventListener('click',function close(e){
-            if(!m.contains(e.target)&&e.target!==toggleBtn){ m.remove(); document.removeEventListener('click',close); }
-          });
-        },50);
-      });
-    }
-
-    // Wire buttons with correct mode
-    wireBtn('spk-title',   function(){ return [
-      document.getElementById('r-badge')?document.getElementById('r-badge').textContent:'',
-      document.getElementById('r-title')?document.getElementById('r-title').textContent:'',
-      document.getElementById('r-com')  ?document.getElementById('r-com').textContent:''
-    ].filter(Boolean).join('\n'); }, 'commentary');
-
-    wireBtn('spk-com',     function(){ return document.getElementById('r-com')?document.getElementById('r-com').textContent:''; }, 'commentary');
-    wireBtn('spk-verses',  function(){ return document.getElementById('r-verses')?document.getElementById('r-verses').textContent:''; }, 'bible');
-    wireBtn('spk-kab',     function(){
-      var p=document.getElementById('r-kab-panel');
-      return p?p.textContent.replace('✡ עולם הקבלה — סוד המזמור','').trim():'';
-    }, 'commentary');
-    wireBtn('spk-parasha', function(){
-      return [
-        document.getElementById('par-name')       ?document.getElementById('par-name').textContent:'',
-        document.getElementById('par-pshot')      ?document.getElementById('par-pshot').textContent:'',
-        document.getElementById('par-kab')        ?document.getElementById('par-kab').textContent:'',
-        document.getElementById('par-kab-insight')?document.getElementById('par-kab-insight').textContent:'',
-        document.getElementById('par-full')       ?document.getElementById('par-full').textContent:''
-      ].filter(Boolean).join('\n\n');
-    }, 'commentary');
-  }
-
-  function wireDynamic(btn,getText,mode){
-    if(!btn) return;
-    btn.addEventListener('click',function(e){ e.stopPropagation(); speak(getText(),btn,mode||'general'); });
-  }
-
-  function rewireReader(ps){
-    // Called every time a psalm is opened — re-attaches fresh getters
-    wireBtn('spk-title', function(){
-      return [
-        document.getElementById('r-badge') ? document.getElementById('r-badge').textContent : '',
-        document.getElementById('r-title') ? document.getElementById('r-title').textContent : '',
-        document.getElementById('r-com')   ? document.getElementById('r-com').textContent   : ''
-      ].filter(Boolean).join('\n');
-    }, 'commentary');
-    wireBtn('spk-com', function(){
-      return document.getElementById('r-com') ? document.getElementById('r-com').textContent : '';
-    }, 'commentary');
-    wireBtn('spk-verses', function(){
-      return document.getElementById('r-verses') ? document.getElementById('r-verses').textContent : '';
-    }, 'bible');
-    wireBtn('spk-kab', function(){
-      var p = document.getElementById('r-kab-panel');
-      return p ? p.textContent.replace('✡ עולם הקבלה — סוד המזמור','').trim() : '';
-    }, 'commentary');
-  }
-
-  return {speak:speak, stop:stop, setGender:setGender, init:init,
-          wireDynamic:wireDynamic, rewireReader:rewireReader,
-          getGender:function(){return _gender;}};
-})();
 
 // ═══════════════════════════════════════════════════
 //  INIT
@@ -5556,16 +4946,7 @@ updateCycleDisplay();
 save();
 
 showScreen('home');
-setTimeout(function(){ TTS.init(); }, 100);
 
-// Stop TTS when navigating
-(function(){
-  var _origShow = showScreen;
-  showScreen = function(id){
-    TTS.stop();
-    _origShow(id);
-  };
-})();
 
 // ═══════════════════════════════════════════════════
 //  REMINDERS — Fix 4
