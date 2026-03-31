@@ -895,18 +895,8 @@ body.light #home-journey-card  > div { background: linear-gradient(135deg,#fff3e
   <div id="s-home" class="screen active">
     <div class="home-hero">
       <button class="theme-toggle" id="theme-toggle" title="בהיר/כהה">☀️</button>
-      <button id="zoom-out" title="הקטן" style="
-        position:absolute;top:14px;left:142px;
-        background:rgba(201,151,44,.15);border:1px solid rgba(201,151,44,.3);
-        border-radius:20px;padding:5px 10px;font-size:13px;cursor:pointer;
-        font-family:Heebo,sans-serif;color:var(--gold-d);font-weight:700;
-        touch-action:manipulation;z-index:10">א−</button>
-      <button id="zoom-in" title="הגדל" style="
-        position:absolute;top:14px;left:92px;
-        background:rgba(201,151,44,.15);border:1px solid rgba(201,151,44,.3);
-        border-radius:20px;padding:5px 10px;font-size:13px;cursor:pointer;
-        font-family:Heebo,sans-serif;color:var(--gold-d);font-weight:700;
-        touch-action:manipulation;z-index:10">א+</button>
+
+
       <div class="menorah-wrap">
         <svg width="60" height="52" viewBox="0 0 60 52" fill="none">
           <line x1="30" y1="8" x2="30" y2="48" stroke="#c9972c" stroke-width="2.5" stroke-linecap="round"/>
@@ -1226,6 +1216,10 @@ body.light #home-journey-card  > div { background: linear-gradient(135deg,#fff3e
     <div style="height:10px"></div>
   </div>
 
+  <!-- SCREEN: ZMANIM -->
+  <div id="s-zmanim" class="screen">
+  </div>
+
   <!-- SCREEN: PARASHA READER -->
   <div id="s-parasha" class="screen">
     <div class="pr-hdr">
@@ -1351,6 +1345,19 @@ body.light #home-journey-card  > div { background: linear-gradient(135deg,#fff3e
         <div class="about-book-row"><span class="about-book-nm">שבת</span><span class="about-book-rng">מזמור צב</span></div>
       </div>
 
+
+      <!-- כרטיס עזרה -->
+      <div class="about-card" style="cursor:pointer;border:1px solid rgba(201,151,44,.35);" onclick="_openHelp()">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <h3 style="margin:0">❓ מדריך שימוש באפליקציה</h3>
+          <span style="font-size:18px;color:var(--gold-d)">›</span>
+        </div>
+        <p style="margin:8px 0 0;font-size:13px;color:var(--txt-mut);line-height:1.7">
+          הסבר מפורט על כל מסכי האפליקציה — מסע יומי, תהילים, תפילות,
+          קורס קבלה, עץ החיים, הדלקת נרות וכל שאר הפיצ'רים.
+        </p>
+      </div>
+
       <!-- Copyright -->
       <div style="text-align:center;padding:20px 0 10px;border-top:1px solid var(--brd);margin-top:8px">
         <div style="font-family:'Suez One',serif;font-size:14px;color:var(--gold-d);margin-bottom:6px">תְּהִלִים</div>
@@ -1424,6 +1431,14 @@ body.light #home-journey-card  > div { background: linear-gradient(135deg,#fff3e
     <button class="nb" data-s="kabcourse">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
       <span>קבלה</span>
+    </button>
+    <button class="nb" data-s="zmanim">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2c0 0-4 4-4 8a4 4 0 0 0 8 0c0-4-4-8-4-8z" fill="currentColor" stroke="none" opacity=".8"/>
+        <line x1="12" y1="18" x2="12" y2="22"/>
+        <line x1="9"  y1="22" x2="15" y2="22"/>
+      </svg>
+      <span>נרות</span>
     </button>
     <button class="nb" data-s="about">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -2364,6 +2379,7 @@ function showScreen(id){
   if(id==='prayers') renderPrayers();
   if(id==='tree'){ renderTree(); }
   if(id==='kabcourse') renderKCScreen();
+  if(id==='zmanim') renderZmanim();
 }
 
 // ═══════════════════════════════════════════════════
@@ -5364,6 +5380,21 @@ function buildJourneySchedule(psalm, prayer, lc){
       title:nightPrayer.name, sub:nightPrayer.occasion,
       action:'openPrayerNav(19)' });
   }
+  // שישי — הדלקת נרות שבת
+  var _dow = new Date().getDay();
+  if(_dow === 5){
+    var _loc = getZmanimLoc();
+    var _ct = getCandleTime(new Date(), _loc);
+    if(_ct){
+      var _cp = (typeof PRAYERS !== 'undefined') ? PRAYERS.find(function(p){return p.id===11;}) : null;
+      if(_cp){
+        steps.push({ id:'candles', h:_ct.h+(_ct.m/60), t:fmtTime(_ct.h,_ct.m),
+          icon:'🕯', title:'הדלקת נרות שבת — '+fmtTime(_ct.h,_ct.m),
+          sub:'שקיעה '+fmtTime(_ct.sunH,_ct.sunM)+' · '+_loc.name+' · '+_loc.offset+' דק׳ לפני',
+          action:'openPrayerNav(11)' });
+      }
+    }
+  }
   steps.sort(function(a,b){ return a.h-b.h; });
   return steps;
 }
@@ -5835,6 +5866,338 @@ function renderDailyJourneyHome(){
 }
 
 // ═══════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════
+//  HELP — מדריך שימוש
+// ═══════════════════════════════════════════════════
+function _openHelp(){
+  var el = document.getElementById('help-overlay');
+  var content = document.getElementById('help-content');
+  if(!el || !content) return;
+
+  var isDark = !_lightMode;
+  var gold = 'var(--gold-l)';
+  var goldD = 'var(--gold-d)';
+  var txt = isDark ? 'var(--txt-dim)' : '#5a3a10';
+  var mutC = isDark ? 'var(--txt-mut)' : '#a08060';
+  var itemBg = isDark ? 'rgba(201,151,44,.07)' : 'rgba(139,94,16,.06)';
+  var borderC = isDark ? 'rgba(201,151,44,.2)' : 'rgba(139,94,16,.2)';
+
+  function section(icon, title, body){
+    return '<div style="margin-bottom:20px;padding:14px 16px;background:'+itemBg+';border-radius:12px;border:1px solid '+borderC+';border-right:3px solid var(--gold)">'+
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">'+
+        '<span style="font-size:20px">'+icon+'</span>'+
+        '<span style="font-family:\'Frank Ruhl Libre\',serif;font-size:15px;font-weight:700;color:'+gold+'">'+title+'</span>'+
+      '</div>'+
+      '<div style="font-family:Heebo,sans-serif;font-size:13px;color:'+txt+';line-height:1.9">'+body+'</div>'+
+    '</div>';
+  }
+
+  function tip(text){
+    return '<div style="margin-top:6px;padding:8px 10px;background:rgba(201,151,44,.1);border-radius:8px;font-size:12px;color:'+goldD+'">💡 '+text+'</div>';
+  }
+
+  var tabs = '<div style="font-family:Heebo,sans-serif;font-size:11px;color:'+mutC+';margin-bottom:20px;line-height:1.8">'+
+    '<b style="color:'+gold+'">כפתורי הניווט התחתון:</b><br>'+
+    '🏠 בית · 📖 תהילים · 🙏 תפילות · 🌳 עץ החיים · ✡ קבלה · 📅 פרשה · ⚙️ הגדרות'+
+  '</div>';
+
+  content.innerHTML =
+    '<div style="font-family:Heebo,sans-serif;font-size:12px;color:'+mutC+';margin-bottom:18px;line-height:1.8;padding:10px 12px;background:rgba(201,151,44,.05);border-radius:10px;">'+
+      'ניצוץ — מסע הנשמה היא אפליקציית רוחניות יהודית יומית המשלבת תהילים, תפילות, קבלה ומסע יומי אישי. כל הנתונים נשמרים במכשיר שלך.'+
+    '</div>'+
+    tabs +
+    section('🌟','מסע יומי',
+      'בדף הבית תמצא מסע יומי עם 5 שלבים לפי שעון:<br>'+
+      '• <b>פתח</b> — פותח את התוכן הרלוונטי<br>'+
+      '• <b>✓</b> — מסמן שלב כ"בוצע"<br>'+
+      '• לחיצה על ✅ — <b>מבטל</b> את הסימון<br>'+
+      '• <b>▾ ראה את כל המסע</b> — מרחיב לכל 5 השלבים<br>'+
+      '• <b>🌟 התחל מסע</b> — מתחיל מעקב יומי<br><br>'+
+      '<b>השלבים לפי שעה:</b> ברכות השחר 06:30 · מזמור 07:00 · ערבית 19:00 · שיעור קבלה 20:00 · קריאת שמע 21:30'+
+      tip('השלבים מתאפסים כל יום. סיום שיעור קבלה מעדכן גם בקורס הקבלה.')
+    )+
+    section('✡','ספירה אישית',
+      'הזן תאריך לידה → האפליקציה מחשבת את <b>ספירת הנשמה</b> שלך לפי לוח העברי.<br>'+
+      'הספירה האישית מותאמת את:<br>'+
+      '• המזמור היומי (מתוך מזמורי הספירה)<br>'+
+      '• הכוונה הקבלית בתפילות<br>'+
+      '• הלמידה בקורס הקבלה<br><br>'+
+      'לחץ <b>חשב מחדש ↺</b> לשינוי.'+
+      tip('הנתון נשמר ומשמש לכל תכנים המותאמים אישית.')
+    )+
+    section('📖','קריאת תהילים',
+      '<b>גריד הדף הראשי</b> — כל 150 מזמורים לפי קטגוריה. לחץ כדי לקרוא.<br><br>'+
+      '<b>בתוך הקורא:</b><br>'+
+      '• ★ כוכב — הוספה למועדפים<br>'+
+      '• ✓ — סימון כ"נקרא"<br>'+
+      '• ✏️ — הוספת הערה אישית<br>'+
+      '• 📋 — העתקת הטקסט<br><br>'+
+      '<b>טאבים:</b> כל הספרים · ספר א-ה · ⭐ מועדפים'+
+      tip('מזמורי היום: "שיר של יום" לפי ימות השבוע. מחזור 150 מזמורים בחודש.')
+    )+
+    section('🙏','תפילות',
+      '<b>20 תפילות</b> לכל מצב — בוקר, ערב, חגים, צרכים מיוחדים.<br><br>'+
+      '<b>בתוך כל תפילה:</b><br>'+
+      '• <b>גבר / אישה</b> — החלפת נוסח (בברכות השחר)<br>'+
+      '• ✡ <b>כוונה קבלית</b> — הסבר קבלי + שאלת התבוננות<br>'+
+      '• 📋 — העתקת התפילה<br><br>'+
+      '<b>תפילות ערב/לילה:</b> ערבית (19:00) · קריאת שמע (21:30) · הבדלה (מוצ"ש)'+
+      tip('ברכות השחר — נוסח עדות המזרח המלא לפי הבן איש חי.')
+    )+
+    section('🌳','עץ החיים',
+      '<b>10 ספירות</b> אינטראקטיביות — לחץ על כל ספירה לקבל:<br>'+
+      '• תיאור ומשמעות<br>'+
+      '• המידה לעבוד<br>'+
+      '• מזמורים מומלצים<br>'+
+      '• כוונה יומית<br><br>'+
+      'הספירה האישית שלך מסומנת ומודגשת בצבעה.'+
+      tip('כל ספירה קשורה ליום שבוע, לצבע ולמידה רוחנית.')
+    )+
+    section('✡','קורס קבלה',
+      '<b>12 שיעורים</b> בסדר כרונולוגי — מבוא לקבלה עד מסע 40 הימים:<br>'+
+      '• שיעורים 1-11: יסודות הקבלה<br>'+
+      '• שיעור 12: מסע 40 הימים — תוכנית תיקון<br><br>'+
+      '<b>מסע 40 הימים</b> (מיום 13 במסע):<br>'+
+      '• ימים 1-3: גילוי הספירה<br>'+
+      '• ימים 4-7: חקירת המידה<br>'+
+      '• ימים 8-25: מזמורי התיקון<br>'+
+      '• ימים 26-40: מעשה יומי<br><br>'+
+      'לחץ <b>✓ השיעור הושלם</b> בתחתית כל שיעור.'+
+      tip('השלמת שיעור מהמסע היומי מעדכנת אוטומטית את הקורס.')
+    )+
+    section('📅','פרשת השבוע',
+      'פרשת השבוע נטענת אוטומטית לפי לוח השנה העברי (5786).<br><br>'+
+      '<b>בתוך הפרשה:</b><br>'+
+      '• <b>פשט</b> — סיפור הפרשה בקצרה<br>'+
+      '• <b>✡ קבלה</b> — ספירת הפרשה + פרשנות<br>'+
+      '• <b>תובנה</b> — שאלה לחיים<br>'+
+      '• <b>מזמורים</b> — מזמורים קשורים לפרשה'+
+      tip('שבת הגדול, שבת זכור ושבתות מיוחדות מסומנות אוטומטית.')
+    )+
+    section('⚙️','הגדרות',
+      '• ☀️/🌙 — <b>מצב בהיר/כהה</b> (פינה עליונה ימין)<br>'+
+      '• <b>גודל גופן</b> — א− / א+ בתוך קורא התהילים והתפילות<br>'+
+      '• <b>התראות</b> — זמני קריאה ותפילה יומיים (בהגדרות)<br>'+
+      '• <b>איפוס</b> — ניתן לאפס התקדמות בקורס הקבלה<br><br>'+
+      '<b>שמירה אוטומטית:</b> כל הנתונים (מועדפים, קריאה, ספירה, מסע) נשמרים במכשיר.'+
+      tip('האפליקציה עובדת גם ללא אינטרנט לאחר טעינה ראשונה (PWA).')
+    )+
+    '<div style="margin-top:16px;padding:14px 16px;background:rgba(201,151,44,.08);border-radius:12px;border:1px solid rgba(201,151,44,.2);text-align:center;">'+
+      '<div style="font-family:\'Suez One\',serif;font-size:14px;color:var(--gold-l);margin-bottom:6px">✡ ניצוץ — מסע הנשמה</div>'+
+      '<div style="font-family:Heebo,sans-serif;font-size:11px;color:'+mutC+'">כל המסע שלך שמור ומחכה לך מחר</div>'+
+    '</div>';
+
+  el.style.display = 'flex';
+  document.getElementById('help-panel').scrollTop = 0;
+}
+function _closeHelp(){
+  var el = document.getElementById('help-overlay');
+  if(el) el.style.display = 'none';
+}
+
+
+// ═══════════════════════════════════════════════════
+//  ZMANIM — הדלקת נרות
+// ═══════════════════════════════════════════════════
+
+var LOCATIONS = [
+  { id:'jerus', name:'ירושלים',  lat:31.7683, lng:35.2137, offset:40 },
+  { id:'tlv',   name:'תל אביב',  lat:32.0853, lng:34.7818, offset:18 },
+  { id:'haifa', name:'חיפה',     lat:32.7940, lng:34.9896, offset:18 },
+  { id:'beer',  name:'באר שבע',  lat:31.2520, lng:34.7915, offset:18 },
+  { id:'modiin',name:'מודיעין',  lat:31.8928, lng:35.0105, offset:20 },
+];
+var ZMANIM_LOC_KEY = 'zmanim_loc_v1';
+
+function getZmanimLoc(){
+  var id = LS.get(ZMANIM_LOC_KEY, 'jerus');
+  return LOCATIONS.find(function(l){ return l.id===id; }) || LOCATIONS[0];
+}
+
+function getSunset(date, lat, lng){
+  var start = new Date(date.getFullYear(), 0, 0);
+  var dayN  = Math.round((date - start) / 86400000);
+  var P = Math.asin(0.39795 * Math.cos(0.2163108 + 2 * Math.atan(0.9671396 * Math.tan(0.00860 * (dayN - 186)))));
+  var latR  = lat * Math.PI / 180;
+  var cosH  = (Math.sin(0.8333 * Math.PI / 180) + Math.sin(latR) * Math.sin(P)) / (Math.cos(latR) * Math.cos(P));
+  if(cosH <= -1 || cosH >= 1) return null;
+  var H = (180 / Math.PI) * Math.acos(-cosH) / 15;
+  var setUTC = 12 + H - lng / 15;
+  var tz = getIsraelTZ(date);
+  var setLoc = setUTC + tz;
+  var h = Math.floor(setLoc) % 24;
+  var m = Math.round((setLoc - Math.floor(setLoc)) * 60);
+  if(m >= 60){ m -= 60; h = (h+1) % 24; }
+  return { h:h, m:m };
+}
+
+function getIsraelTZ(date){
+  var y = date.getFullYear();
+  var d = new Date(y, 2, 31);
+  while(d.getDay() !== 5) d.setDate(d.getDate()-1);
+  var dstStart = new Date(d.getTime());
+  d = new Date(y, 9, 31);
+  while(d.getDay() !== 0) d.setDate(d.getDate()-1);
+  var dstEnd = new Date(d.getTime());
+  return (date >= dstStart && date < dstEnd) ? 3 : 2;
+}
+
+function fmtTime(h, m){
+  return h + ':' + (m < 10 ? '0' : '') + m;
+}
+
+function getCandleTime(date, loc){
+  var sunset = getSunset(date, loc.lat, loc.lng);
+  if(!sunset) return null;
+  var total = sunset.h * 60 + sunset.m - loc.offset;
+  var h = Math.floor(total / 60) % 24;
+  var m = total % 60;
+  if(m < 0){ m += 60; h--; }
+  return { h:h, m:m, sunH:sunset.h, sunM:sunset.m };
+}
+
+function getNextFridays(count){
+  var result = [];
+  var d = new Date(); d.setHours(0,0,0,0);
+  var dow = d.getDay();
+  // If today is Friday and before candle time → include today
+  var skip = 7;
+  if(dow === 5){
+    var loc0 = getZmanimLoc();
+    var ct0 = getCandleTime(d, loc0);
+    var now0 = new Date();
+    if(ct0 && now0.getHours()*60+now0.getMinutes() < ct0.h*60+ct0.m) skip = 0;
+  } else {
+    skip = (5 - dow + 7) % 7 || 7;
+  }
+  d.setDate(d.getDate() + skip);
+  for(var i = 0; i < count; i++){
+    result.push(new Date(d));
+    d.setDate(d.getDate() + 7);
+  }
+  return result;
+}
+
+var HOLIDAY_CANDLES_5786 = [
+  { date:'2026-04-01', name:'ליל פסח ראשון',   sub:'ט"ו ניסן תשפ"ו',   icon:'🌿' },
+  { date:'2026-04-03', name:'שבת חול המועד',   sub:'י"ז ניסן תשפ"ו',   icon:'🕯' },
+  { date:'2026-05-21', name:'ליל שבועות',       sub:'ו׳ סיון תשפ"ו',    icon:'📜' },
+  { date:'2026-09-11', name:'ערב ראש השנה',     sub:'א׳ תשרי תשפ"ז',   icon:'🍎' },
+  { date:'2026-09-12', name:'ראש השנה — יום ב׳', sub:'הדלקה מאש קיימת', icon:'🍎', noCalc:true },
+  { date:'2026-09-20', name:'ערב יום הכיפורים',  sub:'י׳ תשרי תשפ"ז',  icon:'✡' },
+  { date:'2026-09-25', name:'ערב סוכות',         sub:'ט"ו תשרי תשפ"ז', icon:'🌿' },
+  { date:'2026-10-01', name:'שבת חול המועד',    sub:'כ"א תשרי תשפ"ז',  icon:'🕯' },
+  { date:'2026-10-02', name:'הושענא רבה → שמחת תורה', sub:'כ"ב תשרי', icon:'📖' },
+];
+
+function renderZmanim(){
+  var el = document.getElementById('s-zmanim');
+  if(!el) return;
+
+  var loc    = getZmanimLoc();
+  var isDark = !_lightMode;
+  var gold   = 'var(--gold-l)';
+  var goldD  = 'var(--gold-d)';
+  var bg     = isDark ? '#0d0a04' : '#fdf6ec';
+  var cardBg = isDark ? 'rgba(201,151,44,.07)' : 'rgba(139,94,16,.06)';
+  var brd    = isDark ? 'rgba(201,151,44,.22)' : 'rgba(139,94,16,.2)';
+  var txt    = isDark ? 'var(--cream)' : '#2a1a00';
+  var mutC   = isDark ? 'var(--txt-mut)' : '#a08060';
+
+  var today  = new Date(); today.setHours(0,0,0,0);
+  var MONTHS = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+  var MONTHS_S = ['ינו','פבר','מרץ','אפר','מאי','יוני','יולי','אוג','ספט','אוק','נוב','דצ'];
+  var DAYS_HEB = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+
+  function fmtFull(d){ return 'יום '+DAYS_HEB[d.getDay()]+', '+d.getDate()+' ב'+MONTHS[d.getMonth()]+' '+d.getFullYear(); }
+  function fmtShort(d){ return d.getDate()+'.'+MONTHS_S[d.getMonth()]; }
+
+  // ── Next candle lighting ──
+  var nextFridays = getNextFridays(8);
+  var nextFri = nextFridays[0];
+  var nextCT  = getCandleTime(nextFri, loc);
+  var pKey    = (function(){ var s=new Date(nextFri.getTime()+86400000); return getLastSaturday(s).toISOString().split('T')[0]; })();
+  var nextParasha = PARASHA_LOOKUP_5786 ? (PARASHA_LOOKUP_5786[pKey]||'') : '';
+
+  var html = '<div style="min-height:100%;background:'+bg+';padding-bottom:80px;">';
+
+  // ── Header ──
+  html += '<div style="background:linear-gradient(135deg,#1a1000,#0a0700);padding:18px 18px 14px;border-bottom:1px solid '+brd+'">';
+  html += '<div style="font-family:\'Suez One\',serif;font-size:22px;color:'+gold+';text-shadow:0 0 12px rgba(201,151,44,.3);margin-bottom:10px">🕯 הדלקת נרות</div>';
+  html += '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:8px;">';
+  LOCATIONS.forEach(function(l){
+    var active = l.id === loc.id;
+    html += '<button onclick="_zmLoc(\''+l.id+'\')" style="padding:5px 12px;border-radius:20px;font-family:Heebo,sans-serif;font-size:12px;font-weight:'+(active?'800':'400')+';cursor:pointer;touch-action:manipulation;border:1px solid '+brd+';'+(active?'background:var(--gold);color:#1a0e02;':'background:none;color:'+mutC+';')+' white-space:nowrap">'+l.name+'</button>';
+  });
+  html += '</div>';
+  html += '<div style="font-family:Heebo,sans-serif;font-size:11px;color:'+mutC+'">⏱ '+loc.offset+' דקות לפני שקיעה</div>';
+  html += '</div>';
+
+  // ── Next candle lighting hero ──
+  if(nextCT){
+    html += '<div style="margin:16px 14px 0;padding:20px 18px;background:linear-gradient(135deg,#2a1800,#1a0e02);border:1px solid rgba(201,151,44,.45);border-right:3px solid var(--gold);border-radius:14px;">';
+    html += '<div style="font-family:Heebo,sans-serif;font-size:10px;font-weight:800;letter-spacing:1.5px;color:rgba(201,151,44,.65);margin-bottom:8px">🕯 הדלקת נרות הקרובה</div>';
+    html += '<div style="display:flex;align-items:flex-end;gap:10px;margin-bottom:6px;">';
+    html += '<div style="font-family:\'Frank Ruhl Libre\',serif;font-size:42px;font-weight:700;color:'+gold+';line-height:1;text-shadow:0 0 24px rgba(201,151,44,.45)">'+fmtTime(nextCT.h,nextCT.m)+'</div>';
+    if(nextParasha) html += '<div style="font-family:\'Frank Ruhl Libre\',serif;font-size:16px;color:var(--cream);padding-bottom:6px">פרשת '+nextParasha+'</div>';
+    html += '</div>';
+    html += '<div style="font-family:Heebo,sans-serif;font-size:12px;color:'+mutC+'">'+fmtFull(nextFri)+'</div>';
+    html += '<div style="font-family:Heebo,sans-serif;font-size:11px;color:rgba(201,151,44,.45);margin-top:5px">שקיעה: '+fmtTime(nextCT.sunH,nextCT.sunM)+' · '+loc.name+' · '+loc.offset+' דקות לפני</div>';
+    html += '</div>';
+  }
+
+  // ── Shabbatot list ──
+  html += '<div style="margin:16px 14px 0;">';
+  html += '<div style="font-family:Heebo,sans-serif;font-size:10px;font-weight:800;letter-spacing:1.5px;color:rgba(201,151,44,.6);margin-bottom:10px;padding:0 2px">שבתות הקרובות</div>';
+  nextFridays.forEach(function(fri, i){
+    var ct2 = getCandleTime(fri, loc);
+    if(!ct2) return;
+    var pk2 = (function(){ var s2=new Date(fri.getTime()+86400000); return getLastSaturday(s2).toISOString().split('T')[0]; })();
+    var pN2 = PARASHA_LOOKUP_5786 ? (PARASHA_LOOKUP_5786[pk2]||'שבת') : 'שבת';
+    var note2 = PARASHA_NOTES_5786 ? (PARASHA_NOTES_5786[pk2]||'') : '';
+    var isNext = i === 0;
+    html += '<div onclick="showScreen(\'zmanim\')" style="display:flex;align-items:center;gap:12px;padding:11px 14px;background:'+(isNext?'rgba(201,151,44,.12)':cardBg)+';border-radius:10px;margin-bottom:8px;border:1px solid '+(isNext?'rgba(201,151,44,.35)':brd)+'">';
+    html += '<div style="font-size:18px;flex-shrink:0">🕯</div>';
+    html += '<div style="flex:1;min-width:0;overflow:hidden;">';
+    html += '<div style="font-family:\'Frank Ruhl Libre\',serif;font-size:14px;font-weight:700;color:'+txt+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">פרשת '+pN2+(note2?' · '+note2:'')+'</div>';
+    html += '<div style="font-family:Heebo,sans-serif;font-size:11px;color:'+mutC+'">'+fmtShort(fri)+'</div>';
+    html += '</div>';
+    html += '<div style="font-family:\'Frank Ruhl Libre\',serif;font-size:20px;font-weight:700;color:'+gold+';flex-shrink:0">'+fmtTime(ct2.h,ct2.m)+'</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+
+  // ── Holidays ──
+  var upHols = HOLIDAY_CANDLES_5786.filter(function(hol){ return new Date(hol.date) >= today; }).slice(0,8);
+  if(upHols.length){
+    html += '<div style="margin:16px 14px 0;">';
+    html += '<div style="font-family:Heebo,sans-serif;font-size:10px;font-weight:800;letter-spacing:1.5px;color:rgba(201,151,44,.6);margin-bottom:10px;padding:0 2px">חגים הקרובים</div>';
+    upHols.forEach(function(hol){
+      var d2 = new Date(hol.date);
+      var ct3 = hol.noCalc ? null : getCandleTime(d2, loc);
+      html += '<div style="display:flex;align-items:center;gap:12px;padding:11px 14px;background:'+cardBg+';border-radius:10px;margin-bottom:8px;border:1px solid '+brd+'">';
+      html += '<div style="font-size:18px;flex-shrink:0">'+hol.icon+'</div>';
+      html += '<div style="flex:1;min-width:0;overflow:hidden;">';
+      html += '<div style="font-family:\'Frank Ruhl Libre\',serif;font-size:14px;font-weight:700;color:'+txt+'">'+hol.name+'</div>';
+      html += '<div style="font-family:Heebo,sans-serif;font-size:11px;color:'+mutC+'">'+fmtShort(d2)+(hol.sub?' · '+hol.sub:'')+'</div>';
+      html += '</div>';
+      if(ct3) html += '<div style="font-family:\'Frank Ruhl Libre\',serif;font-size:20px;font-weight:700;color:'+gold+';flex-shrink:0">'+fmtTime(ct3.h,ct3.m)+'</div>';
+      else if(hol.noCalc) html += '<div style="font-family:Heebo,sans-serif;font-size:11px;color:'+mutC+';flex-shrink:0;text-align:center;max-width:80px">'+hol.sub+'</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+function _zmLoc(id){
+  LS.set(ZMANIM_LOC_KEY, id);
+  renderZmanim();
+}
+
 applyTheme();
 renderParasha();
 updateCycleDisplay();
@@ -6008,5 +6371,27 @@ showScreen('home');
 })();
 
 </script>
+
+  <!-- HELP MODAL -->
+  <div id="help-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);" onclick="if(event.target===this)_closeHelp()">
+    <div id="help-panel" style="
+      position:absolute;top:0;right:0;bottom:0;width:min(92vw,420px);
+      background:linear-gradient(160deg,#1a1000,#0a0700);
+      border-left:2px solid rgba(201,151,44,.4);
+      overflow-y:auto;padding:0;-webkit-overflow-scrolling:touch;">
+      <!-- Header -->
+      <div style="position:sticky;top:0;z-index:2;background:linear-gradient(135deg,#1a1000,#0d0800);border-bottom:1px solid rgba(201,151,44,.3);padding:16px 18px;display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-family:'Suez One',serif;font-size:18px;color:var(--gold-l);text-shadow:0 0 12px rgba(201,151,44,.3)">✡ מדריך השימוש</div>
+          <div style="font-family:Heebo,sans-serif;font-size:11px;color:var(--txt-mut);margin-top:2px">ניצוץ — מסע הנשמה</div>
+        </div>
+        <button onclick="_closeHelp()" style="background:none;border:1px solid rgba(201,151,44,.3);border-radius:50%;width:32px;height:32px;color:var(--gold-d);font-size:16px;cursor:pointer;touch-action:manipulation;flex-shrink:0">✕</button>
+      </div>
+      <!-- Content -->
+      <div style="padding:16px 18px 40px;" id="help-content"></div>
+    </div>
+  </div>
+
+
 </body>
 </html>
