@@ -865,6 +865,10 @@ body.light .mood-pill { background: var(--surf3); border-color: var(--brd); colo
   border-radius:20px; padding:3px 12px;
   font-family:'Heebo',sans-serif; font-size:11px; color:var(--gold); font-weight:700;
 }
+
+/* ── PERSONAL SEFIRAH + DAILY JOURNEY ── */
+body.light #home-sefirah-card > div { background: linear-gradient(135deg,#fff3e0,#ffecc8) !important; }
+body.light #home-journey-card  > div { background: linear-gradient(135deg,#fff3e0,#ffecc8) !important; }
 </style>
 </head>
 <body>
@@ -924,6 +928,9 @@ body.light .mood-pill { background: var(--surf3); border-color: var(--brd); colo
         </p>
       </div>
     </div>
+
+    <div id="home-sefirah-card" style="margin:12px 14px 0"></div>
+    <div id="home-journey-card" style="margin:12px 14px 0"></div>
 
     <div id="today-card" class="today-card" style="margin-top:10px">
       <div class="tc-illus" id="tc-illus" style="height:140px"></div>
@@ -1198,23 +1205,6 @@ body.light .mood-pill { background: var(--surf3); border-color: var(--brd); colo
       </div>
     </div>
 
-
-    <!-- Sefirot Calculator — banner style, theme-aware -->
-    <div id="calc-wrap" style="margin:12px 14px;border-radius:14px;overflow:hidden;position:relative">
-      <div id="calc-bar-line" style="position:absolute;top:0;right:0;width:3px;height:100%"></div>
-      <div id="calc-banner" style="display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent">
-        <div style="font-size:24px;flex-shrink:0">🔮</div>
-        <div style="flex:1">
-          <div id="calc-title" style="font-family:'Frank Ruhl Libre',serif;font-size:16px;margin-bottom:2px">גלה את הספירות שלך</div>
-          <div id="calc-sub" style="font-family:'Heebo',sans-serif;font-size:11px">מחשבון ספירות · ממיר תאריך עברי · גימטריה</div>
-        </div>
-        <div id="calc-chevron" style="font-size:13px;flex-shrink:0">▼</div>
-      </div>
-      <div id="calc-body" style="display:none;padding:14px 16px">
-        <div id="tree-calc"></div>
-        <button id="calc-close" style="width:100%;margin-top:10px;padding:9px;border-radius:10px;font-family:Heebo,sans-serif;font-size:12px;cursor:pointer;touch-action:manipulation">✕ סגור</button>
-      </div>
-    </div>
     <div style="height:10px"></div>
   </div>
 
@@ -1348,7 +1338,7 @@ body.light .mood-pill { background: var(--surf3); border-color: var(--brd); colo
         <div style="font-family:'Suez One',serif;font-size:14px;color:var(--gold-d);margin-bottom:6px">תְּהִלִים</div>
         <div style="font-family:'Heebo',sans-serif;font-size:12px;color:var(--txt-mut);line-height:1.8">
           © כל הזכויות שמורות לדודו טל<br>
-          <span style="font-size:11px;color:var(--txt-mut);opacity:.7">גרסה 3.1 · 2026</span>
+          <span style="font-size:11px;color:var(--txt-mut);opacity:.7">גרסה 3.2 · 2026</span>
         </div>
       </div>
     </div>
@@ -2354,7 +2344,7 @@ function showScreen(id){
   if(id==='all') renderAll();
   if(id==='prog'){ renderProg(); updateCycleDisplay(); if(window._renderReminders) window._renderReminders(); }
   if(id==='prayers') renderPrayers();
-  if(id==='tree'){ renderTree(); if(window._initCalcBanner) window._initCalcBanner(); }
+  if(id==='tree'){ renderTree(); }
   if(id==='kabcourse') renderKCScreen();
 }
 
@@ -2383,6 +2373,8 @@ function renderHome(){
   document.getElementById('tc-read').onclick=()=>openReader(tp,'home');
 
   renderHomeGrid(homeBook);
+  renderPersonalSefirahHome();
+  renderDailyJourneyHome();
 }
 
 function renderHomeGrid(book){
@@ -3744,6 +3736,7 @@ function applyTheme(){
     document.body.classList.remove('light');
     document.getElementById('theme-toggle').textContent = '☀️';
   }
+  if(activeScreen==='home'){ renderPersonalSefirahHome(); renderDailyJourneyHome(); }
 }
 document.getElementById('theme-toggle').addEventListener('click', function(){
   _lightMode = !_lightMode;
@@ -4939,6 +4932,300 @@ function renderCalc(){
 
 // ═══════════════════════════════════════════════════
 //  INIT
+
+// ═══════════════════════════════════════════════════
+//  ספירה אישית + מסע יומי — דף בית
+// ═══════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════
+//  תוכנית יומית — שלושה שלבים
+// ═══════════════════════════════════════════════════
+
+var JOURNEY_START_KEY = 'home_journey_start_v1';
+
+function getJourneyDay(){
+  var start = LS.get(JOURNEY_START_KEY, null);
+  if(!start){
+    var today = new Date().toISOString().split('T')[0];
+    LS.set(JOURNEY_START_KEY, today);
+    return 0;
+  }
+  var s = new Date(start);
+  var t = new Date(); t.setHours(0,0,0,0); s.setHours(0,0,0,0);
+  return Math.max(0, Math.floor((t - s) / 86400000));
+}
+
+function getTikkunDayContent(day, personalS, tik){
+  // ימים 1-3: גילוי הספירה
+  if(day <= 3){
+    return { icon:'🔮', title:'גילוי הספירה — יום '+day,
+      sub:'הכנס ספירה אישית · פתח שיעור 12 לתחילת המסע',
+      onclick:'openKCById(12)' };
+  }
+  // ימים 4-7: חקירת המידה
+  if(day <= 7){
+    var middah = (personalS && tik) ? tik.middah : 'עבודת המידה';
+    var sName  = personalS ? ' · '+personalS.name : '';
+    return { icon:'🔍', title:'חקירת המידה — יום '+day,
+      sub: middah + sName, onclick:'openKCById(12)' };
+  }
+  // ימים 8-25: מזמורי התיקון
+  if(day <= 25){
+    var idx     = day - 8;
+    var defList = [23,91,150,27,1,51,139,119,100,103,145,46,121,22,130,42,93,148];
+    var pList   = (tik && tik.psalms && tik.psalms.length) ? tik.psalms : defList;
+    var psalmN  = pList[idx % pList.length];
+    var psalm   = PSALMS.find(function(p){return p.n===psalmN;})||PSALMS[0];
+    return { icon:'📖', title:'מזמור התיקון — יום '+day,
+      sub:'מזמור '+heb(psalm.n)+': '+psalm.t+(personalS?' · '+personalS.name:''),
+      onclick:'openPsalmN('+psalmN+')' };
+  }
+  // ימים 26-40: מעשה יומי
+  var SEF_ORDER = ['chesed','gevura','tiferet','netzach','hod','yesod','malchut'];
+  var actId  = SEF_ORDER[(day-26) % SEF_ORDER.length];
+  var actS   = SEFIROT.find(function(s){return s.id===actId;});
+  var actTik = TIKKUN_PSALMS[actId];
+  var actN   = actTik ? actTik.psalms[0] : 1;
+  return { icon:'⚡', title:'מעשה יומי — יום '+day,
+    sub:(actTik?actTik.middah:'עבודת המידה')+(actS?' · '+actS.name:''),
+    onclick:'openPsalmN('+actN+')' };
+}
+
+function getDailyContentPhase(jDay, personalS, tik){
+  var KC_COUNT = KC_LESSONS.length; // 12
+  var TIK_COUNT = 40;
+  // ── שלב א: שיעורי קבלה ──
+  if(jDay < KC_COUNT){
+    var l = KC_LESSONS[jDay];
+    return { icon:l.icon||'✡',
+      title:'שיעור '+l.id+': '+l.title, sub:l.subtitle,
+      onclick:'openKCById('+l.id+')',
+      badge:'שלב א — לימוד בסיס · שיעור '+(jDay+1)+'/'+KC_COUNT };
+  }
+  // ── שלב ב: מסע 40 הימים ──
+  var tikDay = jDay - KC_COUNT; // 0-39
+  if(tikDay < TIK_COUNT){
+    var d  = tikDay + 1;
+    var tc = getTikkunDayContent(d, personalS, tik);
+    tc.badge = 'שלב ב — מסע 40 הימים · יום '+d+'/40';
+    return tc;
+  }
+  // ── שלב ג: מעגל שוטף (10 ספירות × 7 ימים = 70 יום) ──
+  var SEF10 = ['chesed','gevura','tiferet','netzach','hod','yesod','malchut','keter','chochma','bina'];
+  var ongoing = (jDay - KC_COUNT - TIK_COUNT);
+  var cycle   = ongoing % 70;
+  var sId     = SEF10[Math.floor(cycle / 7)];
+  var dayInS  = cycle % 7;
+  var cs      = SEFIROT.find(function(s){return s.id===sId;});
+  var ctik    = TIKKUN_PSALMS[sId];
+  var cpN     = ctik ? ctik.psalms[dayInS % ctik.psalms.length] : (1 + cycle);
+  return { icon:SEFIRAH_ICONS[sId]||'✦',
+    title:'תיקון '+(cs?cs.name:sId)+' — יום '+(dayInS+1)+'/7',
+    sub:ctik ? ctik.middah+' · '+ctik.kavana : '',
+    onclick:'openPsalmN('+cpN+')',
+    badge:'שלב ג — עבודה שוטפת · מחזור '+(Math.floor(ongoing/70)+1) };
+}
+
+var PERSONAL_SEFIRAH_KEY = 'home_sefirah_v1';
+
+var SEFIRAH_ICONS = {
+  keter:'👑', chochma:'⚡', bina:'🌊', chesed:'💙', gevura:'🔥',
+  tiferet:'✨', netzach:'🎵', hod:'🙏', yesod:'🌿', malchut:'💎'
+};
+
+// תפילות לפי ספירת היום
+var PRAYER_BY_SEFIRAH = {
+  chesed:[6,17,10], gevura:[13,1,2], tiferet:[16,11,12],
+  netzach:[5,8,9],  hod:[16,3,15],  yesod:[7,3,6],
+  malchut:[11,9,14],keter:[10,12,16],chochma:[16,17,1],bina:[4,16,15]
+};
+
+// שיעור קבלה לפי ספירה אישית
+var LESSON_BY_SEFIRAH = {
+  keter:1, chochma:2, bina:3, chesed:4, gevura:5,
+  tiferet:6, netzach:7, hod:8, yesod:9, malchut:10
+};
+
+function loadPersonalSefirah(){ return LS.get(PERSONAL_SEFIRAH_KEY, null); }
+
+// ── ניווט מהיר ──
+function openPsalmN(n){
+  var ps = PSALMS.find(function(p){ return p.n===n; });
+  if(ps) openReader(ps, 'home');
+}
+function openPrayerNav(id){
+  openPrayerId = id;
+  showScreen('prayers');
+  setTimeout(renderPrayers, 100);
+}
+function openKCById(id){
+  showScreen('kabcourse');
+  setTimeout(function(){
+    var l = KC_LESSONS.find(function(x){ return x.id===id; });
+    if(l) openKCLesson(l);
+  }, 150);
+}
+
+// ── כרטיס ספירה אישית ──
+function renderPersonalSefirahHome(){
+  var el = document.getElementById('home-sefirah-card');
+  if(!el) return;
+  var saved  = loadPersonalSefirah();
+  var isDark = !_lightMode;
+  var bg     = isDark ? 'linear-gradient(135deg,#1a1000,#0d0800)' : 'linear-gradient(135deg,#fff3e0,#ffecc8)';
+  var bodyC  = isDark ? 'var(--txt-dim)' : '#5a3a10';
+  var mutC   = isDark ? 'var(--txt-mut)' : '#a08060';
+
+  if(!saved || !saved.id){
+    // ── מצב: חישוב ──
+    el.innerHTML =
+      '<div style="background:'+bg+';border:1px solid rgba(201,151,44,.45);border-right:3px solid var(--gold);border-radius:var(--r);padding:16px 18px;">'+
+        '<div style="font-family:\'Suez One\',serif;font-size:15px;color:var(--gold-l);text-align:center;margin-bottom:6px;'+(isDark?'text-shadow:0 0 12px rgba(201,151,44,.3)':'')+'">✡ הספירה האישית שלך</div>'+
+        '<div style="font-family:Heebo,sans-serif;font-size:12px;color:'+mutC+';text-align:center;margin-bottom:12px;line-height:1.6">גלה את ספירת הנשמה לפי תאריך לידה</div>'+
+        '<input type="date" id="hs-date" style="width:100%;padding:9px 12px;border-radius:10px;box-sizing:border-box;font-family:Heebo,sans-serif;font-size:14px;color:var(--txt);background:var(--surf2);border:1px solid var(--brd);outline:none;color-scheme:'+(isDark?'dark':'light')+'">'+
+        '<button id="hs-calc-btn" style="width:100%;margin-top:10px;padding:11px;border-radius:10px;background:linear-gradient(135deg,var(--gold),#9a7015);color:#1a0e02;font-family:Heebo,sans-serif;font-size:14px;font-weight:800;border:none;cursor:pointer;touch-action:manipulation;">✡ חשב ספירה אישית</button>'+
+        '<div id="hs-result" style="margin-top:8px;text-align:center;font-family:Heebo,sans-serif;font-size:12px;color:var(--gold-d);min-height:16px"></div>'+
+      '</div>';
+
+    document.getElementById('hs-calc-btn').addEventListener('click', function(){
+      var dateVal = document.getElementById('hs-date').value;
+      if(!dateVal){ document.getElementById('hs-result').textContent = 'בחר תאריך לידה'; return; }
+      var parts = dateVal.split('-');
+      var d = new Date(+parts[0], +parts[1]-1, +parts[2]);
+      var h = window.gregorianToHebrew ? window.gregorianToHebrew(d) : null;
+      if(!h){ document.getElementById('hs-result').textContent = 'תאריך לא נמצא (תמיכה: 1950–2030)'; return; }
+
+      var dowItem = DOW_SEFIROT[h.dowIdx];
+      var ms = MONTH_SEFIROT.find(function(m){ return m.month===h.month; });
+      if(!ms) ms = MONTH_SEFIROT.find(function(m){ return h.month.indexOf(m.month)===0; });
+
+      var primaryId   = dowItem ? dowItem.id : 'tiferet';
+      var secondaryId = ms ? ms.id : null;
+      var data = {
+        id: primaryId, secondaryId: secondaryId,
+        isDouble: secondaryId && secondaryId===primaryId,
+        dateStr: dateVal,
+        hebDate: h.dayNum+' '+h.month+' '+h.yearStr,
+        dowLabel: h.dayOfWeek,
+        savedAt: new Date().toISOString()
+      };
+      LS.set(PERSONAL_SEFIRAH_KEY, data);
+      renderPersonalSefirahHome();
+      renderDailyJourneyHome();
+    });
+
+  } else {
+    // ── מצב: תצוגה ──
+    var s   = SEFIROT.find(function(x){ return x.id===saved.id; });
+    var s2  = saved.secondaryId && saved.secondaryId!==saved.id
+              ? SEFIROT.find(function(x){ return x.id===saved.secondaryId; }) : null;
+    var tik = TIKKUN_PSALMS[saved.id];
+    if(!s) return;
+    var icon = SEFIRAH_ICONS[s.id] || '✦';
+
+    el.innerHTML =
+      '<div style="background:'+bg+';border:1px solid '+s.color+'44;border-right:3px solid '+s.color+';border-radius:var(--r);padding:14px 18px;">'+
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">'+
+          '<div style="font-family:Heebo,sans-serif;font-size:10px;font-weight:800;letter-spacing:1.5px;color:'+s.color+'99">✡ ספירת הנשמה שלך</div>'+
+          '<button id="hs-recalc" style="background:none;border:1px solid var(--brd);border-radius:20px;padding:3px 10px;font-family:Heebo,sans-serif;font-size:10px;color:'+mutC+';cursor:pointer;touch-action:manipulation;line-height:1.5">חשב מחדש ↺</button>'+
+        '</div>'+
+        '<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">'+
+          '<div style="width:44px;height:44px;border-radius:50%;background:'+s.color+';flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 0 14px '+s.color+'44">'+icon+'</div>'+
+          '<div style="flex:1;">'+
+            '<div style="font-family:\'Frank Ruhl Libre\',serif;font-size:21px;font-weight:700;color:'+s.color+';'+(isDark?'text-shadow:0 0 10px '+s.color+'55':'')+'">'+
+              s.name+(saved.isDouble?' ✨':'')+(s2?' <span style="font-size:13px;color:'+s2.color+'">+ '+s2.name+'</span>':'')+'</div>'+
+            '<div style="font-family:Heebo,sans-serif;font-size:11px;color:'+mutC+'">יום '+saved.dowLabel+' · '+saved.hebDate+'</div>'+
+          '</div>'+
+        '</div>'+
+        '<div style="font-family:Heebo,sans-serif;font-size:13px;color:'+bodyC+';line-height:1.8;padding:10px 12px;background:'+s.color+'10;border-radius:9px;border-right:2px solid '+s.color+'44;margin-bottom:'+(tik?'8':'0')+'px">'+
+          s.desc.substring(0,100)+(s.desc.length>100?'...':'')+'</div>'+
+        (tik ? '<div style="font-family:Heebo,sans-serif;font-size:11px;color:'+s.color+';font-weight:700;padding-top:2px">✦ '+tik.middah+'</div>' : '')+
+      '</div>';
+
+    document.getElementById('hs-recalc').addEventListener('click', function(){
+      LS.set(PERSONAL_SEFIRAH_KEY, null);
+      renderPersonalSefirahHome();
+      renderDailyJourneyHome();
+    });
+  }
+}
+
+// ── כרטיס מסע יומי ──
+function renderDailyJourneyHome(){
+  var el = document.getElementById('home-journey-card');
+  if(!el) return;
+
+  var today      = new Date();
+  var dow        = today.getDay();
+  var dayOfYear  = Math.floor((today - new Date(today.getFullYear(),0,0)) / 86400000);
+  var DAY_HEB    = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+
+  var dailyDow  = DOW_SEFIROT[dow];
+  var dailyS    = dailyDow ? SEFIROT.find(function(x){ return x.id===dailyDow.id; }) : null;
+  var saved     = loadPersonalSefirah();
+  var personalS = saved && saved.id ? SEFIROT.find(function(x){ return x.id===saved.id; }) : null;
+  var tik       = saved && saved.id ? TIKKUN_PSALMS[saved.id] : null;
+
+  // מזמור: מרשימת התיקון האישית, או מזמור היום
+  var psalmN;
+  if(tik && tik.psalms && tik.psalms.length){
+    psalmN = tik.psalms[dayOfYear % tik.psalms.length];
+  } else {
+    psalmN = PSALMS[todayPsalmIndex()].n;
+  }
+  var psalm = PSALMS.find(function(p){ return p.n===psalmN; }) || PSALMS[0];
+
+  // תפילה: לפי ספירת היום
+  var pList    = (dailyDow && PRAYER_BY_SEFIRAH[dailyDow.id]) || [16];
+  var prayerId = pList[dayOfYear % pList.length];
+  var prayer   = PRAYERS.find(function(p){ return p.id===prayerId; }) || PRAYERS[0];
+
+  // שיעור: לפי ספירה אישית, או לפי יום
+  // שיעור: תוכנית יומית בשלושה שלבים (ידע בסיסי → מסע 40 יום → עבודה שוטפת)
+  var lc = getDailyContentPhase(getJourneyDay(), personalS, tik);
+
+  var isDark = !_lightMode;
+  var bg     = isDark ? 'linear-gradient(135deg,#1a1000,#0d0800)' : 'linear-gradient(135deg,#fff3e0,#ffecc8)';
+  var itemBg = isDark ? 'rgba(201,151,44,.08)'   : 'rgba(139,94,16,.06)';
+  var itemAc = isDark ? 'rgba(201,151,44,.16)'   : 'rgba(139,94,16,.13)';
+  var txtH   = isDark ? 'var(--cream)'            : '#2a1a00';
+  var mutC   = isDark ? 'var(--txt-mut)'          : '#a08060';
+  var goldD  = isDark ? 'var(--gold-d)'           : '#8b6820';
+
+  var sefirotLine = '';
+  if(dailyS)   sefirotLine += 'ספירת היום: <strong style="color:'+dailyS.color+'">'+dailyS.name+'</strong>';
+  if(personalS) sefirotLine += '&nbsp;·&nbsp;שלך: <strong style="color:'+personalS.color+'">'+personalS.name+'</strong>';
+
+  // builder לכל שורה
+  function row(icon, title, sub, fn){
+    return '<div onclick="'+fn+'" '+
+      'ontouchstart="this.style.background=\''+itemAc+'\';" ontouchend="this.style.background=\''+itemBg+'\';" '+
+      'style="background:'+itemBg+';border-radius:10px;padding:10px 12px;margin-bottom:8px;'+
+      'display:flex;align-items:center;gap:12px;cursor:pointer;touch-action:manipulation;'+
+      '-webkit-tap-highlight-color:transparent;">'+
+      '<div style="font-size:22px;flex-shrink:0">'+icon+'</div>'+
+      '<div style="flex:1;min-width:0;overflow:hidden;">'+
+        '<div style="font-family:\'Frank Ruhl Libre\',serif;font-size:14px;font-weight:700;color:'+txtH+';'+
+          'margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+title+'</div>'+
+        '<div style="font-family:Heebo,sans-serif;font-size:11px;color:'+mutC+';'+
+          'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+(sub||'')+'</div>'+
+      '</div>'+
+      '<div style="color:'+goldD+';font-size:14px;flex-shrink:0">←</div>'+
+    '</div>';
+  }
+
+  el.innerHTML =
+    '<div style="background:'+bg+';border:1px solid rgba(201,151,44,.45);border-right:3px solid var(--gold);border-radius:var(--r);padding:16px 18px;">'+
+      '<div style="font-family:\'Suez One\',serif;font-size:16px;color:var(--gold-l);'+
+        'margin-bottom:'+(sefirotLine?'4':'12')+'px;'+(isDark?'text-shadow:0 0 12px rgba(201,151,44,.3)':'')+'">'+
+        '🌟 מסע יום '+DAY_HEB[dow]+'</div>'+
+      (sefirotLine?'<div style="font-family:Heebo,sans-serif;font-size:11px;color:'+mutC+';margin-bottom:12px">'+sefirotLine+'</div>':'')+
+      row('📖', 'מזמור '+heb(psalm.n)+' — '+psalm.t, psalm.kw, 'openPsalmN('+psalm.n+')')+
+      row(prayer.icon, prayer.name, prayer.occasion, 'openPrayerNav('+prayer.id+')')+
+      row(lc.icon, lc.title, (lc.badge?' <span style="font-family:Heebo,sans-serif;font-size:9px;opacity:.65">'+lc.badge+'</span>':'')+lc.sub, lc.onclick)+
+    '</div>';
+}
+
 // ═══════════════════════════════════════════════════
 applyTheme();
 renderParasha();
