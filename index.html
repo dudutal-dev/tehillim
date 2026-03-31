@@ -6252,12 +6252,39 @@ function renderZmanim(){
   function fmtFull(d){ return 'יום '+DAYS_HEB[d.getDay()]+', '+d.getDate()+' ב'+MONTHS[d.getMonth()]+' '+d.getFullYear(); }
   function fmtShort(d){ return d.getDate()+'.'+MONTHS_S[d.getMonth()]; }
 
-  // ── Next candle lighting ──
+  // ── Find soonest candle lighting: Shabbat OR holiday ──
   var nextFridays = getNextFridays(8);
   var nextFri = nextFridays[0];
   var nextCT  = getCandleTime(nextFri, loc);
   var pKey    = (function(){ var s=new Date(nextFri.getTime()+86400000); return getLastSaturday(s).toISOString().split('T')[0]; })();
   var nextParasha = PARASHA_LOOKUP_5786 ? (PARASHA_LOOKUP_5786[pKey]||'') : '';
+
+  // Check upcoming holidays
+  var todayD = new Date(); todayD.setHours(0,0,0,0);
+  var nextHol = null;
+  if(typeof HOLIDAY_CANDLES_5786 !== 'undefined'){
+    var upHolsCand = HOLIDAY_CANDLES_5786.filter(function(h){
+      return !h.noCalc && new Date(h.date) >= todayD;
+    });
+    if(upHolsCand.length) nextHol = upHolsCand[0];
+  }
+
+  // Pick the sooner of Shabbat vs holiday
+  var heroIsHol = false;
+  var heroCT = nextCT, heroDate = nextFri, heroPrayerId = 11;
+  var heroName = nextParasha ? 'פרשת '+nextParasha : 'שבת';
+  var heroIcon = '🕯';
+  if(nextHol){
+    var holDate = new Date(nextHol.date);
+    if(holDate <= nextFri){
+      heroIsHol = true;
+      heroCT = getCandleTime(holDate, loc);
+      heroDate = holDate;
+      heroPrayerId = nextHol.prayerId || 21;
+      heroName = nextHol.name;
+      heroIcon = nextHol.icon || '🕯';
+    }
+  }
 
   var html = '<div style="min-height:100%;background:'+bg+';padding-bottom:80px;">';
 
@@ -6273,16 +6300,20 @@ function renderZmanim(){
   html += '<div style="font-family:Heebo,sans-serif;font-size:11px;color:'+mutC+'">⏱ '+loc.offset+' דקות לפני שקיעה</div>';
   html += '</div>';
 
-  // ── Next candle lighting hero ──
-  if(nextCT){
-    html += '<div style="margin:16px 14px 0;padding:20px 18px;background:linear-gradient(135deg,#2a1800,#1a0e02);border:1px solid rgba(201,151,44,.45);border-right:3px solid var(--gold);border-radius:14px;">';
+  // ── Hero — next candle lighting (Shabbat or holiday, whichever first) ──
+  if(heroCT){
+    html += '<div onclick="openPrayerNav('+heroPrayerId+')" style="margin:16px 14px 0;padding:20px 18px;'+
+      'background:linear-gradient(135deg,#2a1800,#1a0e02);'+
+      'border:1px solid rgba(201,151,44,.45);border-right:3px solid var(--gold);border-radius:14px;'+
+      'cursor:pointer;touch-action:manipulation;position:relative;">';
     html += '<div style="font-family:Heebo,sans-serif;font-size:10px;font-weight:800;letter-spacing:1.5px;color:rgba(201,151,44,.65);margin-bottom:8px">🕯 הדלקת נרות הקרובה</div>';
     html += '<div style="display:flex;align-items:flex-end;gap:10px;margin-bottom:6px;">';
-    html += '<div style="font-family:\'Frank Ruhl Libre\',serif;font-size:42px;font-weight:700;color:'+gold+';line-height:1;text-shadow:0 0 24px rgba(201,151,44,.45)">'+fmtTime(nextCT.h,nextCT.m)+'</div>';
-    if(nextParasha) html += '<div style="font-family:\'Frank Ruhl Libre\',serif;font-size:16px;color:var(--cream);padding-bottom:6px">פרשת '+nextParasha+'</div>';
+    html += '<div style="font-family:\'Frank Ruhl Libre\',serif;font-size:42px;font-weight:700;color:'+gold+';line-height:1;text-shadow:0 0 24px rgba(201,151,44,.45)">'+fmtTime(heroCT.h,heroCT.m)+'</div>';
+    html += '<div style="font-family:\'Frank Ruhl Libre\',serif;font-size:16px;color:var(--cream);padding-bottom:6px">'+heroIcon+' '+heroName+'</div>';
     html += '</div>';
-    html += '<div style="font-family:Heebo,sans-serif;font-size:12px;color:'+mutC+'">'+fmtFull(nextFri)+'</div>';
-    html += '<div style="font-family:Heebo,sans-serif;font-size:11px;color:rgba(201,151,44,.45);margin-top:5px">שקיעה: '+fmtTime(nextCT.sunH,nextCT.sunM)+' · '+loc.name+' · '+loc.offset+' דקות לפני</div>';
+    html += '<div style="font-family:Heebo,sans-serif;font-size:12px;color:'+mutC+'">'+fmtFull(heroDate)+'</div>';
+    html += '<div style="font-family:Heebo,sans-serif;font-size:11px;color:rgba(201,151,44,.45);margin-top:5px">שקיעה: '+fmtTime(heroCT.sunH,heroCT.sunM)+' · '+loc.name+' · '+loc.offset+' דקות לפני</div>';
+    html += '<div style="position:absolute;top:16px;left:16px;font-family:Heebo,sans-serif;font-size:11px;color:rgba(201,151,44,.6);font-weight:700">לברכה ›</div>';
     html += '</div>';
   }
 
