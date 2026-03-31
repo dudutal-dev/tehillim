@@ -2385,6 +2385,7 @@ function showScreen(id){
   if(id==='tree'){ renderTree(); }
   if(id==='kabcourse') renderKCScreen();
   if(id==='zmanim') renderZmanim();
+  if(id==='prayer-reader'){ /* content already set */ }
 }
 
 // ═══════════════════════════════════════════════════
@@ -6264,7 +6265,8 @@ function renderZmanim(){
   var nextHol = null;
   if(typeof HOLIDAY_CANDLES_5786 !== 'undefined'){
     var upHolsCand = HOLIDAY_CANDLES_5786.filter(function(h){
-      return !h.noCalc && new Date(h.date) >= todayD;
+      var _dp=h.date.split('-'); var _hd2=new Date(+_dp[0],+_dp[1]-1,+_dp[2]);
+      return !h.noCalc && _hd2 >= todayD;
     });
     if(upHolsCand.length) nextHol = upHolsCand[0];
   }
@@ -6272,10 +6274,15 @@ function renderZmanim(){
   // Pick the sooner of Shabbat vs holiday
   var heroIsHol = false;
   var heroCT = nextCT, heroDate = nextFri, heroPrayerId = 11;
-  var heroName = nextParasha ? 'פרשת '+nextParasha : 'שבת';
+  var _spNm = {'__pesach_chol__':'שבת חוה"מ פסח',
+    '__rh_shabbat__':'ראש השנה','__sukkot_shabbat__':'שבת סוכות','__shmini_shabbat__':'שמחת תורה'};
+  var _np = nextParasha || '';
+  var heroName = _np ? ('פרשת '+(_spNm[_np]||_np)) : 'שבת';
+  if(_spNm[_np]) heroName = _spNm[_np];
   var heroIcon = '🕯';
   if(nextHol){
-    var holDate = new Date(nextHol.date);
+    var _hd = nextHol.date.split('-');
+    var holDate = new Date(+_hd[0], +_hd[1]-1, +_hd[2]);
     if(holDate <= nextFri){
       heroIsHol = true;
       heroCT = getCandleTime(holDate, loc);
@@ -6302,7 +6309,7 @@ function renderZmanim(){
 
   // ── Hero — next candle lighting (Shabbat or holiday, whichever first) ──
   if(heroCT){
-    html += '<div onclick="openPrayerNav('+heroPrayerId+')" style="margin:16px 14px 0;padding:20px 18px;'+
+    html += '<div onclick="openPrayerFullscreen('+heroPrayerId+')" style="margin:16px 14px 0;padding:20px 18px;'+
       'background:linear-gradient(135deg,#2a1800,#1a0e02);'+
       'border:1px solid rgba(201,151,44,.45);border-right:3px solid var(--gold);border-radius:14px;'+
       'cursor:pointer;touch-action:manipulation;position:relative;">';
@@ -6324,7 +6331,9 @@ function renderZmanim(){
     var ct2 = getCandleTime(fri, loc);
     if(!ct2) return;
     var pk2 = (function(){ var s2=new Date(fri.getTime()+86400000); return getLastSaturday(s2).toISOString().split('T')[0]; })();
-    var pN2 = PARASHA_LOOKUP_5786 ? (PARASHA_LOOKUP_5786[pk2]||'שבת') : 'שבת';
+    var _raw2 = PARASHA_LOOKUP_5786 ? (PARASHA_LOOKUP_5786[pk2]||'') : '';
+    var _spNm2 = {'__pesach_chol__':'שבת חוה"מ פסח','__rh_shabbat__':'ראש השנה','__sukkot_shabbat__':'שבת סוכות','__shmini_shabbat__':'שמחת תורה'};
+    var pN2 = _raw2 ? (_spNm2[_raw2] || ('פרשת '+_raw2)) : 'שבת';
     var note2 = PARASHA_NOTES_5786 ? (PARASHA_NOTES_5786[pk2]||'') : '';
     var isNext = i === 0;
     html += '<div onclick="showScreen(\'zmanim\')" style="display:flex;align-items:center;gap:12px;padding:11px 14px;background:'+(isNext?'rgba(201,151,44,.12)':cardBg)+';border-radius:10px;margin-bottom:8px;border:1px solid '+(isNext?'rgba(201,151,44,.35)':brd)+'">';
@@ -6366,6 +6375,118 @@ function renderZmanim(){
 function _zmLoc(id){
   LS.set(ZMANIM_LOC_KEY, id);
   renderZmanim();
+  // scroll hero into view
+  var zm = document.getElementById('s-zmanim');
+  if(zm) zm.scrollTop = 0;
+}
+
+
+function openPrayerFullscreen(prayerId){
+  var pr = (typeof PRAYERS !== 'undefined') ? PRAYERS.find(function(x){return x.id===prayerId;}) : null;
+  if(!pr) return;
+
+  var isDark = !_lightMode;
+  var gold   = 'var(--gold-l)';
+  var goldD  = 'var(--gold-d)';
+  var bg     = isDark ? '#0d0a04' : '#fdf6ec';
+  var txt    = isDark ? 'var(--cream)' : '#2a1a00';
+  var mutC   = isDark ? 'var(--txt-mut)' : '#a08060';
+  var brd    = isDark ? 'rgba(201,151,44,.22)' : 'rgba(139,94,16,.2)';
+
+  // Gender pref
+  var gKey = 't_prayer_gender';
+  var curGender = LS.get(gKey, 'm');
+  var prayerText = (curGender === 'f' && pr.text_f) ? pr.text_f : pr.text;
+
+  var prevScreen = activeScreen || 'home';
+
+  var html = '<div style="min-height:100%;background:'+bg+';padding-bottom:80px;">';
+
+  // Header
+  html += '<div style="background:linear-gradient(135deg,#1a1000,#0a0700);padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid '+brd+'">';
+  html += '<button onclick="showScreen(\''+prevScreen+'\')" style="background:none;border:none;color:'+goldD+';font-size:22px;cursor:pointer;touch-action:manipulation;padding:4px 8px;line-height:1">‹</button>';
+  html += '<div style="flex:1">';
+  html += '<div style="font-family:\'Frank Ruhl Libre\',serif;font-size:16px;font-weight:700;color:'+gold+'">'+pr.name+'</div>';
+  html += '<div style="font-family:Heebo,sans-serif;font-size:11px;color:'+mutC+';margin-top:2px">'+pr.occasion+'</div>';
+  html += '</div>';
+  html += '</div>';
+
+  html += '<div style="padding:16px 18px 40px;">';
+
+  // Essence
+  if(pr.essence){
+    html += '<div style="font-family:Heebo,sans-serif;font-size:13px;color:'+mutC+';line-height:1.8;margin-bottom:16px;padding:12px 14px;background:rgba(201,151,44,.08);border-radius:10px;border-right:3px solid var(--gold)">'+pr.essence+'</div>';
+  }
+
+  // Source
+  html += '<div style="font-family:Heebo,sans-serif;font-size:10px;font-weight:800;letter-spacing:1.5px;color:'+mutC+';margin-bottom:12px">✦ '+pr.source+'</div>';
+
+  // Gender toggle (prayer 16)
+  if(pr.id === 16 && pr.text_f){
+    html += '<div id="pr-fs-gender" style="display:flex;gap:8px;margin-bottom:14px;">';
+    ['m','f'].forEach(function(g){
+      var active = curGender === g;
+      html += '<button onclick="_prFsGender(\''+g+'\')" style="padding:5px 14px;border-radius:20px;font-family:Heebo,sans-serif;font-size:12px;font-weight:700;cursor:pointer;touch-action:manipulation;border:1px solid rgba(201,151,44,.45);'+(active?'background:var(--gold);color:#1a0e02':'background:none;color:'+goldD)+'">'+( g==='m'?'גבר':'אישה')+'</button>';
+    });
+    html += '</div>';
+  }
+
+  // Font size
+  html += '<div style="display:flex;gap:6px;margin-bottom:14px;">';
+  ['א−','א+'].forEach(function(lbl,i){
+    html += '<button onclick="'+(i===0?'STATE.fontSize=Math.max(13,STATE.fontSize-2)':'STATE.fontSize=Math.min(30,STATE.fontSize+2)')+';applyFontSize();save()" '+
+      'style="background:rgba(201,151,44,.1);border:1px solid rgba(201,151,44,.22);border-radius:7px;padding:5px 12px;font-size:12px;color:'+goldD+';cursor:pointer;touch-action:manipulation;">'+lbl+'</button>';
+  });
+  html += '</div>';
+
+  // Prayer text
+  html += '<div id="pr-fs-text" style="font-family:\'Frank Ruhl Libre\',serif;font-size:var(--reader-fs,17px);line-height:2.2;color:'+txt+';white-space:pre-wrap;text-align:right;margin-bottom:20px;">'+prayerText+'</div>';
+
+  // Note
+  if(pr.note){
+    html += '<div style="font-family:Heebo,sans-serif;font-size:12px;color:'+mutC+';padding:10px 14px;background:rgba(201,151,44,.07);border-radius:9px;border-right:3px solid rgba(201,151,44,.4);margin-bottom:16px;">💡 '+pr.note+'</div>';
+  }
+
+  // Kavana
+  if(pr.kab){
+    html += '<div style="border-radius:12px;overflow:hidden;border:1px solid rgba(201,151,44,.3);margin-bottom:16px;">';
+    html += '<div style="padding:9px 14px;background:rgba(201,151,44,.1);display:flex;align-items:center;gap:8px;">';
+    html += '<span style="font-family:Heebo,sans-serif;font-size:10px;font-weight:800;letter-spacing:1.5px;color:'+goldD+'">✡ כוונה קבלית</span>';
+    html += '<span style="font-family:Heebo,sans-serif;font-size:11px;color:'+mutC+';margin-right:auto">'+(pr.kab.sefirah||'')+'</span>';
+    html += '</div>';
+    html += '<div style="padding:12px 14px;background:'+bg+';">';
+    html += '<div style="font-family:Heebo,sans-serif;font-size:13px;color:'+mutC+';line-height:1.85;margin-bottom:10px">'+(pr.kab.text||'')+'</div>';
+    if(pr.kab.insight){
+      html += '<div style="font-family:\'Frank Ruhl Libre\',serif;font-size:14px;font-weight:700;color:'+gold+';padding:10px 12px;background:rgba(201,151,44,.08);border-radius:8px;border-right:3px solid rgba(201,151,44,.5)">✦ '+pr.kab.insight+'</div>';
+    }
+    html += '</div></div>';
+  }
+
+  // Copy
+  html += '<button onclick="if(navigator.clipboard)navigator.clipboard.writeText(\''+pr.name+'\\n\\n'+prayerText.replace(/'/g,"\\'").replace(/\n/g,'\\n')+'\')" style="width:100%;padding:12px;background:rgba(201,151,44,.1);border:1px solid rgba(201,151,44,.35);border-radius:10px;font-family:Heebo,sans-serif;font-size:13px;color:'+goldD+';cursor:pointer;touch-action:manipulation;">📋 העתק תפילה</button>';
+
+  html += '</div></div>';
+
+  var wrap = document.getElementById('pr-reader-wrap');
+  if(wrap) wrap.innerHTML = html;
+  showScreen('prayer-reader');
+}
+
+function _prFsGender(g){
+  LS.set('t_prayer_gender', g);
+  var openId = openPrayerId;
+  // rerender with new gender
+  var pr = (typeof PRAYERS !== 'undefined') ? PRAYERS.find(function(x){ return x.id === openId; }) : null;
+  if(!pr) return;
+  var txtEl = document.getElementById('pr-fs-text');
+  if(txtEl) txtEl.textContent = (g==='f' && pr.text_f) ? pr.text_f : pr.text;
+  // update buttons
+  var row = document.getElementById('pr-fs-gender');
+  if(row) row.querySelectorAll('button').forEach(function(b,i){
+    var active = (i===0 && g==='m') || (i===1 && g==='f');
+    b.style.background = active ? 'var(--gold)' : 'none';
+    b.style.color = active ? '#1a0e02' : 'var(--gold-d)';
+  });
 }
 
 applyTheme();
@@ -6562,6 +6683,12 @@ showScreen('home');
     </div>
   </div>
 
+
+
+  <!-- PRAYER FULL READER SCREEN -->
+  <div id="s-prayer-reader" class="screen">
+    <div id="pr-reader-wrap" style="min-height:100%;"></div>
+  </div>
 
 </body>
 </html>
